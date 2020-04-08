@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/appditto/natricon/image"
 	"github.com/appditto/natricon/nano"
 	"github.com/gin-gonic/gin"
 )
 
 func getNatricon(c *gin.Context) {
+	var err error
+
 	address := c.Query("address")
 	valid := nano.ValidateAddress(address)
 	if !valid {
@@ -17,7 +20,17 @@ func getNatricon(c *gin.Context) {
 		return
 	}
 	sha256 := nano.AddressSha256(address)
-	c.String(http.StatusOK, "%s", sha256)
+
+	accessories, err := image.GetAccessoriesForHash(sha256)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "%s", err.Error())
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"bodyColor": accessories.BodyColor.ToHTML(),
+		"hairColor": accessories.HairColor.ToHTML(),
+	})
 }
 
 func main() {

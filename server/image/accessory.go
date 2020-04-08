@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math"
 	"math/rand"
+	"regexp"
 	"strconv"
 
 	"github.com/appditto/natricon/color"
@@ -11,9 +12,11 @@ import (
 
 // Accessories - represents accessories for natricon
 type Accessories struct {
-	bodyColor color.RGB
-	hairColor color.RGB
+	BodyColor color.RGB
+	HairColor color.RGB
 }
+
+var hexRegex = regexp.MustCompile("^[0-9a-fA-F]+$")
 
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
 func GetAccessoriesForHash(hash string) (Accessories, error) {
@@ -22,9 +25,8 @@ func GetAccessoriesForHash(hash string) (Accessories, error) {
 		return Accessories{}, errors.New("Invalid hash")
 	}
 	// Validate is a hex string
-	_, err = strconv.ParseUint(hash, 16, 64)
-	if err != nil {
-		return Accessories{}, err
+	if !hexRegex.MatchString(hash) {
+		return Accessories{}, errors.New("Invalid hash")
 	}
 
 	// Create empty Accessories object
@@ -32,13 +34,13 @@ func GetAccessoriesForHash(hash string) (Accessories, error) {
 	// Body color is first 6 digits as hex string
 	bodyColorHex := hash[0:6]
 
-	accessories.bodyColor, err = color.HTMLToRGB(bodyColorHex)
+	accessories.BodyColor, err = color.HTMLToRGB(bodyColorHex)
 	if err != nil {
 		return Accessories{}, err
 	}
 
 	// Get hair color using next 6 bits
-	accessories.hairColor, err = GetHairColor(accessories.bodyColor, hash[6:12], hash[12:16], hash[16:20])
+	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[6:12], hash[12:16], hash[16:20])
 
 	return accessories, nil
 }
