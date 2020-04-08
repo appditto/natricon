@@ -23,9 +23,9 @@ func ValidateAddress(account string) bool {
 func AddressSha256(account string) string {
 	var prefixRemoved string
 	if len(account) == 64 {
-		prefixRemoved = account[0:4]
+		prefixRemoved = account[4:]
 	} else if len(account) == 65 {
-		prefixRemoved = account[0:5]
+		prefixRemoved = account[5:]
 	}
 	hasher := sha256.New()
 	hasher.Write([]byte(prefixRemoved))
