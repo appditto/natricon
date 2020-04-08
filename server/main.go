@@ -30,6 +30,7 @@ func getNatricon(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"bodyColor": accessories.BodyColor.ToHTML(),
 		"hairColor": accessories.HairColor.ToHTML(),
+		"hash":      sha256,
 	})
 }
 
