@@ -16,7 +16,12 @@ type Accessories struct {
 	HairColor color.RGB
 }
 
+// Hex string regex
 var hexRegex = regexp.MustCompile("^[0-9a-fA-F]+$")
+
+// Constants
+var minSaturation float64 = 10
+var minBrightness float64 = 10
 
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
 func GetAccessoriesForHash(hash string) (Accessories, error) {
@@ -38,6 +43,11 @@ func GetAccessoriesForHash(hash string) (Accessories, error) {
 	if err != nil {
 		return Accessories{}, err
 	}
+	// Enforce min saturation and brightness
+	bodyColorHSV := accessories.BodyColor.ToHSV()
+	bodyColorHSV.V = math.Max(minBrightness, bodyColorHSV.V)
+	bodyColorHSV.S = math.Max(minSaturation, bodyColorHSV.S)
+	accessories.BodyColor = bodyColorHSV.ToRGB()
 
 	// Get hair color using next 6 bits
 	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[6:12], hash[12:16], hash[16:20])
@@ -109,8 +119,8 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 
 	hairColorHSV := color.HSV{}
 	hairColorHSV.H = shiftedHue
-	hairColorHSV.S = math.Max(10, shiftedSaturation)
-	hairColorHSV.V = math.Max(10, shiftedBrightness)
+	hairColorHSV.S = math.Max(minSaturation, shiftedSaturation)
+	hairColorHSV.V = math.Max(minBrightness, shiftedBrightness)
 
 	return hairColorHSV.ToRGB(), nil
 }
