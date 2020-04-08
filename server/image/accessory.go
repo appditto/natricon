@@ -2,6 +2,7 @@ package image
 
 import (
 	"errors"
+	"math"
 	"math/rand"
 	"strconv"
 
@@ -37,39 +38,65 @@ func GetAccessoriesForHash(hash string) (Accessories, error) {
 	}
 
 	// Get hair color using next 6 bits
-	accessories.hairColor, err = GetHairColor(accessories.bodyColor, hash[6:12])
+	accessories.hairColor, err = GetHairColor(accessories.bodyColor, hash[6:12], hash[12:16], hash[16:20])
 
 	return accessories, nil
 }
 
 // GetHairColor - Get a complementary color with given entropy
-func GetHairColor(bodyColor color.RGB, entropy string) (color.RGB, error) {
+func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntropy string) (color.RGB, error) {
 	var err error
-	// Get as HSL color
-	bodyColorHSL := bodyColor.ToHSL()
+	// Get as HSV color
+	bodyColorHSV := bodyColor.ToHSV()
 
 	var randSeed int64
 	var shiftedHue float64
+	var shiftedSaturation float64
+	var shiftedBrightness float64
 	// Want to shift the hue between 90-270
 	// Get detemrinistic RNG
-	randSeed, err = strconv.ParseInt(entropy, 16, 64)
+	randSeed, err = strconv.ParseInt(hEntropy, 16, 64)
 	if err != nil {
 		return color.RGB{}, err
 	}
 
 	// Generate random shift between 90...270
 	r := rand.New(rand.NewSource(randSeed))
-	shiftedHue = float64(r.Intn(270-90)+90) + bodyColorHSL.H
+	shiftedHue = float64(r.Intn(270-90)+90) + bodyColorHSV.H
 
 	// If > 360, subtract
-	if bodyColorHSL.H+shiftedHue > 360 {
-		shiftedHue = 360 - shiftedHue
+	if shiftedHue > 360 {
+		shiftedHue = shiftedHue - 360
 	}
 
-	hairColorHSL := color.HSL{}
-	hairColorHSL.H = shiftedHue
-	hairColorHSL.S = bodyColorHSL.S
-	hairColorHSL.L = bodyColorHSL.L
+	// Generate random shift between 0..20 for saturation
+	randSeed, err = strconv.ParseInt(sEntropy, 16, 64)
+	if err != nil {
+		return color.RGB{}, err
+	}
+	r = rand.New(rand.NewSource(randSeed))
+	shiftedSaturation = float64(r.Intn(21)) + bodyColorHSV.S
 
-	return hairColorHSL.ToRGB(), nil
+	// Generate random shift between 0..20 for brightness
+	randSeed, err = strconv.ParseInt(bEntropy, 16, 64)
+	if err != nil {
+		return color.RGB{}, err
+	}
+	r = rand.New(rand.NewSource(randSeed))
+	shiftedBrightness = float64(r.Intn(21)) + bodyColorHSV.V
+
+	// If > 100, subtract
+	if shiftedSaturation > 100 {
+		shiftedSaturation = 100 - shiftedSaturation
+	}
+	if shiftedBrightness > 100 {
+		shiftedBrightness = 100 - shiftedBrightness
+	}
+
+	hairColorHSV := color.HSV{}
+	hairColorHSV.H = shiftedHue
+	hairColorHSV.S = math.Max(10, shiftedSaturation)
+	hairColorHSV.V = math.Max(10, shiftedBrightness)
+
+	return hairColorHSV.ToRGB(), nil
 }

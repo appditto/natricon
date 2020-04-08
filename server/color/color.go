@@ -155,3 +155,74 @@ func (c HSL) ToRGB() RGB {
 func (c HSL) ToHTML() string {
 	return c.ToRGB().ToHTML()
 }
+
+type HSV struct {
+	H, S, V float64
+}
+
+func (c RGB) ToHSV() HSV {
+	var h, s, v float64
+
+	min := math.Min(math.Min(c.R, c.G), c.B)
+	v = math.Max(math.Max(c.R, c.G), c.B)
+	C := v - min
+
+	s = 0.0
+	if v != 0.0 {
+		s = C / v
+	}
+
+	h = 0.0 // We use 0 instead of undefined as in wp.
+	if min != v {
+		if v == c.R {
+			h = math.Mod((c.G-c.B)/C, 6.0)
+		}
+		if v == c.G {
+			h = (c.B-c.R)/C + 2.0
+		}
+		if v == c.B {
+			h = (c.R-c.G)/C + 4.0
+		}
+		h *= 60.0
+		if h < 0.0 {
+			h += 360.0
+		}
+	}
+	return HSV{h, s, v}
+}
+
+func (c HSV) ToRGB() RGB {
+	Hp := c.H / 60.0
+	C := c.V * c.S
+	X := C * (1.0 - math.Abs(math.Mod(Hp, 2.0)-1.0))
+
+	m := c.V - C
+	r, g, b := 0.0, 0.0, 0.0
+
+	switch {
+	case 0.0 <= Hp && Hp < 1.0:
+		r = C
+		g = X
+	case 1.0 <= Hp && Hp < 2.0:
+		r = X
+		g = C
+	case 2.0 <= Hp && Hp < 3.0:
+		g = C
+		b = X
+	case 3.0 <= Hp && Hp < 4.0:
+		g = X
+		b = C
+	case 4.0 <= Hp && Hp < 5.0:
+		r = X
+		b = C
+	case 5.0 <= Hp && Hp < 6.0:
+		r = C
+		b = X
+	}
+
+	return RGB{m + r, m + g, m + b}
+}
+
+func (c HSV) ToHTML() string {
+	return c.ToRGB().ToHTML()
+}
