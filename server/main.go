@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var seed *string
+
 func getNatricon(c *gin.Context) {
 	var err error
 
@@ -19,7 +21,7 @@ func getNatricon(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Invalid address")
 		return
 	}
-	sha256 := nano.AddressSha256(address)
+	sha256 := nano.AddressSha256(address, *seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256)
 	if err != nil {
@@ -38,6 +40,7 @@ func main() {
 	// Parse server options
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
+	seed = flag.String("seed", "1234567890", "Seed to use for icon generation")
 	flag.Parse()
 
 	// Setup router

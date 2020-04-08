@@ -20,7 +20,7 @@ func ValidateAddress(account string) bool {
 }
 
 // AddressSha256 - Hashes an address excluding prefix
-func AddressSha256(account string) string {
+func AddressSha256(account string, seed string) string {
 	var prefixRemoved string
 	if len(account) == 64 {
 		prefixRemoved = account[4:]
@@ -29,5 +29,6 @@ func AddressSha256(account string) string {
 	}
 	hasher := sha256.New()
 	hasher.Write([]byte(prefixRemoved))
+	hasher.Write([]byte(seed))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
