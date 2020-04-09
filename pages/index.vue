@@ -1,42 +1,54 @@
 <template>
   <div class="container">
     <div>
-      <h1 class="title">natricons</h1>
-      <button
-        class="px-4 py-2 bg-primary text-white font-bold rounded-lg"
-        @click="generateIframes()"
-      >Randomize</button>
-      <div class="flex flex-row flex-wrap mt-8">
-        <iframe v-for="(frame, i) in iframes" :key="i" :src="frame.src" frameborder="0"></iframe>
+      <h1 class="title">natricon</h1>
+      <div class="flex flex-row flex-wrap justify-center">
+        <button
+          class="px-4 py-2 mx-2 bg-primary text-white text-xl font-bold rounded-lg"
+          @click="generateRandomNatricon()"
+        >Randomize</button>
+        <button
+          class="px-4 py-2 mx-2 bg-primary text-white text-xl font-bold rounded-lg"
+          @click="generateTenRandomNatricon()"
+        >Randomize 10</button>
+      </div>
+      <div v-if="natricons" class="flex flex-row justify-center flex-wrap">
+        <sample-natricon
+          v-for="(natricon, i) in natricons.slice().reverse()"
+          :key="i"
+          :bodyColor="'#'+natricon.bodyColor"
+          :hairColor="'#'+natricon.hairColor"
+          class="w-56 h-56"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import SampleNatricon from "~/components/SampleNatricon.vue";
 export default {
-  components: {},
+  components: {
+    SampleNatricon
+  },
   data() {
     return {
-      iframes: []
+      natricons: []
     };
   },
   methods: {
-    generateIframes() {
-      const alphabet = "13456789abcdefghijkmnopqrstuwxyz";
-      let randomAddress = "nano_";
-      // After the ban prefix, we have 1 or 3, coinflip between them
-      randomAddress += Math.floor(Math.random() * 2) == 0 ? "1" : "3";
-      // Randomlys choose all other chars from the alphabet
-      for (let i = 0; i < 59; i++) {
-        const character = alphabet.charAt(Math.floor(Math.random() * 32));
-        randomAddress += character;
+    generateTenRandomNatricon() {
+      for (let i = 0; i < 10; i++) {
+        this.generateRandomNatricon();
       }
-      let obj = {
-        src: "http://localhost:8080/natricon?address=" + randomAddress
-      };
-      this.iframes.push(obj);
-      console.log(this.iframes);
+    },
+    generateRandomNatricon() {
+      this.$axios
+        .get("http://localhost:8080/random")
+        .then(res => {
+          this.natricons.push(res.data);
+        })
+        .catch(err => console.log(err));
       return;
     }
   }
@@ -62,7 +74,7 @@ export default {
   font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   display: block;
-  font-weight: 300;
+  font-weight: 600;
   font-size: 100px;
   color: #35495e;
   letter-spacing: 1px;
