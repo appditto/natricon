@@ -32,11 +32,30 @@ var testhtml string = `<!DOCTYPE html>
 </style>
 </head>
 <body>
+<div>address_1</div>
 <div class="squareTop"></div>
 <div class="square"></div>
 </body>
 </html> 
 `
+
+func getRandom(c *gin.Context) {
+	var err error
+
+	address := nano.GenerateAddress()
+	sha256 := nano.AddressSha256(address, *seed)
+
+	accessories, err := image.GetAccessoriesForHash(sha256)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "%s", err.Error())
+		return
+	}
+
+	newHTML := strings.Replace(testhtml, "#000", "#"+accessories.HairColor.ToHTML(), -1)
+	newHTML = strings.Replace(newHTML, "#FFF", "#"+accessories.BodyColor.ToHTML(), -1)
+	newHTML = strings.Replace(newHTML, "address_1", address, -1)
+	c.Data(200, "text/html; charset=utf-8", []byte(newHTML))
+}
 
 func getNatricon(c *gin.Context) {
 	var err error
@@ -57,6 +76,7 @@ func getNatricon(c *gin.Context) {
 
 	newHTML := strings.Replace(testhtml, "#000", "#"+accessories.HairColor.ToHTML(), -1)
 	newHTML = strings.Replace(newHTML, "#FFF", "#"+accessories.BodyColor.ToHTML(), -1)
+	newHTML = strings.Replace(newHTML, "address_1", address, -1)
 	c.Data(200, "text/html; charset=utf-8", []byte(newHTML))
 	/*
 		c.JSON(200, gin.H{
@@ -77,6 +97,7 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 	router.GET("/natricon", getNatricon)
+	router.GET("/random", getRandom)
 
 	// Run on 8080
 	router.Run(fmt.Sprintf("%s:%d", *serverHost, *serverPort))
