@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/appditto/natricon/image"
 	"github.com/appditto/natricon/nano"
@@ -11,6 +12,30 @@ import (
 )
 
 var seed *string
+
+var testhtml string = `<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.square {
+  height: 200px;
+  width: 200px;
+  background-color: #FFF;
+}
+.squareTop {
+  height: 50px;
+  width: 200px;
+  background-color: #000;
+}
+</style>
+</head>
+<body>
+<div class="squareTop"></div>
+<div class="square"></div>
+</body>
+</html> 
+`
 
 func getNatricon(c *gin.Context) {
 	var err error
@@ -29,11 +54,15 @@ func getNatricon(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"bodyColor": accessories.BodyColor.ToHTML(),
-		"hairColor": accessories.HairColor.ToHTML(),
-		"hash":      sha256,
-	})
+	newHTML := strings.Replace(testhtml, "#000", "#"+accessories.HairColor.ToHTML(), -1)
+	newHTML = strings.Replace(newHTML, "#FFF", "#"+accessories.BodyColor.ToHTML(), -1)
+	c.Data(200, "text/html; charset=utf-8", []byte(newHTML))
+	/*
+		c.JSON(200, gin.H{
+			"bodyColor": accessories.BodyColor.ToHTML(),
+			"hairColor": accessories.HairColor.ToHTML(),
+			"hash":      sha256,
+		})*/
 }
 
 func main() {
