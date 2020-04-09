@@ -50,11 +50,15 @@ func getRandom(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
 	}
-
-	newHTML := strings.Replace(testhtml, "#000", "#"+accessories.HairColor.ToHTML(), -1)
+	c.JSON(200, gin.H{
+		"bodyColor": accessories.BodyColor.ToHTML(),
+		"hairColor": accessories.HairColor.ToHTML(),
+		"hash":      sha256,
+	})
+	/*newHTML := strings.Replace(testhtml, "#000", "#"+accessories.HairColor.ToHTML(), -1)
 	newHTML = strings.Replace(newHTML, "#FFF", "#"+accessories.BodyColor.ToHTML(), -1)
 	newHTML = strings.Replace(newHTML, "address_1", address, -1)
-	c.Data(200, "text/html; charset=utf-8", []byte(newHTML))
+	c.Data(200, "text/html; charset=utf-8", []byte(newHTML))*/
 }
 
 func getNatricon(c *gin.Context) {

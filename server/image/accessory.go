@@ -24,8 +24,8 @@ type Accessories struct {
 var hexRegex = regexp.MustCompile("^[0-9a-fA-F]+$")
 
 // Constants
-var minSaturation float64 = 0.1
-var minBrightness float64 = 0.1
+var minSaturation float64 = 0.4
+var minBrightness float64 = 0.4
 
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
 func GetAccessoriesForHash(hash string) (Accessories, error) {
