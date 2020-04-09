@@ -11,6 +11,11 @@ import (
 
 var nanoRegex = regexp.MustCompile("(?:xrb|nano)(?:_)(?:1|3)(?:[13456789abcdefghijkmnopqrstuwxyz]{59})")
 
+func GenerateAddress() string {
+	pub, _ := address.GenerateKey()
+	return string(address.PubKeyToAddress(pub))
+}
+
 // ValidateAddress - Returns true if a nano address is valid
 func ValidateAddress(account string) bool {
 	if !nanoRegex.MatchString(account) {
