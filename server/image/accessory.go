@@ -12,8 +12,12 @@ import (
 
 // Accessories - represents accessories for natricon
 type Accessories struct {
-	BodyColor color.RGB
-	HairColor color.RGB
+	BodyColor  color.RGB
+	HairColor  color.RGB
+	BodyAsset  string
+	HairAsset  string
+	MouthAsset string
+	EyeAsset   string
 }
 
 // Hex string regex
@@ -51,6 +55,10 @@ func GetAccessoriesForHash(hash string) (Accessories, error) {
 
 	// Get hair color using next 6 bits
 	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[6:12], hash[12:16], hash[16:20])
+
+	// Get body and hair illustrations
+	accessories.BodyAsset, err = GetBodyAsset(hash[20:26])
+	accessories.HairAsset, err = GetHairAsset(hash[26:32])
 
 	return accessories, nil
 }
@@ -123,4 +131,32 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	hairColorHSV.V = math.Max(minBrightness, shiftedBrightness)
 
 	return hairColorHSV.ToRGB(), nil
+}
+
+// GetBodyAsset - return body illustration to use with given entropy
+func GetBodyAsset(entropy string) (string, error) {
+	// Get detemrinistic RNG
+	randSeed, err := strconv.ParseInt(entropy, 16, 64)
+	if err != nil {
+		return "", err
+	}
+
+	r := rand.New(rand.NewSource(randSeed))
+	bodyIndex := r.Intn(len(BodyIllustrations))
+
+	return GetIllustrationPath(BodyIllustrations[bodyIndex], Body), nil
+}
+
+// GetHairAsset - return hair illustration to use with given entropy
+func GetHairAsset(entropy string) (string, error) {
+	// Get detemrinistic RNG
+	randSeed, err := strconv.ParseInt(entropy, 16, 64)
+	if err != nil {
+		return "", err
+	}
+
+	r := rand.New(rand.NewSource(randSeed))
+	hairIndex := r.Intn(len(HairIllustrations))
+
+	return GetIllustrationPath(HairIllustrations[hairIndex], Hair), nil
 }
