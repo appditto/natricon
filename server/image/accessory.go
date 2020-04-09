@@ -24,8 +24,8 @@ type Accessories struct {
 var hexRegex = regexp.MustCompile("^[0-9a-fA-F]+$")
 
 // Constants
-var minSaturation float64 = 10
-var minBrightness float64 = 10
+var minSaturation float64 = 0.1
+var minBrightness float64 = 0.1
 
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
 func GetAccessoriesForHash(hash string) (Accessories, error) {
@@ -98,9 +98,9 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	randNum := float64(r.Intn(41))
 	// If > 20, subtract, if <= 20 add
 	if randNum > 20 {
-		shiftedSaturation = bodyColorHSV.S - (randNum - 20)
+		shiftedSaturation = (bodyColorHSV.S * 100.0) - (randNum - 20)
 	} else {
-		shiftedSaturation = bodyColorHSV.S + randNum
+		shiftedSaturation = (bodyColorHSV.S * 100.0) + randNum
 	}
 	// Cap at 100
 	if shiftedSaturation > 100 {
@@ -116,9 +116,9 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	randNum = float64(r.Intn(41))
 	// If > 20, subtract, if <= 20 add
 	if randNum > 20 {
-		shiftedBrightness = bodyColorHSV.V - (randNum - 20)
+		shiftedBrightness = (bodyColorHSV.V * 100.0) - (randNum - 20)
 	} else {
-		shiftedBrightness = bodyColorHSV.V + randNum
+		shiftedBrightness = (bodyColorHSV.V * 100.0) + randNum
 	}
 	// Cap at 100
 	if shiftedBrightness > 100 {
@@ -127,8 +127,8 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 
 	hairColorHSV := color.HSV{}
 	hairColorHSV.H = shiftedHue
-	hairColorHSV.S = math.Max(minSaturation, shiftedSaturation)
-	hairColorHSV.V = math.Max(minBrightness, shiftedBrightness)
+	hairColorHSV.S = math.Max(minSaturation, shiftedSaturation/100.0)
+	hairColorHSV.V = math.Max(minBrightness, shiftedBrightness/100.0)
 
 	return hairColorHSV.ToRGB(), nil
 }
