@@ -9,6 +9,7 @@ import (
 	"github.com/appditto/natricon/image"
 	"github.com/appditto/natricon/nano"
 	"github.com/gin-gonic/gin"
+	cors "github.com/rs/cors/wrapper/gin"
 )
 
 var seed *string
@@ -41,11 +42,11 @@ func getNatricon(c *gin.Context) {
 	var err error
 
 	address := c.Query("address")
-	valid := nano.ValidateAddress(address)
-	if !valid {
-		c.String(http.StatusBadRequest, "Invalid address")
-		return
-	}
+	// valid := nano.ValidateAddress(address)
+	// if !valid {
+	// c.String(http.StatusBadRequest, "Invalid address")
+	// return
+	// }
 	sha256 := nano.AddressSha256(address, *seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256)
@@ -74,6 +75,7 @@ func main() {
 
 	// Setup router
 	router := gin.Default()
+	router.Use(cors.Default())
 	router.GET("/natricon", getNatricon)
 
 	// Run on 8080

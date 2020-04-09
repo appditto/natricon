@@ -1,41 +1,46 @@
 <template>
   <div class="container">
     <div>
-      <logo />
-      <h1 class="title">
-        natricons
-      </h1>
-      <h2 class="subtitle">
-        Hash-based avatar generator
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+      <h1 class="title">natricons</h1>
+      <button
+        class="px-4 py-2 bg-primary text-white font-bold rounded-lg"
+        @click="generateIframes()"
+      >Randomize</button>
+      <div class="flex flex-row flex-wrap mt-8">
+        <iframe v-for="(frame, i) in iframes" :key="i" :src="frame.src" frameborder="0"></iframe>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-
 export default {
-  components: {
-    Logo
+  components: {},
+  data() {
+    return {
+      iframes: []
+    };
+  },
+  methods: {
+    generateIframes() {
+      const alphabet = "13456789abcdefghijkmnopqrstuwxyz";
+      let randomAddress = "nano_";
+      // After the ban prefix, we have 1 or 3, coinflip between them
+      randomAddress += Math.floor(Math.random() * 2) == 0 ? "1" : "3";
+      // Randomlys choose all other chars from the alphabet
+      for (let i = 0; i < 59; i++) {
+        const character = alphabet.charAt(Math.floor(Math.random() * 32));
+        randomAddress += character;
+      }
+      let obj = {
+        src: "http://localhost:8080/natricon?address=" + randomAddress
+      };
+      this.iframes.push(obj);
+      console.log(this.iframes);
+      return;
+    }
   }
-}
+};
 </script>
 
 <style>
@@ -49,13 +54,13 @@ export default {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   text-align: center;
 }
 
 .title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   display: block;
   font-weight: 300;
   font-size: 100px;
