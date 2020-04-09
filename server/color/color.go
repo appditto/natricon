@@ -99,7 +99,7 @@ func (c HSV) ToRGB() RGB {
 	case 4.0 <= Hp && Hp < 5.0:
 		r = X
 		b = C
-	case 5.0 <= Hp && Hp < 6.0:
+	case 5.0 <= Hp && Hp <= 6.0:
 		r = C
 		b = X
 	}
