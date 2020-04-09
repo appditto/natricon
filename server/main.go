@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
-	"strings"
 
+	"github.com/appditto/natricon/color"
 	"github.com/appditto/natricon/image"
 	"github.com/appditto/natricon/nano"
 	"github.com/gin-gonic/gin"
@@ -13,31 +13,6 @@ import (
 )
 
 var seed *string
-
-var testhtml string = `<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-.square {
-  height: 200px;
-  width: 200px;
-  background-color: #FFF;
-}
-.squareTop {
-  height: 50px;
-  width: 200px;
-  background-color: #000;
-}
-</style>
-</head>
-<body>
-<div>address_1</div>
-<div class="squareTop"></div>
-<div class="square"></div>
-</body>
-</html> 
-`
 
 func getRandom(c *gin.Context) {
 	var err error
@@ -50,10 +25,26 @@ func getRandom(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
 	}
+	bodyHsv := accessories.BodyColor.ToHSV()
+	hairHsv := accessories.HairColor.ToHSV()
+	deltaHsv := color.HSV{}
+	deltaHsv.H = hairHsv.H - bodyHsv.H
+	deltaHsv.S = hairHsv.S - bodyHsv.S
+	deltaHsv.V = hairHsv.V - bodyHsv.V
 	c.JSON(200, gin.H{
 		"bodyColor": accessories.BodyColor.ToHTML(),
 		"hairColor": accessories.HairColor.ToHTML(),
 		"hash":      sha256,
+		"bodyH":     int16(bodyHsv.H),
+		"bodyS":     int16(bodyHsv.S * 100.0),
+		"bodyV":     int16(bodyHsv.V * 100.0),
+		"hairH":     int16(hairHsv.H),
+		"hairS":     int16(hairHsv.S * 100.0),
+		"hairV":     int16(hairHsv.V * 100.0),
+		"deltaH":    int16(deltaHsv.H),
+		"deltaS":    int16(deltaHsv.S * 100.0),
+		"deltaV":    int16(deltaHsv.V * 100.0),
+		"address":   address,
 	})
 	/*newHTML := strings.Replace(testhtml, "#000", "#"+accessories.HairColor.ToHTML(), -1)
 	newHTML = strings.Replace(newHTML, "#FFF", "#"+accessories.BodyColor.ToHTML(), -1)
@@ -78,16 +69,27 @@ func getNatricon(c *gin.Context) {
 		return
 	}
 
-	newHTML := strings.Replace(testhtml, "#000", "#"+accessories.HairColor.ToHTML(), -1)
-	newHTML = strings.Replace(newHTML, "#FFF", "#"+accessories.BodyColor.ToHTML(), -1)
-	newHTML = strings.Replace(newHTML, "address_1", address, -1)
-	c.Data(200, "text/html; charset=utf-8", []byte(newHTML))
-	/*
-		c.JSON(200, gin.H{
-			"bodyColor": accessories.BodyColor.ToHTML(),
-			"hairColor": accessories.HairColor.ToHTML(),
-			"hash":      sha256,
-		})*/
+	bodyHsv := accessories.BodyColor.ToHSV()
+	hairHsv := accessories.HairColor.ToHSV()
+	deltaHsv := color.HSV{}
+	deltaHsv.H = hairHsv.H - bodyHsv.H
+	deltaHsv.S = hairHsv.S - bodyHsv.S
+	deltaHsv.V = hairHsv.V - bodyHsv.V
+	c.JSON(200, gin.H{
+		"bodyColor": accessories.BodyColor.ToHTML(),
+		"hairColor": accessories.HairColor.ToHTML(),
+		"hash":      sha256,
+		"bodyH":     int16(bodyHsv.H),
+		"bodyS":     int16(bodyHsv.S * 100.0),
+		"bodyV":     int16(bodyHsv.V * 100.0),
+		"hairH":     int16(hairHsv.H),
+		"hairS":     int16(hairHsv.S * 100.0),
+		"hairV":     int16(hairHsv.V * 100.0),
+		"deltaH":    int16(deltaHsv.H),
+		"deltaS":    int16(deltaHsv.S * 100.0),
+		"deltaV":    int16(deltaHsv.V * 100.0),
+		"address":   address,
+	})
 }
 
 func main() {
