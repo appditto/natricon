@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container pb-24">
     <div>
       <h1 class="title">natricon</h1>
       <div class="flex flex-row flex-wrap justify-center">
@@ -18,7 +18,16 @@
           :key="i"
           :bodyColor="'#'+natricon.bodyColor"
           :hairColor="'#'+natricon.hairColor"
-          class="w-56 h-56"
+          :bodyH="natricon.bodyH"
+          :bodyS="natricon.bodyS"
+          :bodyV="natricon.bodyV"
+          :hairH="natricon.hairH"
+          :hairS="natricon.hairS"
+          :hairV="natricon.hairV"
+          :deltaH="natricon.deltaH"
+          :deltaS="natricon.deltaS"
+          :deltaV="natricon.deltaV"
+          class="mx-2 my-4 px-4 pb-4"
         />
       </div>
     </div>
@@ -47,6 +56,7 @@ export default {
         .get("http://localhost:8080/random")
         .then(res => {
           this.natricons.push(res.data);
+          console.log(this.natricons);
         })
         .catch(err => console.log(err));
       return;

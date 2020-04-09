@@ -96,7 +96,7 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	}
 	r = rand.New(rand.NewSource(randSeed))
 	// Adjust saturation by -20 to + 40
-	randNum := float64(r.Intn(61) - 20)
+	randNum := float64(r.Intn(121) - 20)
 	shiftedSaturation = (bodyColorHSV.S * 100.0) + randNum
 	// Cap at 100
 	if shiftedSaturation > 100 {
@@ -110,7 +110,7 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	}
 	r = rand.New(rand.NewSource(randSeed))
 	// Adjust brightness by -20 to + 40
-	randNum = float64(r.Intn(61) - 20)
+	randNum = float64(r.Intn(121) - 20)
 	shiftedBrightness = (bodyColorHSV.V * 100.0) + randNum
 	// Cap at 100
 	if shiftedBrightness > 100 {
