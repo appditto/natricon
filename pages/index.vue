@@ -16,7 +16,7 @@
       </div>
       <div v-if="natricons" class="flex flex-row justify-center flex-wrap">
         <sample-natricon
-          v-for="(natricon, i) in natricons.slice().reverse()"
+          v-for="(natricon, i) in natricons"
           :key="i"
           :bodyColor="'#'+natricon.bodyColor"
           :hairColor="'#'+natricon.hairColor"
@@ -57,7 +57,7 @@ export default {
       this.$axios
         .get("http://localhost:8080/random")
         .then(res => {
-          this.natricons.push(res.data);
+          this.natricons.unshift(res.data);
           console.log(this.natricons);
         })
         .catch(err => console.log(err));
