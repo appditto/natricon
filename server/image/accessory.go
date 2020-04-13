@@ -14,10 +14,10 @@ import (
 type Accessories struct {
 	BodyColor  color.RGB
 	HairColor  color.RGB
-	BodyAsset  string
-	HairAsset  string
-	MouthAsset string
-	EyeAsset   string
+	BodyAsset  Asset
+	HairAsset  Asset
+	MouthAsset Asset
+	EyeAsset   Asset
 }
 
 // Hex string regex
@@ -126,29 +126,29 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 }
 
 // GetBodyAsset - return body illustration to use with given entropy
-func GetBodyAsset(entropy string) (string, error) {
+func GetBodyAsset(entropy string) (Asset, error) {
 	// Get detemrinistic RNG
 	randSeed, err := strconv.ParseInt(entropy, 16, 64)
 	if err != nil {
-		return "", err
+		return Asset{}, err
 	}
 
 	r := rand.New(rand.NewSource(randSeed))
-	bodyIndex := r.Intn(len(BodyIllustrations))
+	bodyIndex := r.Intn(GetAssets().GetNBodyAssets())
 
-	return GetIllustrationPath(BodyIllustrations[bodyIndex], Body), nil
+	return GetAssets().GetBodyAssets()[bodyIndex], nil
 }
 
 // GetHairAsset - return hair illustration to use with given entropy
-func GetHairAsset(entropy string) (string, error) {
+func GetHairAsset(entropy string) (Asset, error) {
 	// Get detemrinistic RNG
 	randSeed, err := strconv.ParseInt(entropy, 16, 64)
 	if err != nil {
-		return "", err
+		return Asset{}, err
 	}
 
 	r := rand.New(rand.NewSource(randSeed))
-	hairIndex := r.Intn(len(HairIllustrations))
+	hairIndex := r.Intn(GetAssets().GetNHairAssets())
 
-	return GetIllustrationPath(HairIllustrations[hairIndex], Hair), nil
+	return GetAssets().GetHairAssets()[hairIndex], nil
 }
