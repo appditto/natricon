@@ -45,11 +45,26 @@ var expected = []uint32{
 	1294333494, 12327951, 3318889349, 2650617233, 656828586,
 }
 
+var expectedRange = []int32{
+	4, 9, 7, 9, 0, 1, 3, 9, 1, 2, 0, 3, 1,
+}
+
 func TestMT19936(t *testing.T) {
 	mt := Init()
 	mt.Seed(1)
 	for i, want := range expected {
 		have := mt.Uint32()
+		if have != want {
+			t.Errorf("wrong output %d: %d != %d", i, have, want)
+		}
+	}
+}
+
+func TestMT19936Range(t *testing.T) {
+	mt := Init()
+	mt.Seed(1)
+	for i, want := range expectedRange {
+		have := mt.Int31n(10)
 		if have != want {
 			t.Errorf("wrong output %d: %d != %d", i, have, want)
 		}
