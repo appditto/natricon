@@ -3,11 +3,11 @@ package image
 import (
 	"errors"
 	"math"
-	"math/rand"
 	"regexp"
 	"strconv"
 
 	"github.com/appditto/natricon/color"
+	"github.com/appditto/natricon/rand"
 )
 
 // Accessories - represents accessories for natricon
@@ -81,8 +81,9 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	}
 
 	// Generate random shift between 90...270
-	r := rand.New(rand.NewSource(randSeed))
-	shiftedHue = float64(r.Intn(270-90)+90) + bodyColorHSV.H
+	r := rand.Init()
+	r.Seed(uint32(randSeed))
+	shiftedHue = float64(r.Int31n(270-90)+90) + bodyColorHSV.H
 
 	// If > 360, subtract
 	if shiftedHue > 360 {
@@ -94,9 +95,9 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	if err != nil {
 		return color.RGB{}, err
 	}
-	r = rand.New(rand.NewSource(randSeed))
+	r.Seed(uint32(randSeed))
 	// Adjust saturation by -20 to + 40
-	randNum := float64(r.Intn(121) - 20)
+	randNum := float64(r.Int31n(121) - 20)
 	shiftedSaturation = (bodyColorHSV.S * 100.0) + randNum
 	// Cap at 100
 	if shiftedSaturation > 100 {
@@ -108,9 +109,9 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	if err != nil {
 		return color.RGB{}, err
 	}
-	r = rand.New(rand.NewSource(randSeed))
+	r.Seed(uint32(randSeed))
 	// Adjust brightness by -20 to + 40
-	randNum = float64(r.Intn(121) - 20)
+	randNum = float64(r.Int31n(121) - 20)
 	shiftedBrightness = (bodyColorHSV.V * 100.0) + randNum
 	// Cap at 100
 	if shiftedBrightness > 100 {
@@ -133,8 +134,9 @@ func GetBodyAsset(entropy string) (Asset, error) {
 		return Asset{}, err
 	}
 
-	r := rand.New(rand.NewSource(randSeed))
-	bodyIndex := r.Intn(GetAssets().GetNBodyAssets())
+	r := rand.Init()
+	r.Seed(uint32(randSeed))
+	bodyIndex := r.Int31n(int32(GetAssets().GetNBodyAssets()))
 
 	return GetAssets().GetBodyAssets()[bodyIndex], nil
 }
@@ -147,8 +149,9 @@ func GetHairAsset(entropy string) (Asset, error) {
 		return Asset{}, err
 	}
 
-	r := rand.New(rand.NewSource(randSeed))
-	hairIndex := r.Intn(GetAssets().GetNHairAssets())
+	r := rand.Init()
+	r.Seed(uint32(randSeed))
+	hairIndex := r.Int31n(int32(GetAssets().GetNHairAssets()))
 
 	return GetAssets().GetHairAssets()[hairIndex], nil
 }
