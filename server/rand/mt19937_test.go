@@ -70,3 +70,20 @@ func TestMT19936Range(t *testing.T) {
 		}
 	}
 }
+
+func TestInt31(t *testing.T) {
+	mt := Init()
+	mt.Seed(1)
+	have := mt.Int31()
+	if have != 895547922 {
+		t.Errorf("wrong output: %d != %d", have, 895547922)
+	}
+	have = mt.Int31()
+	if have != 2141438069 {
+		t.Errorf("wrong output: %d != %d", have, 2141438069)
+	}
+	have = mt.Int31()
+	if have != 1546885062 {
+		t.Errorf("wrong output: %d != %d", have, 1546885062)
+	}
+}
