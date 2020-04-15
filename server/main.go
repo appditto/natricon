@@ -31,6 +31,13 @@ func getRandom(c *gin.Context) {
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.V = hairHsv.V - bodyHsv.V
+	svg, err := image.CombineSVG(accessories)
+	var svgStr string
+	if err != nil {
+		svgStr = "Error"
+	} else {
+		svgStr = string(svg)
+	}
 	c.JSON(200, gin.H{
 		"bodyColor": accessories.BodyColor.ToHTML(),
 		"hairColor": accessories.HairColor.ToHTML(),
@@ -45,6 +52,7 @@ func getRandom(c *gin.Context) {
 		"deltaS":    int16(deltaHsv.S * 100.0),
 		"deltaV":    int16(deltaHsv.V * 100.0),
 		"address":   address,
+		"svg":       svgStr,
 	})
 	/*newHTML := strings.Replace(testhtml, "#000", "#"+accessories.HairColor.ToHTML(), -1)
 	newHTML = strings.Replace(newHTML, "#FFF", "#"+accessories.BodyColor.ToHTML(), -1)
