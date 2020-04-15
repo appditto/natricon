@@ -12,16 +12,16 @@ import (
 )
 
 type IllustrationType string
-type Gender string
+type Sex string
 
 const (
 	Body    IllustrationType = "Body"
 	Hair    IllustrationType = "Hair"
 	Mouth   IllustrationType = "Mouth"
 	Eye     IllustrationType = "Eyes"
-	Male    Gender           = "Male"
-	Female  Gender           = "Female"
-	Neutral Gender           = "Neutral"
+	Male    Sex              = "M"
+	Female  Sex              = "F"
+	Neutral Sex              = "N"
 )
 
 type Asset struct {

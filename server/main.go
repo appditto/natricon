@@ -127,10 +127,16 @@ func getNatricon(c *gin.Context) {
 
 func main() {
 	// Parse server options
+	loadFiles := flag.Bool("load-files", false, "Print assets as GO arrays")
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
 	seed = flag.String("seed", "1234567890", "Seed to use for icon generation")
 	flag.Parse()
+
+	if *loadFiles {
+		LoadAssetsToArray()
+		return
+	}
 
 	// Setup router
 	router := gin.Default()
