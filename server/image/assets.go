@@ -107,7 +107,7 @@ func GetAssets() *assetManager {
 		}
 		// Load hair back assets
 		var hairBackAssets [len(HairBackIllustrations)]Asset
-		for i, ha := range HairIllustrations {
+		for i, ha := range HairBackIllustrations {
 			hairBackAssets[i] = Asset{}
 			hairBackAssets[i].FileName = ha
 			hairBackAssets[i].IllustrationPath = getIllustrationPath(ha, HairBack)

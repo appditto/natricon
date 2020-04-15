@@ -10,6 +10,10 @@ import (
 	"github.com/appditto/natricon/rand"
 )
 
+// Constants
+var MinSaturation float64 = 0.2 // Minimum allowed saturation
+var MinBrightness float64 = 0.4 // Minimum allowed brightness
+
 // Accessories - represents accessories for natricon
 type Accessories struct {
 	BodyColor     color.RGB
@@ -23,10 +27,6 @@ type Accessories struct {
 
 // Hex string regex
 var hexRegex = regexp.MustCompile("^[0-9a-fA-F]+$")
-
-// Constants
-var minSaturation float64 = 0.2
-var minBrightness float64 = 0.4
 
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
 func GetAccessoriesForHash(hash string) (Accessories, error) {
@@ -50,8 +50,8 @@ func GetAccessoriesForHash(hash string) (Accessories, error) {
 	}
 	// Enforce min saturation and brightness
 	bodyColorHSV := accessories.BodyColor.ToHSV()
-	bodyColorHSV.V = math.Max(minBrightness, bodyColorHSV.V)
-	bodyColorHSV.S = math.Max(minSaturation, bodyColorHSV.S)
+	bodyColorHSV.V = math.Max(MinBrightness, bodyColorHSV.V)
+	bodyColorHSV.S = math.Max(MinSaturation, bodyColorHSV.S)
 	accessories.BodyColor = bodyColorHSV.ToRGB()
 
 	// Get hair color using next 6 bits
@@ -126,8 +126,8 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 
 	hairColorHSV := color.HSV{}
 	hairColorHSV.H = shiftedHue
-	hairColorHSV.S = math.Max(minSaturation, shiftedSaturation/100.0)
-	hairColorHSV.V = math.Max(minBrightness, shiftedBrightness/100.0)
+	hairColorHSV.S = math.Max(MinSaturation, shiftedSaturation/100.0)
+	hairColorHSV.V = math.Max(MinBrightness, shiftedBrightness/100.0)
 
 	return hairColorHSV.ToRGB(), nil
 }
