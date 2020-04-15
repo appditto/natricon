@@ -2,7 +2,7 @@
   <div class="flex flex-col shadow-xl rounded-lg">
     <div class="w-56 h-56">
       <div class="w-full relative w-56 h-56">
-        <div v-html="svg"></div>
+        <div class="w-full h-full" v-html="svg"></div>
       </div>
     </div>
     <!-- Color Info -->
