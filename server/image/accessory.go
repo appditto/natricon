@@ -12,12 +12,13 @@ import (
 
 // Accessories - represents accessories for natricon
 type Accessories struct {
-	BodyColor  color.RGB
-	HairColor  color.RGB
-	BodyAsset  Asset
-	HairAsset  Asset
-	MouthAsset Asset
-	EyeAsset   Asset
+	BodyColor     color.RGB
+	HairColor     color.RGB
+	BodyAsset     Asset
+	HairAsset     Asset
+	MouthAsset    Asset
+	EyeAsset      Asset
+	BackHairAsset *Asset
 }
 
 // Hex string regex
@@ -59,6 +60,11 @@ func GetAccessoriesForHash(hash string) (Accessories, error) {
 	// Get body and hair illustrations
 	accessories.BodyAsset, err = GetBodyAsset(hash[20:26])
 	accessories.HairAsset, err = GetHairAsset(hash[26:32])
+	accessories.BackHairAsset = GetBackHairAsset(accessories.HairAsset)
+
+	// Get mouth and eyes
+	accessories.MouthAsset, err = GetMouthAsset(hash[32:40], &accessories.HairAsset)
+	accessories.EyeAsset, err = GetEyeAsset(hash[40:48], &accessories.HairAsset)
 
 	return accessories, nil
 }
@@ -154,4 +160,48 @@ func GetHairAsset(entropy string) (Asset, error) {
 	hairIndex := r.Int31n(int32(GetAssets().GetNHairAssets()))
 
 	return GetAssets().GetHairAssets()[hairIndex], nil
+}
+
+// GetBackHairAsset - return back hair illustration for a given hair asset
+func GetBackHairAsset(hairAsset Asset) *Asset {
+	for _, ba := range GetAssets().GetBackHairAssets() {
+		if ba.FileName == hairAsset.FileName {
+			return &ba
+		}
+	}
+	return nil
+}
+
+// GetEyeAsset - return hair illustration to use with given entropy
+func GetEyeAsset(entropy string, hairAsset *Asset) (Asset, error) {
+	// Get detemrinistic RNG
+	randSeed, err := strconv.ParseInt(entropy, 16, 64)
+	if err != nil {
+		return Asset{}, err
+	}
+
+	eyeAssetOptions := GetAssets().GetEyeAssets(hairAsset.Sex)
+
+	r := rand.Init()
+	r.Seed(uint32(randSeed))
+	eyeIndex := r.Int31n(int32(len(eyeAssetOptions)))
+
+	return eyeAssetOptions[eyeIndex], nil
+}
+
+// GetEyeAsset - return hair illustration to use with given entropy
+func GetMouthAsset(entropy string, hairAsset *Asset) (Asset, error) {
+	// Get detemrinistic RNG
+	randSeed, err := strconv.ParseInt(entropy, 16, 64)
+	if err != nil {
+		return Asset{}, err
+	}
+
+	mouthAssetOptions := GetAssets().GetMouthAssets(hairAsset.Sex)
+
+	r := rand.Init()
+	r.Seed(uint32(randSeed))
+	mouthIndex := r.Int31n(int32(len(mouthAssetOptions)))
+
+	return mouthAssetOptions[mouthIndex], nil
 }
