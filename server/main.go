@@ -14,6 +14,36 @@ import (
 
 var seed *string
 
+func getSVG(c *gin.Context) {
+	var err error
+
+	address := c.Query("address")
+	// valid := nano.ValidateAddress(address)
+	// if !valid {
+	// c.String(http.StatusBadRequest, "Invalid address")
+	// return
+	// }
+	sha256 := nano.AddressSha256(address, *seed)
+
+	accessories, err := image.GetAccessoriesForHash(sha256)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "%s", err.Error())
+		return
+	}
+	bodyHsv := accessories.BodyColor.ToHSV()
+	hairHsv := accessories.HairColor.ToHSV()
+	deltaHsv := color.HSV{}
+	deltaHsv.H = hairHsv.H - bodyHsv.H
+	deltaHsv.S = hairHsv.S - bodyHsv.S
+	deltaHsv.V = hairHsv.V - bodyHsv.V
+	svg, err := image.CombineSVG(accessories)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Error occured")
+		return
+	}
+	c.Data(200, "image/svg+xml; charset=utf-8", svg)
+}
+
 func getRandomSvg(c *gin.Context) {
 	var err error
 
@@ -144,6 +174,7 @@ func main() {
 	router.GET("/natricon", getNatricon)
 	router.GET("/random", getRandom)
 	router.GET("/randomsvg", getRandomSvg)
+	router.GET("/svg", getSVG)
 
 	// Run on 8080
 	router.Run(fmt.Sprintf("%s:%d", *serverHost, *serverPort))
