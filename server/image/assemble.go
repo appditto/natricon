@@ -36,13 +36,12 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	canvas := svg.New(&b)
 	canvas.Start(defaultSize, defaultSize)
 	// Compose groups
-	canvas.Group()
 	canvas.Gid("body")
 	io.WriteString(canvas.Writer, body.Doc)
 	canvas.Gend()
-	canvas.Group()
 	canvas.Gid("hair")
 	io.WriteString(canvas.Writer, hair.Doc)
+	canvas.Gend()
 	canvas.End()
 
 	return b.Bytes(), nil
