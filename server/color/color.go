@@ -31,7 +31,10 @@ func HTMLToRGB(in string) (RGB, error) {
 // A nudge to make truncation round to nearest number instead of flooring
 const delta = 1 / 512.0
 
-func (c RGB) ToHTML() string {
+func (c RGB) ToHTML(withHash bool) string {
+	if withHash {
+		return fmt.Sprintf("#%02x%02x%02x", byte((c.R + delta)), byte((c.G + delta)), byte((c.B + delta)))
+	}
 	return fmt.Sprintf("%02x%02x%02x", byte((c.R + delta)), byte((c.G + delta)), byte((c.B + delta)))
 }
 
@@ -107,6 +110,6 @@ func (c HSV) ToRGB() RGB {
 	return RGB{255 * (m + r), 255 * (m + g), 255 * (m + b)}
 }
 
-func (c HSV) ToHTML() string {
-	return c.ToRGB().ToHTML()
+func (c HSV) ToHTML(withHash bool) string {
+	return c.ToRGB().ToHTML(withHash)
 }

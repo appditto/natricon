@@ -64,8 +64,8 @@ func getRandom(c *gin.Context) {
 		svgStr = string(svg)
 	}
 	c.JSON(200, gin.H{
-		"bodyColor": accessories.BodyColor.ToHTML(),
-		"hairColor": accessories.HairColor.ToHTML(),
+		"bodyColor": accessories.BodyColor.ToHTML(false),
+		"hairColor": accessories.HairColor.ToHTML(false),
 		"hash":      sha256,
 		"bodyH":     int16(bodyHsv.H),
 		"bodyS":     int16(bodyHsv.S * 100.0),
@@ -109,8 +109,8 @@ func getNatricon(c *gin.Context) {
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.V = hairHsv.V - bodyHsv.V
 	c.JSON(200, gin.H{
-		"bodyColor": accessories.BodyColor.ToHTML(),
-		"hairColor": accessories.HairColor.ToHTML(),
+		"bodyColor": accessories.BodyColor.ToHTML(false),
+		"hairColor": accessories.HairColor.ToHTML(false),
 		"hash":      sha256,
 		"bodyH":     int16(bodyHsv.H),
 		"bodyS":     int16(bodyHsv.S * 100.0),

@@ -38,6 +38,16 @@ func LoadAssetsToArray() {
 	})
 	ret += "}\n"
 
+	ret += "\nvar HairBackIllustrations = [...]string{\n"
+	fPath = path.Join(wd, "assets", "illustrations", string(image.HairBack))
+	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
+		if strings.Contains(info.Name(), ".svg") {
+			ret += fmt.Sprintf("\t\"%s\",\n", info.Name())
+		}
+		return nil
+	})
+	ret += "}\n"
+
 	ret += "\nvar EyeIllustrations = [...]string{\n"
 	fPath = path.Join(wd, "assets", "illustrations", string(image.Eye))
 	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
@@ -49,7 +59,7 @@ func LoadAssetsToArray() {
 	ret += "}\n"
 
 	ret += "\nvar MouthIllustrations = [...]string{\n"
-	fPath = path.Join(wd, "assets", "illustrations", string(image.Hair))
+	fPath = path.Join(wd, "assets", "illustrations", string(image.Mouth))
 	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
 		if strings.Contains(info.Name(), ".svg") {
 			ret += fmt.Sprintf("\t\"%s\",\n", info.Name())

@@ -15,13 +15,14 @@ type IllustrationType string
 type Sex string
 
 const (
-	Body    IllustrationType = "Body"
-	Hair    IllustrationType = "Hair"
-	Mouth   IllustrationType = "Mouth"
-	Eye     IllustrationType = "Eyes"
-	Male    Sex              = "M"
-	Female  Sex              = "F"
-	Neutral Sex              = "N"
+	Body     IllustrationType = "Body"
+	Hair     IllustrationType = "hair-front"
+	HairBack IllustrationType = "hair-back"
+	Mouth    IllustrationType = "Mouth"
+	Eye      IllustrationType = "Eyes"
+	Male     Sex              = "M"
+	Female   Sex              = "F"
+	Neutral  Sex              = "N"
 )
 
 type Asset struct {
@@ -30,6 +31,7 @@ type Asset struct {
 	SVGContents      []byte           // Full contents of SVG asset
 	hairColored      bool             // Whether this asset should be colored the same as hair color
 	bodyColored      bool             // Whether this asset should be colored the same as body color
+	sex              Sex              // The sex condition of this asset
 }
 
 // getIllustrationPath - get full path of image
@@ -47,12 +49,23 @@ func getIllustrationPath(illustration string, iType IllustrationType) string {
 	return fPath
 }
 
+// getSex - get sex based on image name
+func getSex(name string) Sex {
+	if strings.Contains(name, "_f") {
+		return Female
+	} else if strings.Contains(name, "_m") {
+		return Male
+	}
+	return Neutral
+}
+
 // Singleton to keep assets loaded in memory
 type assetManager struct {
-	bodyAssets  [len(BodyIllustrations)]Asset
-	hairAssets  [len(HairIllustrations)]Asset
-	mouthAssets [len(MouthIllustrations)]Asset
-	eyeAssets   [len(EyeIllustrations)]Asset
+	bodyAssets     [len(BodyIllustrations)]Asset
+	hairAssets     [len(HairIllustrations)]Asset
+	hairBackAssets [len(HairBackIllustrations)]Asset
+	mouthAssets    [len(MouthIllustrations)]Asset
+	eyeAssets      [len(EyeIllustrations)]Asset
 }
 
 var singleton *assetManager
@@ -73,6 +86,7 @@ func GetAssets() *assetManager {
 			}
 			bodyAssets[i].hairColored = false
 			bodyAssets[i].bodyColored = true
+			bodyAssets[i].sex = Neutral
 		}
 		// Load hair assets
 		var hairAssets [len(HairIllustrations)]Asset
@@ -86,6 +100,21 @@ func GetAssets() *assetManager {
 			}
 			hairAssets[i].hairColored = true
 			hairAssets[i].bodyColored = false
+			hairAssets[i].sex = getSex(ha)
+		}
+		// Load hair back assets
+		var hairBackAssets [len(HairBackIllustrations)]Asset
+		for i, ha := range HairIllustrations {
+			hairBackAssets[i] = Asset{}
+			hairBackAssets[i].IllustrationPath = getIllustrationPath(ha, HairBack)
+			hairBackAssets[i].SVGContents, err = ioutil.ReadFile(hairBackAssets[i].IllustrationPath)
+			if err != nil {
+				glog.Fatalf("Couldn't load file %s", hairBackAssets[i].IllustrationPath)
+				panic(err.Error())
+			}
+			hairBackAssets[i].hairColored = true
+			hairBackAssets[i].bodyColored = false
+			hairBackAssets[i].sex = getSex(ha)
 		}
 		// Load mouth assets
 		var mouthAssets [len(MouthIllustrations)]Asset
@@ -99,6 +128,7 @@ func GetAssets() *assetManager {
 			}
 			mouthAssets[i].hairColored = strings.Contains(ma, "_hc")
 			mouthAssets[i].bodyColored = false
+			mouthAssets[i].sex = getSex(ma)
 		}
 		// Load eye assets
 		var eyeAssets [len(EyeIllustrations)]Asset
@@ -112,13 +142,15 @@ func GetAssets() *assetManager {
 			}
 			eyeAssets[i].hairColored = false
 			eyeAssets[i].bodyColored = false
+			eyeAssets[i].sex = getSex(ea)
 		}
 		// Create object
 		singleton = &assetManager{
-			bodyAssets:  bodyAssets,
-			hairAssets:  hairAssets,
-			mouthAssets: mouthAssets,
-			eyeAssets:   eyeAssets,
+			bodyAssets:     bodyAssets,
+			hairAssets:     hairAssets,
+			hairBackAssets: hairBackAssets,
+			mouthAssets:    mouthAssets,
+			eyeAssets:      eyeAssets,
 		}
 	})
 	return singleton
