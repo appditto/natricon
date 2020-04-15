@@ -39,12 +39,15 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	// Body group
 	canvas.Gid("body")
 	if accessories.BodyAsset.bodyColored {
-		strings.ReplaceAll(body.Doc, "#ffffff", "#ffffff")
+		strings.ReplaceAll(body.Doc, "#00FFFF", accessories.BodyColor.ToHTML())
 	}
 	io.WriteString(canvas.Writer, body.Doc)
 	canvas.Gend()
 	// Hair Group
 	canvas.Gid("hair")
+	if accessories.HairAsset.hairColored {
+		strings.ReplaceAll(body.Doc, "#FF0000", accessories.HairColor.ToHTML())
+	}
 	io.WriteString(canvas.Writer, hair.Doc)
 	canvas.Gend()
 	// End document

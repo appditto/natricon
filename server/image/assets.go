@@ -32,62 +32,6 @@ type Asset struct {
 	bodyColored      bool             // Whether this asset should be colored the same as body color
 }
 
-var bodyIllustrations = [...]string{
-	"NarrowRound-10.svg",
-	"NarrowRound-11.svg",
-	"NarrowRound-12.svg",
-	"NarrowRound-13.svg",
-	"NarrowRound-14.svg",
-	"NarrowRound-15.svg",
-	"NarrowRound-5.svg",
-	"NarrowRound-6.svg",
-	"NarrowRound-7.svg",
-	"NarrowRound-8.svg",
-	"NarrowRound-9.svg",
-	"Square-100.svg",
-	"Square-104.svg",
-	"Square-108.svg",
-	"Square-112.svg",
-	"Square-116.svg",
-	"Square-120.svg",
-	"Square-124.svg",
-	"Square-128.svg",
-	"Square-48.svg",
-	"Square-52.svg",
-	"Square-56.svg",
-	"Square-60.svg",
-	"Square-64.svg",
-	"Square-68.svg",
-	"Square-72.svg",
-	"Square-76.svg",
-	"Square-80.svg",
-	"Square-84.svg",
-	"Square-88.svg",
-	"Square-92.svg",
-	"Square-96.svg",
-}
-
-var hairIllustrations = [...]string{
-	"Bubble-1.svg",
-	"Slick.svg",
-	"Weird.svg",
-}
-
-var eyeIllustrations = [...]string{
-	"Eyeglasses-1.svg",
-	"Eyeglasses-2.svg",
-	"Eyeglasses-3.svg",
-	"Eyeglasses-4.svg",
-	"Eyes-1.svg",
-}
-
-var mouthIllustrations = [...]string{
-	"Mustache-Slick.svg",
-	"Smile-Bigger.svg",
-	"Smile-Simple.svg",
-	"Smile-Teeth.svg",
-}
-
 // getIllustrationPath - get full path of image
 func getIllustrationPath(illustration string, iType IllustrationType) string {
 	wd, err := os.Getwd()
@@ -105,10 +49,10 @@ func getIllustrationPath(illustration string, iType IllustrationType) string {
 
 // Singleton to keep assets loaded in memory
 type assetManager struct {
-	bodyAssets  [len(bodyIllustrations)]Asset
-	hairAssets  [len(hairIllustrations)]Asset
-	mouthAssets [len(mouthIllustrations)]Asset
-	eyeAssets   [len(eyeIllustrations)]Asset
+	bodyAssets  [len(BodyIllustrations)]Asset
+	hairAssets  [len(HairIllustrations)]Asset
+	mouthAssets [len(MouthIllustrations)]Asset
+	eyeAssets   [len(EyeIllustrations)]Asset
 }
 
 var singleton *assetManager
@@ -118,8 +62,8 @@ func GetAssets() *assetManager {
 	once.Do(func() {
 		var err error
 		// Load body assets
-		var bodyAssets [len(bodyIllustrations)]Asset
-		for i, ba := range bodyIllustrations {
+		var bodyAssets [len(BodyIllustrations)]Asset
+		for i, ba := range BodyIllustrations {
 			bodyAssets[i] = Asset{}
 			bodyAssets[i].IllustrationPath = getIllustrationPath(ba, Body)
 			bodyAssets[i].SVGContents, err = ioutil.ReadFile(bodyAssets[i].IllustrationPath)
@@ -131,8 +75,8 @@ func GetAssets() *assetManager {
 			bodyAssets[i].bodyColored = true
 		}
 		// Load hair assets
-		var hairAssets [len(hairIllustrations)]Asset
-		for i, ha := range hairIllustrations {
+		var hairAssets [len(HairIllustrations)]Asset
+		for i, ha := range HairIllustrations {
 			hairAssets[i] = Asset{}
 			hairAssets[i].IllustrationPath = getIllustrationPath(ha, Hair)
 			hairAssets[i].SVGContents, err = ioutil.ReadFile(hairAssets[i].IllustrationPath)
@@ -144,8 +88,8 @@ func GetAssets() *assetManager {
 			hairAssets[i].bodyColored = false
 		}
 		// Load mouth assets
-		var mouthAssets [len(mouthIllustrations)]Asset
-		for i, ma := range mouthIllustrations {
+		var mouthAssets [len(MouthIllustrations)]Asset
+		for i, ma := range MouthIllustrations {
 			mouthAssets[i] = Asset{}
 			mouthAssets[i].IllustrationPath = getIllustrationPath(ma, Mouth)
 			mouthAssets[i].SVGContents, err = ioutil.ReadFile(mouthAssets[i].IllustrationPath)
@@ -153,12 +97,12 @@ func GetAssets() *assetManager {
 				glog.Fatalf("Couldn't load file %s", mouthAssets[i].IllustrationPath)
 				panic(err.Error())
 			}
-			mouthAssets[i].hairColored = strings.Contains(ma, "_hc_")
+			mouthAssets[i].hairColored = strings.Contains(ma, "_hc")
 			mouthAssets[i].bodyColored = false
 		}
 		// Load eye assets
-		var eyeAssets [len(eyeIllustrations)]Asset
-		for i, ea := range eyeIllustrations {
+		var eyeAssets [len(EyeIllustrations)]Asset
+		for i, ea := range EyeIllustrations {
 			eyeAssets[i] = Asset{}
 			eyeAssets[i].IllustrationPath = getIllustrationPath(ea, Eye)
 			eyeAssets[i].SVGContents, err = ioutil.ReadFile(eyeAssets[i].IllustrationPath)
@@ -186,7 +130,7 @@ func (sm *assetManager) GetNBodyAssets() int {
 }
 
 // GetBodyAssets - get complete list of hair assets
-func (sm *assetManager) GetBodyAssets() [len(bodyIllustrations)]Asset {
+func (sm *assetManager) GetBodyAssets() [len(BodyIllustrations)]Asset {
 	return sm.bodyAssets
 }
 
@@ -196,7 +140,7 @@ func (sm *assetManager) GetNHairAssets() int {
 }
 
 // GetHairAssets - get complete list of hair assets
-func (sm *assetManager) GetHairAssets() [len(hairIllustrations)]Asset {
+func (sm *assetManager) GetHairAssets() [len(HairIllustrations)]Asset {
 	return sm.hairAssets
 }
 
@@ -206,7 +150,7 @@ func (sm *assetManager) GetNMouthAssets() int {
 }
 
 // GetMouthAssets - Get mouth assets
-func (sm *assetManager) GetMouthAssets() [len(mouthIllustrations)]Asset {
+func (sm *assetManager) GetMouthAssets() [len(MouthIllustrations)]Asset {
 	return sm.mouthAssets
 }
 
@@ -216,6 +160,6 @@ func (sm *assetManager) GetNEyeAssets() int {
 }
 
 // GetEyeAssets - Get eye asset list
-func (sm *assetManager) GetEyeAssets() [len(eyeIllustrations)]Asset {
+func (sm *assetManager) GetEyeAssets() [len(EyeIllustrations)]Asset {
 	return sm.eyeAssets
 }
