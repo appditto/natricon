@@ -13,7 +13,7 @@ import (
 	"github.com/golang/glog"
 )
 
-const defaultSize = 1000  // Default SVG width/height attribute
+const defaultSize = 512   // Default SVG width/height attribute
 const opacityLower = 0.15 // Minimum lower opacity threshold
 const opacityUpper = 0.6  // Maximum upper opacity threshold
 
@@ -103,7 +103,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 
 func GetTargetOpacity(color color.HSV) float64 {
 	brightness := color.V
-	ret := (brightness-MinBrightness)*(opacityUpper-opacityLower)/(1.0-MinBrightness) + opacityLower
+	ret := (1.0-brightness)*(opacityUpper-opacityLower)/(1.0-MinBrightness) + opacityLower
 	// Return result rounded to 2 places
 	return math.Round(ret*100) / 100
 }
