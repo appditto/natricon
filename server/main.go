@@ -171,10 +171,10 @@ func main() {
 	// Setup router
 	router := gin.Default()
 	router.Use(cors.Default())
-	router.GET("/natricon", getNatricon)
-	router.GET("/random", getRandom)
-	router.GET("/randomsvg", getRandomSvg)
-	router.GET("/svg", getSVG)
+	router.GET("/api/natricon", getNatricon)
+	router.GET("/api/random", getRandom)
+	router.GET("/api/randomsvg", getRandomSvg)
+	router.GET("/api/svg", getSVG)
 
 	// Run on 8080
 	router.Run(fmt.Sprintf("%s:%d", *serverHost, *serverPort))

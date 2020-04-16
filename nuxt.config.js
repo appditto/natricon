@@ -48,7 +48,7 @@ export default {
    */
   axios: {
     baseURL:
-      process.env.NODE_ENV === 'production' && process.env.PLATFORM_TYPE === 'netlify' ? 'https://natricon-go-server.appditto.com' : 'http://localhost:8080'
+      process.env.NODE_ENV === 'production' && (process.env.PLATFORM_TYPE === 'netlify' || process.env.PLATFORM_TYPE === 'k8s') ? 'https://natricon-go-server.appditto.com' : 'http://localhost:8080'
   },
   /*
   ** Build configuration

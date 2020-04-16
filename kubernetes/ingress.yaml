@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: go-natricon-ingress
+  name: natricon-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
@@ -14,6 +14,11 @@ spec:
   - host: natricon-go-server.appditto.com
     http:
       paths:
-      - backend:
+      - path: /
+        backend:
+          serviceName: nuxt-natricon-service
+          servicePort: 3000
+      - path: /api
+        backend:
           serviceName: go-natricon-service
           servicePort: 5555

@@ -19,6 +19,7 @@ spec:
         image: docker-registry.appditto.com/go-natricon:latest
         ports:
           - containerPort: 5555
+        imagePullPolicy: "Always"
       imagePullSecrets:
           - name: regcred
 ---

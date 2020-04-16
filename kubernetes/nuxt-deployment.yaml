@@ -1,0 +1,40 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nuxt-natricon-deployment
+  labels:
+    app: nuxt-natricon
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nuxt-natricon
+  template:
+    metadata:
+      labels:
+        app: nuxt-natricon
+    spec:
+      containers:
+      - name: nuxt-natricon
+        image: docker-registry.appditto.com/nuxt-natricon:latest
+        env:
+        - name: NODE_ENV
+          value: PRODUCTION
+        - name: PLATFORM_TYPE
+          value: k8s
+        ports:
+          - containerPort: 3000
+        imagePullPolicy: "Always"
+      imagePullSecrets:
+          - name: regcred
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nuxt-natricon-service
+spec:
+  selector:
+      app: nuxt-natricon
+  type: NodePort
+  ports:
+    - port: 3000
