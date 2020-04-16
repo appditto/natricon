@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: go-natricon
-        image: docker-registry.appditto.com/go-natricon:latest
+        image: docker-registry.appditto.com/go-natricon:1
         ports:
           - containerPort: 5555
       imagePullSecrets:
