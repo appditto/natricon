@@ -15,11 +15,11 @@ type IllustrationType string
 type Sex string
 
 const (
-	Body     IllustrationType = "Body"
+	Body     IllustrationType = "body"
 	Hair     IllustrationType = "hair-front"
 	HairBack IllustrationType = "hair-back"
-	Mouth    IllustrationType = "Mouth"
-	Eye      IllustrationType = "Eyes"
+	Mouth    IllustrationType = "mouth"
+	Eye      IllustrationType = "eyes"
 	Male     Sex              = "M"
 	Female   Sex              = "F"
 	Neutral  Sex              = "N"
