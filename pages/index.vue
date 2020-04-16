@@ -54,7 +54,7 @@ export default {
     },
     generateRandomNatricon() {
       this.$axios
-        .get("http://localhost:8080/random")
+        .get("/random")
         .then(res => {
           this.natricons.unshift(res.data);
           console.log(this.natricons);
