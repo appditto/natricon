@@ -15,11 +15,10 @@
         >Randomize 10</button>
       </div>
       <div v-if="natricons" class="flex flex-row justify-center flex-wrap">
-        <sample-natricon
+        <natricon
           v-for="(natricon, i) in natricons"
           :key="i"
-          :bodyColor="'#'+natricon.bodyColor"
-          :hairColor="'#'+natricon.hairColor"
+          :svg="natricon.svg"
           :bodyH="natricon.bodyH"
           :bodyS="natricon.bodyS"
           :bodyV="natricon.bodyV"
@@ -37,10 +36,10 @@
 </template>
 
 <script>
-import SampleNatricon from "~/components/SampleNatricon.vue";
+import Natricon from "~/components/Natricon.vue";
 export default {
   components: {
-    SampleNatricon
+    Natricon
   },
   data() {
     return {
