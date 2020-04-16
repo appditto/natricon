@@ -17,11 +17,6 @@ spec:
       containers:
       - name: nuxt-natricon
         image: docker-registry.appditto.com/nuxt-natricon:latest
-        env:
-        - name: NODE_ENV
-          value: PRODUCTION
-        - name: PLATFORM_TYPE
-          value: k8s
         ports:
           - containerPort: 3000
         imagePullPolicy: "Always"
