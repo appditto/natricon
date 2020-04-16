@@ -2,6 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: go-natricon-deployment
+  namespace: natricon-dev
   labels:
     app: go-natricon
 spec:
