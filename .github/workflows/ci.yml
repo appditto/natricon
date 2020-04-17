@@ -29,14 +29,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master   
-      - name: Build & Publish Nuxt Image
-        uses: elgohr/Publish-Docker-Github-Action@master
+      - name: Login to registry
+        uses: actions-hub/docker/login@master
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REPO }}
+
+      - name: Build and tag
+        if: success()
+        run: docker build -t ${{ DOCKER_REGISTRY_URL }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
+
+      - name: Push image
+        if: success()
+        uses: actions-hub/docker@master
         with:
-          name: 'nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}'
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REPO }}
-          dockerfile: Dockerfile
+          args: push ${{ DOCKER_REGISTRY_URL }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
+
 
   build_and_publish_go:
     needs: test
