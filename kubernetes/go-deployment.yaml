@@ -28,6 +28,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: go-natricon-service
+  namespace: natricon-dev
 spec:
   selector:
       app: go-natricon
