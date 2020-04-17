@@ -28,9 +28,9 @@ jobs:
     name: Build and Publish Nuxt Image
     runs-on: ubuntu-latest
     env:
-      GITHUB_REF: ${github.ref##*/}
       GITHUB_RUN_ID: ${{ github.run_id }}    
     steps:
+      - uses: nelonoel/branch-name@v1
       - uses: actions/checkout@master   
       - name: Login to registry
         uses: actions-hub/docker/login@master
@@ -41,26 +41,37 @@ jobs:
 
       - name: Build and tag
         if: success()
-        run: docker build -t ${{ secrets.DOCKER_REPO }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }} .
+        run: docker build -t ${{ secrets.DOCKER_REPO }}/nuxt-natricon:${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }} .
 
       - name: Push image   
         if: success()
         uses: actions-hub/docker@master
         with:
-          args: push ${{ secrets.DOCKER_REPO }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
+          args: push ${{ secrets.DOCKER_REPO }}/nuxt-natricon:${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
 
 
   build_and_publish_go:
+    name: Build and Publish GO Image
     needs: test
     runs-on: ubuntu-latest
+    env:
+      GITHUB_RUN_ID: ${{ github.run_id }}    
     steps:
+      - uses: nelonoel/branch-name@v1
       - uses: actions/checkout@master   
-      - name: Build & Publish GO Image
-        uses: mr-smithers-excellent/docker-build-push@v3
+      - name: Login to registry
+        uses: actions-hub/docker/login@master
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REPO }}
+
+      - name: Build and tag
+        if: success()
+        run: docker build -t ${{ secrets.DOCKER_REPO }}/go-natricon:${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }} server
+
+      - name: Push image   
+        if: success()
+        uses: actions-hub/docker@master
         with:
-          name: natricon/natricon-server
-          tag: ${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REPO }}
-          dockerfile: Dockerfile
+          args: push ${{ secrets.DOCKER_REPO }}/go-natricon:${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
