@@ -1,6 +1,15 @@
+image: docker:latest
+
+services:
+    - docker:dind  
+
 variables:
     NUXT_CONTAINER_IMAGE: nuxt-natricon:${CI_COMMIT_SHORT_SHA}
     GO_CONTAINER_IMAGE: go-natricon:${CI_COMMIT_SHORT_SHA}
+
+stages:
+    - test
+    - build
 
 test_go:
     stage: test
@@ -11,16 +20,14 @@ test_go:
 
 build_nuxt:
     stage: build
-    image: docker:latest
     script:
-        - docker login ${DOCKER_HOST}  -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
+        - echo "${DOCKER_PASSWORD}" | docker login ${DOCKER_HOST}  -u ${DOCKER_USER} --password-stdin
         - docker build -t ${NUXT_CONTAINER_IMAGE} .
         - docker tag ${NUXT_CONTAINER_IMAGE} ${NUXT_CONTAINER_IMAGE}
         - docker push ${NUXT_CONTAINER_IMAGE}
 
 build_go:
     stage: build
-    image: docker:latest
     script:
         - cd server
         - docker login ${DOCKER_HOST}  -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
