@@ -29,7 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master   
-
       - name: Build & Publish Nuxt Image
         uses: mr-smithers-excellent/docker-build-push@v3
         with:
@@ -43,7 +42,8 @@ jobs:
   build_and_publish_go:
     needs: test
     runs-on: ubuntu-latest
-    name: Build and Publish GO Image
+    steps:
+      - uses: actions/checkout@master   
       - name: Build & Publish GO Image
         uses: mr-smithers-excellent/docker-build-push@v3
         with:
