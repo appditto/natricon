@@ -13,7 +13,7 @@ build_nuxt:
     stage: build
     image: docker:latest
     script:
-        - docker login ${DOCKER_HOST}  -u ${DOCKER_USER} -p ${DOCKER_PASWORD}
+        - docker login ${DOCKER_HOST}  -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker build -t ${NUXT_CONTAINER_IMAGE} .
         - docker tag ${NUXT_CONTAINER_IMAGE} ${NUXT_CONTAINER_IMAGE}
         - docker push ${NUXT_CONTAINER_IMAGE}
@@ -23,7 +23,7 @@ build_go:
     image: docker:latest
     script:
         - cd server
-        - docker login ${DOCKER_HOST}  -u ${DOCKER_USER} -p ${DOCKER_PASWORD}
+        - docker login ${DOCKER_HOST}  -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
         - docker build -t ${GO_CONTAINER_IMAGE} .
         - docker tag ${GO_CONTAINER_IMAGE} ${GO_CONTAINER_IMAGE}
         - docker push ${GO_CONTAINER_IMAGE}
