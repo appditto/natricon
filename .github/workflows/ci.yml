@@ -33,7 +33,7 @@ jobs:
       - name: Build & Publish Nuxt Image
         uses: mr-smithers-excellent/docker-build-push@v3
         with:
-          image: nuxt-natricon
+          image: natricon/natricon-app
           tag: ${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -47,7 +47,7 @@ jobs:
       - name: Build & Publish GO Image
         uses: mr-smithers-excellent/docker-build-push@v3
         with:
-          name: go-natricon
+          name: natricon/natricon-server
           tag: ${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
