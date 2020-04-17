@@ -33,19 +33,17 @@ jobs:
       - name: Build & Publish Nuxt Image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: nuxt-natricon
+          name: nuxt-natricon:${{ env.GITHUB_RUN_ID }}
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REPO }}
           dockerfile: Dockerfile
-          tags: "${{ env.GITHUB_RUN_ID }}"
 
       - name: Build & Publish GO Image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: go-natricon
+          name: go-natricon:${{ env.GITHUB_RUN_ID }}
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REPO }}
           dockerfile: Dockerfile
-          tags: "${{ env.GITHUB_RUN_ID }}"
