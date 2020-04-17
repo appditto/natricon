@@ -75,3 +75,54 @@ jobs:
         uses: actions-hub/docker@master
         with:
           args: push ${{ secrets.DOCKER_REPO }}/go-natricon:${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
+
+  deploy_nuxt:
+    name: Deploy nuxt app
+    needs: build_and_publish_nuxt
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: nelonoel/branch-name@v1
+      - uses: actions/checkout@master   
+      - uses: imranismail/setup-kustomize@v1
+      with:
+        kustomize-version: "3.5.4"
+
+      - name: Set image
+        working-directory: ./kubernetes/frontend
+        run: kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
+
+      - name: Deploy image to k8s cluster
+        working-directory: ./kubernetes
+        - uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: apply -f nuxt-deployment.yaml
+
+  deploy_go:
+    name: Deploy GO app
+    needs: build_and_publish_go
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: nelonoel/branch-name@v1
+      - uses: actions/checkout@master   
+      - uses: imranismail/setup-kustomize@v1
+      with:
+        kustomize-version: "3.5.4"
+
+      - name: Set image
+        working-directory: ./kubernetes/server
+        run: kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
+
+      - name: Deploy image to k8s cluster
+        working-directory: ./kubernetes
+        - uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: apply -f go-deployment.yaml
+      
