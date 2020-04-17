@@ -32,7 +32,7 @@ jobs:
       - name: Build & Publish Nuxt Image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
+          name: 'nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}'
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REPO }}
