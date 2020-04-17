@@ -91,7 +91,9 @@ jobs:
 
       - name: Set image
         working-directory: ./kubernetes/frontend
-        run: kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
+        run: |
+          kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
+          kustomize build . > nuxt-deployment.yaml
 
       - name: Deploy image to k8s cluster
         working-directory: ./kubernetes
@@ -116,7 +118,9 @@ jobs:
 
       - name: Set image
         working-directory: ./kubernetes/server
-        run: kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
+        run: |
+          kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
+          kustomize build . > go-deployment.yaml
 
       - name: Deploy image to k8s cluster
         working-directory: ./kubernetes
