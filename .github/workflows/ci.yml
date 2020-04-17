@@ -30,10 +30,9 @@ jobs:
     steps:
       - uses: actions/checkout@master   
       - name: Build & Publish Nuxt Image
-        uses: mr-smithers-excellent/docker-build-push@v3
+        uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          image: natricon/natricon-app
-          tag: ${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
+          image: nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REPO }}
