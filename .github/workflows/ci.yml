@@ -38,13 +38,13 @@ jobs:
 
       - name: Build and tag
         if: success()
-        run: docker build -t ${{ DOCKER_REGISTRY_URL }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
+        run: docker build -t ${{ secrets.DOCKER_REPO }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
 
       - name: Push image
         if: success()
         uses: actions-hub/docker@master
         with:
-          args: push ${{ DOCKER_REGISTRY_URL }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
+          args: push ${{ secrets.DOCKER_REPO }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
 
 
   build_and_publish_go:
