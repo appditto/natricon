@@ -24,25 +24,30 @@ jobs:
         cd server
         go test ./...
 
-  build_and_publish:
-    name: Build and Publish
+  build_and_publish_nuxt:
+    name: Build and Publish Nuxt Image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master   
 
       - name: Build & Publish Nuxt Image
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: mr-smithers-excellent/docker-build-push@v3
         with:
-          name: nuxt-natricon:${{ env.GITHUB_RUN_ID }}
+          image: nuxt-natricon
+          tag: ${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REPO }}
           dockerfile: Dockerfile
 
+  build_and_publish_go:
+    needs: test
+    name: Build and Publish GO Image
       - name: Build & Publish GO Image
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: mr-smithers-excellent/docker-build-push@v3
         with:
-          name: go-natricon:${{ env.GITHUB_RUN_ID }}
+          name: go-natricon
+          tag: ${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REPO }}
