@@ -93,14 +93,14 @@ jobs:
         working-directory: ./kubernetes/frontend
         run: |
           kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
-          kustomize build . > nuxt-deployment.yaml
+          kustomize build . > nuxt-deployment-k.yaml
 
       - name: Deploy image to k8s cluster
         uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: apply -f ./kubernetes/frontend/nuxt-deployment.yaml
+          args: apply -f ./kubernetes/frontend/nuxt-deployment-k.yaml
 
   deploy_go:
     name: Deploy GO app
@@ -119,12 +119,12 @@ jobs:
         working-directory: ./kubernetes/server
         run: |
           kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
-          kustomize build . > go-deployment.yaml
+          kustomize build . > go-deployment-k.yaml
 
       - name: Deploy image to k8s cluster
         uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: apply -f ./kubernetes/server/go-deployment.yaml
+          args: apply -f ./kubernetes/server/go-deployment-k.yaml
       
