@@ -27,6 +27,9 @@ jobs:
   build_and_publish_nuxt:
     name: Build and Publish Nuxt Image
     runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: ${{ github.ref }}
+      GITHUB_RUN_ID: ${{ github.run_id }}    
     steps:
       - uses: actions/checkout@master   
       - name: Login to registry
@@ -37,20 +40,14 @@ jobs:
           DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REPO }}
 
       - name: Build and tag
-        env:
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
         if: success()
-        run: docker build -t ${{ DOCKER_REGISTRY_URL }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }} .
+        run: docker build -t ${{ secrets.DOCKER_REPO }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }} .
 
-      - name: Push image
-        env:
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_RUN_ID: ${{ github.run_id }}      
+      - name: Push image   
         if: success()
         uses: actions-hub/docker@master
         with:
-          args: push ${{ DOCKER_REGISTRY_URL }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
+          args: push ${{ secrets.DOCKER_REPO }}/nuxt-natricon:${{ env.GITHUB_REF }}-${{ env.GITHUB_RUN_ID }}
 
 
   build_and_publish_go:
