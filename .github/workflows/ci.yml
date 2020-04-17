@@ -42,6 +42,7 @@ jobs:
 
   build_and_publish_go:
     needs: test
+    runs-on: ubuntu-latest
     name: Build and Publish GO Image
       - name: Build & Publish GO Image
         uses: mr-smithers-excellent/docker-build-push@v3
