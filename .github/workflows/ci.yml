@@ -86,8 +86,8 @@ jobs:
       - uses: nelonoel/branch-name@v1
       - uses: actions/checkout@master   
       - uses: imranismail/setup-kustomize@v1
-      with:
-        kustomize-version: "3.5.4"
+        with:
+          kustomize-version: "3.5.4"
 
       - name: Set image
         working-directory: ./kubernetes/frontend
@@ -96,12 +96,11 @@ jobs:
           kustomize build . > nuxt-deployment.yaml
 
       - name: Deploy image to k8s cluster
-        working-directory: ./kubernetes
-        - uses: steebchen/kubectl@master
+        uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: apply -f nuxt-deployment.yaml
+          args: apply -f ./kubernetes/frontend/nuxt-deployment.yaml
 
   deploy_go:
     name: Deploy GO app
@@ -113,8 +112,8 @@ jobs:
       - uses: nelonoel/branch-name@v1
       - uses: actions/checkout@master   
       - uses: imranismail/setup-kustomize@v1
-      with:
-        kustomize-version: "3.5.4"
+        with:
+          kustomize-version: "3.5.4"
 
       - name: Set image
         working-directory: ./kubernetes/server
@@ -123,10 +122,9 @@ jobs:
           kustomize build . > go-deployment.yaml
 
       - name: Deploy image to k8s cluster
-        working-directory: ./kubernetes
-        - uses: steebchen/kubectl@master
+        uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: apply -f go-deployment.yaml
+          args: apply -f ./kubernetes/server/go-deployment.yaml
       
