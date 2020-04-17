@@ -92,7 +92,7 @@ jobs:
       - name: Set image
         working-directory: ./kubernetes/frontend
         run: |
-          kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
+          kustomize edit set image replaceme=${{ secrets.DOCKER_REPO }}/nuxt-natricon:${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
           kustomize build . > nuxt-deployment-k.yaml
 
       - name: Deploy image to k8s cluster
@@ -118,7 +118,7 @@ jobs:
       - name: Set image
         working-directory: ./kubernetes/server
         run: |
-          kustomize edit set image replaceme=${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
+          kustomize edit set image replaceme=${{ secrets.DOCKER_REPO }}/go-natricon:${BRANCH_NAME}-${{ env.GITHUB_RUN_ID }}
           kustomize build . > go-deployment-k.yaml
 
       - name: Deploy image to k8s cluster
