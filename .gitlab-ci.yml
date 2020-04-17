@@ -1,0 +1,31 @@
+variables:
+    NUXT_CONTAINER_IMAGE: nuxt-natricon:${CI_COMMIT_SHORT_SHA}
+    GO_CONTAINER_IMAGE: go-natricon:${CI_COMMIT_SHORT_SHA}
+
+test_go:
+    stage: test
+    image: golang:1.14.2-buster
+    script:
+        - cd server
+        - go test ./...
+
+build_nuxt:
+    stage: build
+    image: docker:latest
+    script:
+        - docker login ${DOCKER_HOST}  -u ${DOCKER_USER} -p ${DOCKER_PASWORD}
+        - docker build -t ${NUXT_CONTAINER_IMAGE} .
+        - docker tag ${NUXT_CONTAINER_IMAGE} ${NUXT_CONTAINER_IMAGE}
+        - docker push ${NUXT_CONTAINER_IMAGE}
+
+build_go:
+    stage: build
+    image: docker:latest
+    script:
+        - cd server
+        - docker login ${DOCKER_HOST}  -u ${DOCKER_USER} -p ${DOCKER_PASWORD}
+        - docker build -t ${GO_CONTAINER_IMAGE} .
+        - docker tag ${GO_CONTAINER_IMAGE} ${GO_CONTAINER_IMAGE}
+        - docker push ${GO_CONTAINER_IMAGE}
+
+

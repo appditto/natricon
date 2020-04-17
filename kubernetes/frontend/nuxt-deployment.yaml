@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: nuxt-natricon
-        image: docker-registry.appditto.com/nuxt-natricon:latest
+        image: replaceme
         ports:
           - containerPort: 3000
         imagePullPolicy: "Always"
