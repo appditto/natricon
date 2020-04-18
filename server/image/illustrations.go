@@ -37,6 +37,7 @@ var BodyIllustrations = [...]string{
 
 var HairIllustrations = [...]string{
 	"10_m.svg",
+	"11_f.svg",
 	"1_m.svg",
 	"2.svg",
 	"3_m.svg",
@@ -49,6 +50,7 @@ var HairIllustrations = [...]string{
 }
 
 var HairBackIllustrations = [...]string{
+	"11_f.svg",
 	"4_f.svg",
 	"5_f.svg",
 }
