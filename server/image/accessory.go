@@ -70,6 +70,9 @@ func GetAccessoriesForHash(hash string) (Accessories, error) {
 		targetSex = accessories.HairAsset.Sex
 	}
 	accessories.MouthAsset, err = GetMouthAsset(hash[32:40], targetSex)
+	if targetSex == Neutral && accessories.MouthAsset.Sex != Neutral {
+		targetSex = accessories.MouthAsset.Sex
+	}
 	accessories.EyeAsset, err = GetEyeAsset(hash[40:48], targetSex)
 
 	return accessories, nil
