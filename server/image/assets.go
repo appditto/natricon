@@ -88,7 +88,7 @@ func GetAssets() *assetManager {
 			}
 			bodyAssets[i].HairColored = false
 			bodyAssets[i].BodyColored = true
-			bodyAssets[i].Sex = Neutral
+			bodyAssets[i].Sex = getSex(ba)
 		}
 		// Load hair assets
 		var hairAssets [len(HairIllustrations)]Asset
@@ -178,8 +178,16 @@ func (sm *assetManager) GetNHairAssets() int {
 }
 
 // GetHairAssets - get complete list of hair assets
-func (sm *assetManager) GetHairAssets() [len(HairIllustrations)]Asset {
-	return sm.hairAssets
+func (sm *assetManager) GetHairAssets(sex Sex) []Asset {
+	var ret []Asset
+	for _, v := range sm.hairAssets {
+		if sex == Neutral {
+			ret = append(ret, v)
+		} else if v.Sex == sex || v.Sex == Neutral {
+			ret = append(ret, v)
+		}
+	}
+	return ret
 }
 
 // GetBackHairAssets - get complete list of hair assets
@@ -191,7 +199,9 @@ func (sm *assetManager) GetBackHairAssets() [len(HairBackIllustrations)]Asset {
 func (sm *assetManager) GetMouthAssets(sex Sex) []Asset {
 	var ret []Asset
 	for _, v := range sm.mouthAssets {
-		if v.Sex == sex || v.Sex == Neutral {
+		if sex == Neutral {
+			ret = append(ret, v)
+		} else if v.Sex == sex || v.Sex == Neutral {
 			ret = append(ret, v)
 		}
 	}
@@ -202,7 +212,9 @@ func (sm *assetManager) GetMouthAssets(sex Sex) []Asset {
 func (sm *assetManager) GetEyeAssets(sex Sex) []Asset {
 	var ret []Asset
 	for _, v := range sm.eyeAssets {
-		if v.Sex == sex || v.Sex == Neutral {
+		if sex == Neutral {
+			ret = append(ret, v)
+		} else if v.Sex == sex || v.Sex == Neutral {
 			ret = append(ret, v)
 		}
 	}
