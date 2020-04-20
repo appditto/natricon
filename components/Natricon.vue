@@ -1,12 +1,10 @@
 <template>
   <div class="flex flex-col shadow-xl rounded-lg">
-    <div class="w-56 h-56">
-      <div class="w-full relative w-56 h-56">
-        <div class="w-full h-full" v-html="svg"></div>
-      </div>
+    <div class="w-56 h-56 mx-auto">
+      <div class="w-full h-full" v-html="svg"></div>
     </div>
     <!-- Color Info -->
-    <div class="w-64 flex flex-row mt-5 justify-around font-mono">
+    <div class="w-64 flex flex-row justify-around font-mono">
       <div class="w-1/4 flex flex-col items-end">
         <div class="flex flex-col items-start pr-1 py-1">
           <span class="font-bold">&nbsp;</span>
