@@ -1,16 +1,16 @@
 <template>
   <div class="container pb-24">
     <div>
-      <h1 class="title text-primary">natricon</h1>
+      <h1 class="title text-primary text-5xl font-bold break-all">natricon</h1>
       <div class="flex flex-row flex-wrap justify-center">
         <button
           ref="btn2"
-          class="px-4 py-2 mx-2 bg-primary text-white text-xl font-bold rounded-lg transition-all duration-200 ease-out transform hover:scale-105"
+          class="px-4 py-2 m-2 bg-primary text-white text-xl font-bold rounded-lg transition-all duration-200 ease-out transform hover:scale-105"
           @click="generateRandomNatricon(); pulseIt2()"
         >Randomize 1</button>
         <button
           ref="btn"
-          class="px-4 py-2 mx-2 bg-primary text-white text-xl font-bold rounded-lg transition-all duration-200 ease-out transform hover:scale-105"
+          class="px-4 py-2 m-2 bg-primary text-white text-xl font-bold rounded-lg transition-all duration-200 ease-out transform hover:scale-105"
           @click="generateTenRandomNatricon(); pulseIt()"
         >Randomize 10</button>
       </div>
@@ -19,6 +19,7 @@
           v-for="(natricon, i) in natricons"
           :key="i"
           :svg="natricon.svg"
+          :address="natricon.address"
           :bodyH="natricon.bodyH"
           :bodyS="natricon.bodyS"
           :bodyV="natricon.bodyV"
@@ -99,23 +100,6 @@ export default {
   justify-content: center;
   align-items: start;
   text-align: center;
-}
-
-.title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  display: block;
-  font-weight: 600;
-  font-size: 100px;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
 }
 
 .links {

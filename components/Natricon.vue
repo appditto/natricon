@@ -40,12 +40,17 @@
         </div>
       </div>
     </div>
+    <!-- Address -->
+    <div class="w-64 flex flex-row mt-3 justify-around font-mono">
+      <span class="text-xs break-all opacity-25">{{address}}</span>
+    </div>
   </div>
 </template>
 <script>
 export default {
   props: {
     svg: null,
+    address: null,
     bodyH: null,
     bodyS: null,
     bodyV: null,
