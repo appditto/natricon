@@ -96,7 +96,7 @@ jobs:
           kustomize build . > nuxt-deployment-k.yaml
 
       - name: Deploy image to k8s cluster
-        uses: steebchen/kubectl@master
+        uses: bbedward/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
@@ -122,7 +122,7 @@ jobs:
           kustomize build . > go-deployment-k.yaml
 
       - name: Deploy image to k8s cluster
-        uses: steebchen/kubectl@master
+        uses: bbedward/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
