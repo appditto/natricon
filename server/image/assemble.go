@@ -7,10 +7,13 @@ import (
 	"io"
 	"math"
 	"strings"
+	"sync"
 
 	svg "github.com/ajstarks/svgo"
 	"github.com/appditto/natricon/color"
 	"github.com/golang/glog"
+	minify "github.com/tdewolff/minify/v2"
+	minifysvg "github.com/tdewolff/minify/v2/svg"
 )
 
 const defaultSize = 512   // Default SVG width/height attribute
@@ -98,7 +101,11 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	// End document
 	canvas.End()
 
-	return b.Bytes(), nil
+	// Minify
+	var ret []byte
+	ret, _ = getMinifier().minifier.Bytes("image/svg+xml", b.Bytes())
+
+	return ret, nil
 }
 
 func GetTargetOpacity(color color.HSV) float64 {
@@ -106,4 +113,23 @@ func GetTargetOpacity(color color.HSV) float64 {
 	ret := (1.0-brightness)*(opacityUpper-opacityLower)/(1.0-MinBrightness) + opacityLower
 	// Return result rounded to 2 places
 	return math.Round(ret*100) / 100
+}
+
+// Singleton to get minifier
+type minifySingleton struct {
+	minifier *minify.M
+}
+
+var mSingleton *minifySingleton
+var onceM sync.Once
+
+func getMinifier() *minifySingleton {
+	onceM.Do(func() {
+		minifier := minify.New()
+		minifier.AddFunc("image/svg+xml", minifysvg.Minify)
+		mSingleton = &minifySingleton{
+			minifier: minifier,
+		}
+	})
+	return mSingleton
 }
