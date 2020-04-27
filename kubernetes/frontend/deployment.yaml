@@ -23,15 +23,3 @@ spec:
         imagePullPolicy: "Always"
       imagePullSecrets:
           - name: regcred
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: nuxt-natricon-service
-  namespace: natricon-dev
-spec:
-  selector:
-      app: nuxt-natricon
-  type: NodePort
-  ports:
-    - port: 3000
