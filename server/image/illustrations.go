@@ -83,4 +83,5 @@ var MouthIllustrations = [...]string{
 	"3_sm.svg",
 	"4_m_hc_mst.svg",
 	"5_sm.svg",
+	"6_m_hc_brd.svg",
 }
