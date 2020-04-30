@@ -50,6 +50,7 @@ var HairIllustrations = [...]string{
 	"20_f.svg",
 	"21_f.svg",
 	"22_f.svg",
+	"23_m.svg",
 	"2_m.svg",
 	"3_m.svg",
 	"4_f.svg",
