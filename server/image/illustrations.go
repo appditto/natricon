@@ -82,6 +82,7 @@ var EyeIllustrations = [...]string{
 	"6_eg.svg",
 	"7_e.svg",
 	"8_eg.svg",
+	"9_eg.svg",
 }
 
 var MouthIllustrations = [...]string{
