@@ -87,6 +87,7 @@ var HairBackIllustrations = [...]string{
 }
 
 var EyeIllustrations = [...]string{
+	"10_eg.svg",
 	"1_e.svg",
 	"2_eg.svg",
 	"3_eg.svg",
@@ -99,6 +100,7 @@ var EyeIllustrations = [...]string{
 }
 
 var MouthIllustrations = [...]string{
+	"10_sm.svg",
 	"1_sm.svg",
 	"2_sm.svg",
 	"3_sm.svg",
