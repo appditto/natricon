@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/appditto/natricon/color"
 	"github.com/appditto/natricon/image"
@@ -14,6 +16,9 @@ import (
 
 var seed *string
 
+const minConvertedSize = 100  // Minimum size of PNG/WEBP/JPG converted output
+const maxConvertedSize = 1000 // Maximum size of PNG/WEBP/JPG converted output
+
 func getSVG(c *gin.Context) {
 	var err error
 
@@ -23,6 +28,25 @@ func getSVG(c *gin.Context) {
 	// c.String(http.StatusBadRequest, "Invalid address")
 	// return
 	// }
+	format := strings.ToLower(c.Query("format"))
+	size := 0
+	if format == "" || format == "svg" {
+		format = "svg"
+	} else if format != "png" && format != "jpg" && format != "jpeg" && format != "webp" {
+		c.String(http.StatusBadRequest, "%s", "Valid formats are 'svg', 'png', 'jpg', 'jpeg', or 'webp'")
+		return
+	} else {
+		sizeStr := c.Query("size")
+		if sizeStr == "" {
+			c.String(http.StatusBadRequest, "%s", "Size is required when format is not svg")
+			return
+		}
+		size, err = strconv.Atoi(c.Query("size"))
+		if err != nil || size < minConvertedSize || size > maxConvertedSize {
+			c.String(http.StatusBadRequest, "%s", fmt.Sprintf("size must be an integer between %d and %d", minConvertedSize, maxConvertedSize))
+			return
+		}
+	}
 	sha256 := nano.AddressSha256(address, *seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256)
