@@ -25,11 +25,6 @@ func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, 
 	if err != nil {
 		return nil, err
 	}
-	//mw.CoalesceImages()
 	mw.SetImageFormat(strings.ToUpper(string(format)))
-	err = mw.ResizeImage(size, size, imagick.FILTER_LANCZOS)
-	if err != nil {
-		return nil, err
-	}
 	return mw.GetImageBlob(), nil
 }
