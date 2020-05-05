@@ -7,12 +7,15 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-latest
+    container: appditto/imagemagick_go:latest
     steps:
+    - name: Check out code
+      uses: actions/checkout@master
 
     - name: Run Tests
       run: |
-        echo "Todo"
+        cd server
+        go test ./...
 
   build_and_publish_nuxt:
     name: Build and Publish Nuxt Image
