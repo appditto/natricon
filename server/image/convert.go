@@ -23,7 +23,9 @@ func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, 
 	if err != nil {
 		return nil, err
 	}
-	mw.SetImageFormat(strings.ToUpper(string(format)))
 	mw.SetImageCompression(imagick.COMPRESSION_NO)
+	mw.SetImageCompressionQuality(100)
+	//mw.SetAntialias(true)
+	mw.SetImageFormat(strings.ToUpper(string(format)))
 	return mw.GetImageBlob(), nil
 }
