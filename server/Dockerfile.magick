@@ -1,5 +1,7 @@
 # Build docker image with imagemagick/go/ubuntu
-FROM ubuntu:18.04
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND="noninteractive"
 
 # Install dependencies for imagemagick
 RUN apt-get update && apt-get install -y \
@@ -20,11 +22,10 @@ RUN apt-get update && apt-get install -y \
     libwebpdemux2 \
     libxml2 \
     libxml2-dev \
-    ghostscript
-
-# Install GO
-RUN add-apt-repository ppa:longsleep/golang-backports && apt-get update && apt-get install -y golang-1.14 && rm -rf /var/lib/apt/lists/*
-ENV PATH="/usr/lib/go-1.14/bin:${PATH}"
+    ghostscript \
+&& rm -rf /var/lib/apt/lists/*
+RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime
+RUN dpkg-reconfigure --frontend noninteractive tzdata
 
 RUN mkdir /imagemagick-build
 WORKDIR /imagemagick-build
@@ -38,3 +39,8 @@ RUN ./configure --with-rsvg=yes && make && make install && ldconfig /usr/local/l
 
 WORKDIR /
 RUN rm -rf  imagemagick-build
+
+# Install GO
+RUN wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | tar -xz -C /usr/local
+ENV PATH="/usr/local/go/bin:${PATH}"
+RUN rm -rf go1.14.2.linux-amd64.tar.gz

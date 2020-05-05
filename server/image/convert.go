@@ -18,13 +18,15 @@ func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, 
 	} else {
 		pixelWand.SetColor("none")
 	}
-	mw.SetGravity(imagick.GRAVITY_CENTER)
 	mw.SetBackgroundColor(pixelWand)
-	//mw.SetResolution(float64(size), float64(size))
+	mw.SetImageUnits(imagick.RESOLUTION_PIXELS_PER_INCH)
+	density := 96.0 * float64(size) / float64(DefaultSize)
+	mw.SetResolution(density, density)
 	err := mw.ReadImageBlob(svgData)
 	if err != nil {
 		return nil, err
 	}
 	mw.SetImageFormat(strings.ToUpper(string(format)))
+	mw.SetImageCompressionQuality(95)
 	return mw.GetImageBlob(), nil
 }

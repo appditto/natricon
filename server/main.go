@@ -22,7 +22,7 @@ const maxConvertedSize = 1000 // Maximum size of PNG/WEBP/JPG converted output
 func getSVG(c *gin.Context) {
 	var err error
 
-	address := c.Query("address")
+	address := nano.GenerateAddress() //c.Query("address")
 	// valid := nano.ValidateAddress(address)
 	// if !valid {
 	// c.String(http.StatusBadRequest, "Invalid address")
@@ -60,7 +60,7 @@ func getSVG(c *gin.Context) {
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.V = hairHsv.V - bodyHsv.V
-	svg, err := image.CombineSVG(accessories)
+	svg, err := image.CombineSVG(accessories, size)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Error occured")
 		return
@@ -96,7 +96,7 @@ func getRandomSvg(c *gin.Context) {
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.V = hairHsv.V - bodyHsv.V
-	svg, err := image.CombineSVG(accessories)
+	svg, err := image.CombineSVG(accessories, 0)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Error occured")
 		return
@@ -121,7 +121,7 @@ func getRandom(c *gin.Context) {
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.V = hairHsv.V - bodyHsv.V
-	svg, err := image.CombineSVG(accessories)
+	svg, err := image.CombineSVG(accessories, 0)
 	var svgStr string
 	if err != nil {
 		svgStr = "Error"

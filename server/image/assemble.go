@@ -16,7 +16,7 @@ import (
 	minifysvg "github.com/tdewolff/minify/v2/svg"
 )
 
-const defaultSize = 512   // Default SVG width/height attribute
+const DefaultSize = 512   // Default SVG width/height attribute
 const opacityLower = 0.15 // Minimum lower opacity threshold
 const opacityUpper = 0.6  // Maximum upper opacity threshold
 
@@ -26,7 +26,7 @@ type SVG struct {
 	Doc    string `xml:",innerxml"`
 }
 
-func CombineSVG(accessories Accessories) ([]byte, error) {
+func CombineSVG(accessories Accessories, size int) ([]byte, error) {
 	var (
 		body     SVG
 		hair     SVG
@@ -60,7 +60,11 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	// Create new SVG writer
 	var b bytes.Buffer
 	canvas := svg.New(&b)
-	canvas.Startraw(fmt.Sprintf("viewbox=\"0 0 %d %d\"", defaultSize, defaultSize))
+	if size == 0 {
+		canvas.Startraw(fmt.Sprintf("viewbox=\"0 0 %d %d\"", DefaultSize, DefaultSize))
+	} else {
+		canvas.Startunit(512, 512, "px", fmt.Sprintf("viewbox=\"0 0 %d %d\"", DefaultSize, DefaultSize))
+	}
 	// Add back hair first
 	if accessories.BackHairAsset != nil {
 		canvas.Gid("backhair")
