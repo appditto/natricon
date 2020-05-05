@@ -20,7 +20,7 @@ func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, 
 	}
 	mw.SetGravity(imagick.GRAVITY_CENTER)
 	mw.SetBackgroundColor(pixelWand)
-	mw.SetResolution(float64(size), float64(size))
+	//mw.SetResolution(float64(size), float64(size))
 	err := mw.ReadImageBlob(svgData)
 	if err != nil {
 		return nil, err
