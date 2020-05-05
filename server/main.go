@@ -32,8 +32,8 @@ func getSVG(c *gin.Context) {
 	size := 0
 	if format == "" || format == "svg" {
 		format = "svg"
-	} else if format != "png" && format != "jpg" && format != "jpeg" && format != "webp" {
-		c.String(http.StatusBadRequest, "%s", "Valid formats are 'svg', 'png', 'jpg', 'jpeg', or 'webp'")
+	} else if format != "png" && format != "webp" {
+		c.String(http.StatusBadRequest, "%s", "Valid formats are 'svg', 'png', or 'webp'")
 		return
 	} else {
 		sizeStr := c.Query("size")

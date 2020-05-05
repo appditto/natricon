@@ -14,11 +14,7 @@ func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, 
 	mw := imagick.NewMagickWand()
 	mw.SetImageFormat("SVG")
 	pixelWand := imagick.NewPixelWand()
-	if format == "jpg" || format == "jpeg" {
-		pixelWand.SetColor("#FFFFFF")
-	} else {
-		pixelWand.SetColor("none")
-	}
+	pixelWand.SetColor("none")
 	mw.SetBackgroundColor(pixelWand)
 	mw.SetImageUnits(imagick.RESOLUTION_PIXELS_PER_INCH)
 	density := 96.0 * float64(size) / float64(DefaultSize)
@@ -28,6 +24,6 @@ func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, 
 		return nil, err
 	}
 	mw.SetImageFormat(strings.ToUpper(string(format)))
-	mw.SetImageCompressionQuality(95)
+	mw.SetImageCompression(imagick.COMPRESSION_NO)
 	return mw.GetImageBlob(), nil
 }
