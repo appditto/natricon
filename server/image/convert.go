@@ -1,19 +1,35 @@
 package image
 
 import (
-	"fmt"
+	"strings"
 
-	magick "github.com/bbedward/magick"
+	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
 type ImageFormat string
 
-func convertSvgToBinary(svgData []byte, format ImageFormat, size int) ([]byte, error) {
-	image, err := magick.NewFromBlob(svgData, "svg")
+func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, error) {
+	imagick.Initialize()
+	defer imagick.Terminate()
+	mw := imagick.NewMagickWand()
+	pixelWand := imagick.NewPixelWand()
+	if format == "jpg" || format == "jpeg" {
+		pixelWand.SetColor("#FFFFFF")
+	} else {
+		pixelWand.SetColor("none")
+	}
+	mw.SetGravity(imagick.GRAVITY_CENTER)
+	mw.SetBackgroundColor(pixelWand)
+	mw.SetResolution(float64(size), float64(size))
+	err := mw.ReadImageBlob(svgData)
 	if err != nil {
 		return nil, err
 	}
-	defer image.Destroy()
-	image.Resize(fmt.Sprintf("%dx%d", size, size))
-	return image.ToBlob(string(format))
+	//mw.CoalesceImages()
+	mw.SetImageFormat(strings.ToUpper(string(format)))
+	err = mw.ResizeImage(size, size, imagick.FILTER_LANCZOS)
+	if err != nil {
+		return nil, err
+	}
+	return mw.GetImageBlob(), nil
 }

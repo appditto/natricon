@@ -8,10 +8,6 @@ github.com/bbedward/crypto/ed25519 v0.0.0-20200408155757-fff4d9311ac0 h1:wKgqfBe
 github.com/bbedward/crypto/ed25519 v0.0.0-20200408155757-fff4d9311ac0/go.mod h1:5S+eGk8KWIs2q5VGnL8fTro5peOB8562AOX1+K50KWM=
 github.com/bbedward/crypto/ed25519 v0.0.0-20200408160247-f3ed4859f246 h1:bXA9NXNjNAYLXiNMx5LVPyOVNX4h19/7LWRBgFLCaD8=
 github.com/bbedward/crypto/ed25519 v0.0.0-20200408160247-f3ed4859f246/go.mod h1:5S+eGk8KWIs2q5VGnL8fTro5peOB8562AOX1+K50KWM=
-github.com/bbedward/magick v0.0.0-20200504202847-235ee9771b85 h1:U54EfUz91n0BFDcZaqATvhTPFEDhRQUYUSPHjoEZoOQ=
-github.com/bbedward/magick v0.0.0-20200504202847-235ee9771b85/go.mod h1:Bw+7xuqeiIq1b7urtNW6zP10301O5KxWUujxCI29/lE=
-github.com/bbedward/magick v0.0.0-20200504204832-4e2f4a00fdf5 h1:2KoUs0QXdXhZDbcj6/48qUE8IuTtY9kVA7TF2M2lG0o=
-github.com/bbedward/magick v0.0.0-20200504204832-4e2f4a00fdf5/go.mod h1:Bw+7xuqeiIq1b7urtNW6zP10301O5KxWUujxCI29/lE=
 github.com/bbedward/nano v0.0.0-20200408160210-f8b46351fc53 h1:b3GAmvzs4iNxjMxChg1BNbEcx8Hd+NWt6l76hCGvkwo=
 github.com/bbedward/nano v0.0.0-20200408160210-f8b46351fc53/go.mod h1:esdEzEaQitM/UMAoSdGbd3erf6MT/WYa5SQetSYaZ8c=
 github.com/bbedward/nano v0.0.0-20200408160834-45efd709c9fa h1:J04ud72CueWqzeszO8Uaj6IAbuLkucoAzCytD8sag9w=
@@ -93,8 +89,6 @@ github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/9
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/quirkey/magick v0.0.0-20140324185457-b37664054620 h1:MsLx6A07NznUwoq9UiPo66XjJ4TakXoNmQzrlCm5+OQ=
-github.com/quirkey/magick v0.0.0-20140324185457-b37664054620/go.mod h1:AYql4DT3SqVH9ON+isFTHD9meJEbdXHb/ZcpQbVRhkQ=
 github.com/rs/cors v1.7.0 h1:+88SsELBHx5r+hZ8TCkggzSstaWNbDvThkVK8H6f9ik=
 github.com/rs/cors v1.7.0/go.mod h1:gFx+x8UowdsKA9AchylcLynDq+nNFfI8FkUZdN/jGCU=
 github.com/russross/blackfriday v1.5.2/go.mod h1:JO/DiYxRf+HjHt06OyowR9PTA263kcR/rfWxYHBV53g=
@@ -162,6 +156,8 @@ gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/go-playground/assert.v1 v1.2.1/go.mod h1:9RXL0bg/zibRAgZUYszZSwO/z8Y/a8bDuhia5mkpMnE=
 gopkg.in/go-playground/validator.v9 v9.29.1/go.mod h1:+c9/zcJMFNgbLvly1L1V+PpxWdVbfP1avr/N00E2vyQ=
+gopkg.in/gographics/imagick.v3 v3.3.0 h1:MI9qkquiNDmrSGnTG2241GZqOUgEfR7KQpVsVLxiylk=
+gopkg.in/gographics/imagick.v3 v3.3.0/go.mod h1:+Q9nyA2xRZXrDyTtJ/eko+8V/5E7bWYs08ndkZp8UmA=
 gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 gopkg.in/yaml.v2 v2.2.8 h1:obN1ZagJSUGI0Ek/LBmuj4SNLPfIny3KsKFopxRdj10=
 gopkg.in/yaml.v2 v2.2.8/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=

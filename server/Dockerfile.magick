@@ -1,0 +1,40 @@
+# Build docker image with imagemagick/go/ubuntu
+FROM ubuntu:18.04
+
+# Install dependencies for imagemagick
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    build-essential \
+    libwebp-dev \
+    librsvg2-2 \
+    librsvg2-dev \
+    librsvg2-bin \
+    wget \
+    libpng16-16 \
+    libpng-dev \
+    libjpeg-turbo8 \
+    libjpeg-turbo8-dev \
+    libwebp6 \
+    libgomp1  \
+    libwebpmux3 \
+    libwebpdemux2 \
+    libxml2 \
+    libxml2-dev \
+    ghostscript
+
+# Install GO
+RUN add-apt-repository ppa:longsleep/golang-backports && apt-get update && apt-get install -y golang-1.14 && rm -rf /var/lib/apt/lists/*
+ENV PATH="/usr/lib/go-1.14/bin:${PATH}"
+
+RUN mkdir /imagemagick-build
+WORKDIR /imagemagick-build
+
+# ImageMagick
+RUN wget https://www.imagemagick.org/download/ImageMagick-7.0.10-10.tar.gz
+RUN tar zxvpf ImageMagick-7.0.10-10.tar.gz
+
+WORKDIR /imagemagick-build/ImageMagick-7.0.10-10
+RUN ./configure --with-rsvg=yes && make && make install && ldconfig /usr/local/lib
+
+WORKDIR /
+RUN rm -rf  imagemagick-build

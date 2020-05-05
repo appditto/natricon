@@ -1,11 +1,18 @@
-FROM golang:1.14.2-buster
+FROM appditto/imagemagick_go:latest
 
-WORKDIR /go/src/app
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+RUN rm -rf /imagemagick-build
+
+ENV CGO_CFLAGS_ALLOW="-Xpreprocessor"
+ENV GIN_MODE="release"
+
 # add source code
 ADD . .
 # add assets
 ADD assets assets
-# Dependencies and build
+# Dependencies and buil
 RUN go get -u
 RUN go build
 # run main.go

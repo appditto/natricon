@@ -65,6 +65,17 @@ func getSVG(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Error occured")
 		return
 	}
+	if format != "svg" {
+		// Convert
+		var converted []byte
+		converted, err = image.ConvertSvgToBinary(svg, image.ImageFormat(format), uint(size))
+		if err != nil {
+			c.String(http.StatusInternalServerError, "Error occured")
+			return
+		}
+		c.Data(200, fmt.Sprintf("image/%s", format), converted)
+		return
+	}
 	c.Data(200, "image/svg+xml; charset=utf-8", svg)
 }
 
