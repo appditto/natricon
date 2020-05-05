@@ -12,6 +12,7 @@ func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, 
 	imagick.Initialize()
 	defer imagick.Terminate()
 	mw := imagick.NewMagickWand()
+	mw.SetImageFormat("SVG")
 	pixelWand := imagick.NewPixelWand()
 	if format == "jpg" || format == "jpeg" {
 		pixelWand.SetColor("#FFFFFF")
