@@ -7,7 +7,9 @@ on:
 jobs:
   test:
     name: Test
-    container: appditto/imagemagick_go:latest
+    runs-on: ubuntu-latest
+    container: 
+      image: appditto/imagemagick_go:latest
     steps:
     - name: Check out code
       uses: actions/checkout@master
