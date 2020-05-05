@@ -10,19 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: '^1.14.2'
-      id: go
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@master
-
     - name: Run Tests
       run: |
-        cd server
-        go test ./...
+        echo "Todo"
 
   build_and_publish_nuxt:
     name: Build and Publish Nuxt Image
