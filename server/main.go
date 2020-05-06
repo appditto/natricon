@@ -22,12 +22,12 @@ const maxConvertedSize = 1000 // Maximum size of PNG/WEBP/JPG converted output
 func getSVG(c *gin.Context) {
 	var err error
 
-	address := nano.GenerateAddress() //c.Query("address")
-	// valid := nano.ValidateAddress(address)
-	// if !valid {
-	// c.String(http.StatusBadRequest, "Invalid address")
-	// return
-	// }
+	address := c.Query("address")
+	valid := nano.ValidateAddress(address)
+	if !valid {
+		c.String(http.StatusBadRequest, "Invalid address")
+		return
+	}
 	format := strings.ToLower(c.Query("format"))
 	size := 0
 	if format == "" || format == "svg" {
