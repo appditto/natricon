@@ -1,14 +1,12 @@
 package image
 
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
 	"sync"
-
-	"github.com/golang/glog"
 )
 
 type IllustrationType string
@@ -62,11 +60,11 @@ func getSex(name string) Sex {
 
 // Singleton to keep assets loaded in memory
 type assetManager struct {
-	bodyAssets     [len(BodyIllustrations)]Asset
-	hairAssets     [len(HairIllustrations)]Asset
-	hairBackAssets [len(HairBackIllustrations)]Asset
-	mouthAssets    [len(MouthIllustrations)]Asset
-	eyeAssets      [len(EyeIllustrations)]Asset
+	bodyAssets     []Asset
+	hairAssets     []Asset
+	hairBackAssets []Asset
+	mouthAssets    []Asset
+	eyeAssets      []Asset
 }
 
 var singleton *assetManager
@@ -76,79 +74,42 @@ func GetAssets() *assetManager {
 	once.Do(func() {
 		var err error
 		// Load body assets
-		var bodyAssets [len(BodyIllustrations)]Asset
-		for i, ba := range BodyIllustrations {
-			bodyAssets[i] = Asset{}
-			bodyAssets[i].FileName = ba
-			bodyAssets[i].IllustrationPath = getIllustrationPath(ba, Body)
-			bodyAssets[i].SVGContents, err = ioutil.ReadFile(bodyAssets[i].IllustrationPath)
-			if err != nil {
-				glog.Fatalf("Couldn't load file %s", bodyAssets[i].IllustrationPath)
-				panic(err.Error())
-			}
-			bodyAssets[i].HairColored = false
-			bodyAssets[i].BodyColored = true
-			bodyAssets[i].Sex = getSex(ba)
+		var bodyAssets []Asset
+		for _, ba := range BodyIllustrations {
+			var a Asset
+			err = json.Unmarshal(ba, &a)
+			bodyAssets = append(bodyAssets, a)
 		}
 		// Load hair assets
-		var hairAssets [len(HairIllustrations)]Asset
-		for i, ha := range HairIllustrations {
-			hairAssets[i] = Asset{}
-			hairAssets[i].FileName = ha
-			hairAssets[i].IllustrationPath = getIllustrationPath(ha, Hair)
-			hairAssets[i].SVGContents, err = ioutil.ReadFile(hairAssets[i].IllustrationPath)
-			if err != nil {
-				glog.Fatalf("Couldn't load file %s", hairAssets[i].IllustrationPath)
-				panic(err.Error())
-			}
-			hairAssets[i].HairColored = true
-			hairAssets[i].BodyColored = false
-			hairAssets[i].Sex = getSex(ha)
+		var hairAssets []Asset
+		for _, ha := range HairIllustrations {
+			var a Asset
+			err = json.Unmarshal(ha, &a)
+			hairAssets = append(hairAssets, a)
 		}
 		// Load hair back assets
-		var hairBackAssets [len(HairBackIllustrations)]Asset
-		for i, ha := range HairBackIllustrations {
-			hairBackAssets[i] = Asset{}
-			hairBackAssets[i].FileName = ha
-			hairBackAssets[i].IllustrationPath = getIllustrationPath(ha, HairBack)
-			hairBackAssets[i].SVGContents, err = ioutil.ReadFile(hairBackAssets[i].IllustrationPath)
-			if err != nil {
-				glog.Fatalf("Couldn't load file %s", hairBackAssets[i].IllustrationPath)
-				panic(err.Error())
-			}
-			hairBackAssets[i].HairColored = true
-			hairBackAssets[i].BodyColored = false
-			hairBackAssets[i].Sex = getSex(ha)
+		var hairBackAssets []Asset
+		for _, ha := range HairBackIllustrations {
+			var a Asset
+			err = json.Unmarshal(ha, &a)
+			hairBackAssets = append(hairBackAssets, a)
 		}
 		// Load mouth assets
-		var mouthAssets [len(MouthIllustrations)]Asset
-		for i, ma := range MouthIllustrations {
-			mouthAssets[i] = Asset{}
-			mouthAssets[i].FileName = ma
-			mouthAssets[i].IllustrationPath = getIllustrationPath(ma, Mouth)
-			mouthAssets[i].SVGContents, err = ioutil.ReadFile(mouthAssets[i].IllustrationPath)
-			if err != nil {
-				glog.Fatalf("Couldn't load file %s", mouthAssets[i].IllustrationPath)
-				panic(err.Error())
-			}
-			mouthAssets[i].HairColored = strings.Contains(ma, "_hc")
-			mouthAssets[i].BodyColored = false
-			mouthAssets[i].Sex = getSex(ma)
+		var mouthAssets []Asset
+		for _, ma := range MouthIllustrations {
+			var a Asset
+			err = json.Unmarshal(ma, &a)
+			mouthAssets = append(mouthAssets, a)
 		}
 		// Load eye assets
-		var eyeAssets [len(EyeIllustrations)]Asset
-		for i, ea := range EyeIllustrations {
-			eyeAssets[i] = Asset{}
-			eyeAssets[i].FileName = ea
-			eyeAssets[i].IllustrationPath = getIllustrationPath(ea, Eye)
-			eyeAssets[i].SVGContents, err = ioutil.ReadFile(eyeAssets[i].IllustrationPath)
-			if err != nil {
-				glog.Fatalf("Couldn't load file %s", eyeAssets[i].IllustrationPath)
-				panic(err.Error())
-			}
-			eyeAssets[i].HairColored = false
-			eyeAssets[i].BodyColored = false
-			eyeAssets[i].Sex = getSex(ea)
+		var eyeAssets []Asset
+		for _, ea := range EyeIllustrations {
+			var a Asset
+			err = json.Unmarshal(ea, &a)
+			eyeAssets = append(eyeAssets, a)
+		}
+		if err != nil {
+			panic("Failed to decode assets")
 		}
 		// Create object
 		singleton = &assetManager{
@@ -168,7 +129,7 @@ func (sm *assetManager) GetNBodyAssets() int {
 }
 
 // GetBodyAssets - get complete list of hair assets
-func (sm *assetManager) GetBodyAssets() [len(BodyIllustrations)]Asset {
+func (sm *assetManager) GetBodyAssets() []Asset {
 	return sm.bodyAssets
 }
 
@@ -191,7 +152,7 @@ func (sm *assetManager) GetHairAssets(sex Sex) []Asset {
 }
 
 // GetBackHairAssets - get complete list of hair assets
-func (sm *assetManager) GetBackHairAssets() [len(HairBackIllustrations)]Asset {
+func (sm *assetManager) GetBackHairAssets() []Asset {
 	return sm.hairBackAssets
 }
 
