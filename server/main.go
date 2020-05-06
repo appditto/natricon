@@ -19,15 +19,10 @@ var seed *string
 const minConvertedSize = 100  // Minimum size of PNG/WEBP/JPG converted output
 const maxConvertedSize = 1000 // Maximum size of PNG/WEBP/JPG converted output
 
-func getSVG(c *gin.Context) {
+// Generate natricon with given hash
+func generateIcon(hash *string, c *gin.Context) {
 	var err error
 
-	address := c.Query("address")
-	valid := nano.ValidateAddress(address)
-	if !valid {
-		c.String(http.StatusBadRequest, "Invalid address")
-		return
-	}
 	format := strings.ToLower(c.Query("format"))
 	size := 0
 	if format == "" || format == "svg" {
@@ -47,9 +42,8 @@ func getSVG(c *gin.Context) {
 			return
 		}
 	}
-	sha256 := nano.AddressSha256(address, *seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256)
+	accessories, err := image.GetAccessoriesForHash(*hash)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -79,6 +73,21 @@ func getSVG(c *gin.Context) {
 	c.Data(200, "image/svg+xml; charset=utf-8", svg)
 }
 
+// Generate natricon with given nano address
+func getNano(c *gin.Context) {
+	address := c.Query("address")
+	valid := nano.ValidateAddress(address)
+	if !valid {
+		c.String(http.StatusBadRequest, "Invalid address")
+		return
+	}
+
+	sha256 := nano.AddressSha256(address, *seed)
+
+	generateIcon(&sha256, c)
+}
+
+// Testing APIs
 func getRandomSvg(c *gin.Context) {
 	var err error
 
@@ -206,10 +215,12 @@ func main() {
 	// Setup router
 	router := gin.Default()
 	router.Use(cors.Default())
+	// V1 API
+	router.GET("/api/v1/nano", getNano)
+	// For testing
 	router.GET("/api/natricon", getNatricon)
 	router.GET("/api/random", getRandom)
 	router.GET("/api/randomsvg", getRandomSvg)
-	router.GET("/api/svg", getSVG)
 
 	// Run on 8080
 	router.Run(fmt.Sprintf("%s:%d", *serverHost, *serverPort))
