@@ -61,9 +61,9 @@ func CombineSVG(accessories Accessories, size int) ([]byte, error) {
 	var b bytes.Buffer
 	canvas := svg.New(&b)
 	if size == 0 {
-		canvas.Startraw(fmt.Sprintf("viewbox=\"0 0 %d %d\"", DefaultSize, DefaultSize))
+		canvas.Startraw(fmt.Sprintf("viewBox=\"0 0 %d %d\"", DefaultSize, DefaultSize))
 	} else {
-		canvas.Startunit(512, 512, "px", fmt.Sprintf("viewbox=\"0 0 %d %d\"", DefaultSize, DefaultSize))
+		canvas.Startunit(512, 512, "px", fmt.Sprintf("viewBox=\"0 0 %d %d\"", DefaultSize, DefaultSize))
 	}
 	// Add back hair first
 	if accessories.BackHairAsset != nil {
