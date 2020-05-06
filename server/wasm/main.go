@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/base64"
+	"fmt"
 	"syscall/js"
 
 	"github.com/appditto/natricon/server/color"
@@ -10,19 +12,16 @@ import (
 
 var seed string = "123456789"
 
-func getNatriconStr(inputs []js.Value) {
-	callback := inputs[len(inputs)-1:][0]
+func getNatriconStr(this js.Value, inputs []js.Value) interface{} {
 	message := inputs[0].String()
 	if !nano.ValidateAddress(message) {
-		callback.Invoke("Invalid address", js.Null())
-		return
+		return js.Null()
 	}
 	sha256 := nano.AddressSha256(message, seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256)
 	if err != nil {
-		callback.Invoke("failure", js.Null())
-		return
+		return js.Null()
 	}
 	bodyHsv := accessories.BodyColor.ToHSV()
 	hairHsv := accessories.HairColor.ToHSV()
@@ -32,13 +31,13 @@ func getNatriconStr(inputs []js.Value) {
 	deltaHsv.V = hairHsv.V - bodyHsv.V
 	svg, err := image.CombineSVG(accessories)
 	if err != nil {
-		callback.Invoke("failure", js.Null())
-		return
+		return js.Null()
 	}
-
-	callback.Invoke(js.Null(), string(svg))
+	return js.ValueOf(fmt.Sprintf("data:image/svg+xml;base64,%s", base64.StdEncoding.EncodeToString(svg)))
 }
 
 func main() {
+	c := make(chan struct{}, 0)
 	js.Global().Set("getNatriconStr", js.FuncOf(getNatriconStr))
+	<-c
 }

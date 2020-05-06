@@ -2,4 +2,8 @@ module github.com/appditto/natricon/server/wasm
 
 go 1.14
 
-require github.com/appditto/natricon/server v0.0.0-20200506172622-04b881c91a18
+require (
+	github.com/aaronpowell/webpack-golang-wasm-async-loader v0.1.0 // indirect
+	github.com/appditto/natricon/server v0.0.0-20200506173221-8aabca2f121f
+	github.com/mattn/serve v0.0.0-20191206130708-ff16065bd789 // indirect
+)

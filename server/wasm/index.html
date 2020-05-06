@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Testing WebAssembly</title>
+    <script src="wasm_exec.js"></script>
+    <script type="text/javascript">
+
+    const go = new Go();
+    let mod, inst;
+    WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then(
+        async result => {
+            mod = result.module;
+            inst = result.instance;
+            go.run(inst);
+            document.getElementById("test").src = getNatriconStr('nano_3jb1fp4diu79wggp7e171jdpxp95auji4moste6gmc55pptwerfjqu48okse')
+        }
+    );
+    </script>
+  </head>
+  <body>
+    <img id="test" src="#" />
+  </body>
+</html>
