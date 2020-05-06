@@ -9,6 +9,7 @@ import (
 
 	"github.com/appditto/natricon/server/color"
 	"github.com/appditto/natricon/server/image"
+	"github.com/appditto/natricon/server/magickwand"
 	"github.com/appditto/natricon/server/nano"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -62,7 +63,7 @@ func generateIcon(hash *string, c *gin.Context) {
 	if format != "svg" {
 		// Convert
 		var converted []byte
-		converted, err = image.ConvertSvgToBinary(svg, image.ImageFormat(format), uint(size))
+		converted, err = magickwand.ConvertSvgToBinary(svg, magickwand.ImageFormat(format), uint(size))
 		if err != nil {
 			c.String(http.StatusInternalServerError, "Error occured")
 			return

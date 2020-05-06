@@ -2,6 +2,10 @@ package main
 
 import (
 	"syscall/js"
+
+	"github.com/appditto/natricon/server/color"
+	"github.com/appditto/natricon/server/image"
+	"github.com/appditto/natricon/server/nano"
 )
 
 var seed string = "123456789"
@@ -15,7 +19,7 @@ func getNatriconStr(inputs []js.Value) {
 	}
 	sha256 := nano.AddressSha256(message, seed)
 
-	accessories, err := natricon.image.GetAccessoriesForHash(sha256)
+	accessories, err := image.GetAccessoriesForHash(sha256)
 	if err != nil {
 		callback.Invoke("failure", js.Null())
 		return
@@ -26,7 +30,7 @@ func getNatriconStr(inputs []js.Value) {
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.V = hairHsv.V - bodyHsv.V
-	svg, err := natricon.image.CombineSVG(accessories)
+	svg, err := image.CombineSVG(accessories)
 	if err != nil {
 		callback.Invoke("failure", js.Null())
 		return

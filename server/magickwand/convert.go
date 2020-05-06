@@ -1,8 +1,9 @@
-package image
+package magickwand
 
 import (
 	"strings"
 
+	"github.com/appditto/natricon/server/image"
 	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
@@ -17,7 +18,7 @@ func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, 
 	pixelWand.SetColor("none")
 	mw.SetBackgroundColor(pixelWand)
 	mw.SetImageUnits(imagick.RESOLUTION_PIXELS_PER_INCH)
-	density := 96.0 * float64(size) / float64(DefaultSize)
+	density := 96.0 * float64(size) / float64(image.DefaultSize)
 	mw.SetResolution(density, density)
 	err := mw.ReadImageBlob(svgData)
 	if err != nil {
