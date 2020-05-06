@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/appditto/natricon/color"
-	"github.com/appditto/natricon/rand"
+	"github.com/appditto/natricon/server/color"
+	"github.com/appditto/natricon/server/rand"
 )
 
 // Constants

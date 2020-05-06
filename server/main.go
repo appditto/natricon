@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/appditto/natricon/color"
-	"github.com/appditto/natricon/image"
-	"github.com/appditto/natricon/nano"
+	"github.com/appditto/natricon/server/color"
+	"github.com/appditto/natricon/server/image"
+	"github.com/appditto/natricon/server/nano"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )

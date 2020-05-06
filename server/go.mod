@@ -1,4 +1,4 @@
-module github.com/appditto/natricon
+module github.com/appditto/natricon/server
 
 go 1.14
 

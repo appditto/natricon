@@ -10,7 +10,7 @@ import (
 	"sync"
 
 	svg "github.com/ajstarks/svgo"
-	"github.com/appditto/natricon/color"
+	"github.com/appditto/natricon/server/color"
 	"github.com/golang/glog"
 	minify "github.com/tdewolff/minify/v2"
 	minifysvg "github.com/tdewolff/minify/v2/svg"
