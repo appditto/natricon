@@ -60,7 +60,7 @@ func getSVG(c *gin.Context) {
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.V = hairHsv.V - bodyHsv.V
-	svg, err := image.CombineSVG(accessories, size)
+	svg, err := image.CombineSVG(accessories)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Error occured")
 		return
@@ -96,7 +96,7 @@ func getRandomSvg(c *gin.Context) {
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.V = hairHsv.V - bodyHsv.V
-	svg, err := image.CombineSVG(accessories, 0)
+	svg, err := image.CombineSVG(accessories)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Error occured")
 		return
@@ -121,7 +121,7 @@ func getRandom(c *gin.Context) {
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.V = hairHsv.V - bodyHsv.V
-	svg, err := image.CombineSVG(accessories, 0)
+	svg, err := image.CombineSVG(accessories)
 	var svgStr string
 	if err != nil {
 		svgStr = "Error"
