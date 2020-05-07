@@ -3,11 +3,13 @@
     <div>
       <h1 class="title text-primary text-5xl font-bold break-all">natricon</h1>
       <div class="flex flex-row flex-wrap justify-center">
+        <!-- Randomize 1 Button  -->
         <button
           ref="btn2"
           class="px-4 py-2 m-2 bg-primary text-white text-xl font-bold rounded-lg transition-all duration-200 ease-out transform hover:scale-105"
           @click="generateRandomNatricon(); pulseIt2()"
         >Randomize 1</button>
+        <!-- Randomize 10 Button  -->
         <button
           ref="btn"
           class="px-4 py-2 m-2 bg-primary text-white text-xl font-bold rounded-lg transition-all duration-200 ease-out transform hover:scale-105"
