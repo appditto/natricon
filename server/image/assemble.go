@@ -28,11 +28,14 @@ type SVG struct {
 
 func CombineSVG(accessories Accessories) ([]byte, error) {
 	var (
-		body     SVG
-		hair     SVG
-		mouth    SVG
-		eye      SVG
-		backHair SVG
+		body         SVG
+		hair         SVG
+		mouth        SVG
+		eye          SVG
+		backHair     SVG
+		bodyOutline  SVG
+		hairOutline  SVG
+		mouthOutline SVG
 	)
 	// Parse all SVG assets
 	if err := xml.Unmarshal(accessories.BodyAsset.SVGContents, &body); err != nil {
@@ -57,11 +60,50 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 			return nil, err
 		}
 	}
+	if accessories.BodyOutlineAsset != nil {
+		if err := xml.Unmarshal(accessories.BodyOutlineAsset.SVGContents, &bodyOutline); err != nil {
+			glog.Fatalf("Unable to parse body outline SVG %v", err)
+			return nil, err
+		}
+	}
+	if accessories.HairOutlineAsset != nil {
+		if err := xml.Unmarshal(accessories.HairOutlineAsset.SVGContents, &hairOutline); err != nil {
+			glog.Fatalf("Unable to parse hair outline SVG %v", err)
+			return nil, err
+		}
+	}
+	if accessories.MouthOutlineAsset != nil {
+		if err := xml.Unmarshal(accessories.MouthOutlineAsset.SVGContents, &mouthOutline); err != nil {
+			glog.Fatalf("Unable to parse mouth outline SVG %v", err)
+			return nil, err
+		}
+	}
 	// Create new SVG writer
 	var b bytes.Buffer
 	canvas := svg.New(&b)
 	canvas.Startraw(fmt.Sprintf("viewBox=\"0 0 %d %d\"", DefaultSize, DefaultSize))
-	// Add back hair first
+	// Add body outline
+	if accessories.BodyOutlineAsset != nil {
+		canvas.Gid("bodyOutline")
+		bodyOutline.Doc = strings.ReplaceAll(bodyOutline.Doc, "black", accessories.OutlineColor.ToHTML(true))
+		io.WriteString(canvas.Writer, bodyOutline.Doc)
+		canvas.Gend()
+	}
+	// Add mouth outline
+	if accessories.MouthOutlineAsset != nil {
+		canvas.Gid("mouthOutline")
+		mouthOutline.Doc = strings.ReplaceAll(mouthOutline.Doc, "black", accessories.OutlineColor.ToHTML(true))
+		io.WriteString(canvas.Writer, mouthOutline.Doc)
+		canvas.Gend()
+	}
+	// Add hair outline
+	if accessories.HairOutlineAsset != nil {
+		canvas.Gid("hairOutline")
+		hairOutline.Doc = strings.ReplaceAll(hairOutline.Doc, "black", accessories.OutlineColor.ToHTML(true))
+		io.WriteString(canvas.Writer, hairOutline.Doc)
+		canvas.Gend()
+	}
+	// Add back hair
 	if accessories.BackHairAsset != nil {
 		canvas.Gid("backhair")
 		if accessories.HairAsset.HairColored {

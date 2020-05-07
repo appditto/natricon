@@ -13,14 +13,17 @@ type IllustrationType string
 type Sex string
 
 const (
-	Body     IllustrationType = "body"
-	Hair     IllustrationType = "hair-front"
-	HairBack IllustrationType = "hair-back"
-	Mouth    IllustrationType = "mouth"
-	Eye      IllustrationType = "eyes"
-	Male     Sex              = "M"
-	Female   Sex              = "F"
-	Neutral  Sex              = "N"
+	Body         IllustrationType = "body"
+	BodyOutline  IllustrationType = "body-outline"
+	Hair         IllustrationType = "hair-front"
+	HairBack     IllustrationType = "hair-back"
+	HairOutline  IllustrationType = "hair-outline"
+	Mouth        IllustrationType = "mouth"
+	MouthOutline IllustrationType = "mouth-outline"
+	Eye          IllustrationType = "eyes"
+	Male         Sex              = "M"
+	Female       Sex              = "F"
+	Neutral      Sex              = "N"
 )
 
 type Asset struct {
@@ -60,11 +63,14 @@ func getSex(name string) Sex {
 
 // Singleton to keep assets loaded in memory
 type assetManager struct {
-	bodyAssets     []Asset
-	hairAssets     []Asset
-	hairBackAssets []Asset
-	mouthAssets    []Asset
-	eyeAssets      []Asset
+	bodyAssets         []Asset
+	bodyOutlineAssets  []Asset
+	hairAssets         []Asset
+	hairBackAssets     []Asset
+	hairOutlineAssets  []Asset
+	mouthAssets        []Asset
+	mouthOutlineAssets []Asset
+	eyeAssets          []Asset
 }
 
 var singleton *assetManager
@@ -80,6 +86,13 @@ func GetAssets() *assetManager {
 			err = json.Unmarshal(ba, &a)
 			bodyAssets = append(bodyAssets, a)
 		}
+		// Load body outlines
+		var bodyOutlineAssets []Asset
+		for _, ba := range BodyOutlineIllustrations {
+			var a Asset
+			err = json.Unmarshal(ba, &a)
+			bodyOutlineAssets = append(bodyOutlineAssets, a)
+		}
 		// Load hair assets
 		var hairAssets []Asset
 		for _, ha := range HairIllustrations {
@@ -94,12 +107,26 @@ func GetAssets() *assetManager {
 			err = json.Unmarshal(ha, &a)
 			hairBackAssets = append(hairBackAssets, a)
 		}
+		// Hair outline
+		var hairOutlineAssets []Asset
+		for _, ha := range HairOutlineIllustrations {
+			var a Asset
+			err = json.Unmarshal(ha, &a)
+			hairOutlineAssets = append(hairOutlineAssets, a)
+		}
 		// Load mouth assets
 		var mouthAssets []Asset
 		for _, ma := range MouthIllustrations {
 			var a Asset
 			err = json.Unmarshal(ma, &a)
 			mouthAssets = append(mouthAssets, a)
+		}
+		// Mouth Outline
+		var mouthOutlineAssets []Asset
+		for _, ma := range MouthOutlineIllustrations {
+			var a Asset
+			err = json.Unmarshal(ma, &a)
+			mouthOutlineAssets = append(mouthOutlineAssets, a)
 		}
 		// Load eye assets
 		var eyeAssets []Asset
@@ -113,11 +140,14 @@ func GetAssets() *assetManager {
 		}
 		// Create object
 		singleton = &assetManager{
-			bodyAssets:     bodyAssets,
-			hairAssets:     hairAssets,
-			hairBackAssets: hairBackAssets,
-			mouthAssets:    mouthAssets,
-			eyeAssets:      eyeAssets,
+			bodyAssets:         bodyAssets,
+			bodyOutlineAssets:  bodyOutlineAssets,
+			hairAssets:         hairAssets,
+			hairBackAssets:     hairBackAssets,
+			hairOutlineAssets:  hairOutlineAssets,
+			mouthAssets:        mouthAssets,
+			mouthOutlineAssets: mouthOutlineAssets,
+			eyeAssets:          eyeAssets,
 		}
 	})
 	return singleton
@@ -131,6 +161,11 @@ func (sm *assetManager) GetNBodyAssets() int {
 // GetBodyAssets - get complete list of hair assets
 func (sm *assetManager) GetBodyAssets() []Asset {
 	return sm.bodyAssets
+}
+
+// GetBodyOutlineAssets
+func (sm *assetManager) GetBodyOutlineAssets() []Asset {
+	return sm.bodyOutlineAssets
 }
 
 // GetNHairAssets - get # of hair assets
@@ -151,6 +186,11 @@ func (sm *assetManager) GetHairAssets(sex Sex) []Asset {
 	return ret
 }
 
+// GetHairOutlineAssets
+func (sm *assetManager) GetHairOutlineAssets() []Asset {
+	return sm.hairOutlineAssets
+}
+
 // GetBackHairAssets - get complete list of hair assets
 func (sm *assetManager) GetBackHairAssets() []Asset {
 	return sm.hairBackAssets
@@ -167,6 +207,11 @@ func (sm *assetManager) GetMouthAssets(sex Sex) []Asset {
 		}
 	}
 	return ret
+}
+
+// GetMouthOutlineAssets
+func (sm *assetManager) GetMouthOutlineAssets() []Asset {
+	return sm.mouthOutlineAssets
 }
 
 // GetEyeAssets - Get eye asset list
