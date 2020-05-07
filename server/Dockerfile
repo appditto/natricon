@@ -14,6 +14,6 @@ ADD . .
 ADD assets assets
 # Dependencies and buil
 RUN go get -u
-RUN go build
+RUN go build -o natricon
 # run main.go
 CMD ["./natricon", "-host=0.0.0.0", "-port=5555", "-logtostderr"]
