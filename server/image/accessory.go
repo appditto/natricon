@@ -255,7 +255,7 @@ func GetMouthAsset(entropy string, sex Sex) (Asset, error) {
 
 // GetMouthOutlineAsset - return mouth outline illustration for a given mouth asset
 func GetMouthOutlineAsset(mouthAsset Asset) *Asset {
-	for _, ba := range GetAssets().GetHairOutlineAssets() {
+	for _, ba := range GetAssets().GetMouthOutlineAssets() {
 		if ba.FileName == mouthAsset.FileName {
 			return &ba
 		}
