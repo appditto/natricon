@@ -44,7 +44,18 @@ func generateIcon(hash *string, c *gin.Context) {
 		}
 	}
 
-	accessories, err := image.GetAccessoriesForHash(*hash)
+	outline := strings.ToLower(c.Query("outline")) == "true"
+	// Get outline and outline color info, black is default
+	var outlineColor *color.RGB
+	if outline {
+		if strings.ToLower(c.Query("outlineColor")) == "white" {
+			outlineColor = &color.RGB{R: 255.0, G: 255.0, B: 255.0}
+		} else {
+			outlineColor = &color.RGB{R: 0.0, G: 0.0, B: 0.0}
+		}
+	}
+
+	accessories, err := image.GetAccessoriesForHash(*hash, outline, outlineColor)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -95,7 +106,7 @@ func getRandomSvg(c *gin.Context) {
 	address := nano.GenerateAddress()
 	sha256 := nano.AddressSha256(address, *seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256)
+	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -120,7 +131,7 @@ func getRandom(c *gin.Context) {
 	address := nano.GenerateAddress()
 	sha256 := nano.AddressSha256(address, *seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256)
+	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -171,7 +182,7 @@ func getNatricon(c *gin.Context) {
 	// }
 	sha256 := nano.AddressSha256(address, *seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256)
+	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return

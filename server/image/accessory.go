@@ -16,20 +16,24 @@ var MinBrightness float64 = 0.4 // Minimum allowed brightness
 
 // Accessories - represents accessories for natricon
 type Accessories struct {
-	BodyColor     color.RGB
-	HairColor     color.RGB
-	BodyAsset     Asset
-	HairAsset     Asset
-	MouthAsset    Asset
-	EyeAsset      Asset
-	BackHairAsset *Asset
+	BodyColor         color.RGB
+	HairColor         color.RGB
+	BodyAsset         Asset
+	HairAsset         Asset
+	MouthAsset        Asset
+	EyeAsset          Asset
+	BackHairAsset     *Asset
+	BodyOutlineAsset  *Asset
+	HairOutlineAsset  *Asset
+	MouthOutlineAsset *Asset
+	OutlineColor      color.RGB
 }
 
 // Hex string regex
 var hexRegex = regexp.MustCompile("^[0-9a-fA-F]+$")
 
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
-func GetAccessoriesForHash(hash string) (Accessories, error) {
+func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (Accessories, error) {
 	var err error
 	if len(hash) != 64 {
 		return Accessories{}, errors.New("Invalid hash")
@@ -74,6 +78,18 @@ func GetAccessoriesForHash(hash string) (Accessories, error) {
 		targetSex = accessories.MouthAsset.Sex
 	}
 	accessories.EyeAsset, err = GetEyeAsset(hash[40:48], targetSex)
+
+	// Get outlines
+	if outline {
+		accessories.BodyOutlineAsset = GetBodyOutlineAsset(accessories.BodyAsset)
+		accessories.HairOutlineAsset = GetHairOutlineAsset(accessories.HairAsset)
+		accessories.MouthOutlineAsset = GetMouthOutlineAsset(accessories.MouthAsset)
+		if outlineColor != nil {
+			accessories.OutlineColor = *outlineColor
+		} else {
+			accessories.OutlineColor = color.RGB{R: 0, G: 0, B: 0}
+		}
+	}
 
 	return accessories, nil
 }
@@ -156,6 +172,16 @@ func GetBodyAsset(entropy string) (Asset, error) {
 	return GetAssets().GetBodyAssets()[bodyIndex], nil
 }
 
+// GetBodyOutlineAsset - return body outline illustration for a given body asset
+func GetBodyOutlineAsset(bodyAsset Asset) *Asset {
+	for _, ba := range GetAssets().GetBodyOutlineAssets() {
+		if ba.FileName == bodyAsset.FileName {
+			return &ba
+		}
+	}
+	return nil
+}
+
 // GetHairAsset - return hair illustration to use with given entropy
 func GetHairAsset(entropy string, bodyAsset *Asset) (Asset, error) {
 	// Get detemrinistic RNG
@@ -176,6 +202,16 @@ func GetHairAsset(entropy string, bodyAsset *Asset) (Asset, error) {
 // GetBackHairAsset - return back hair illustration for a given hair asset
 func GetBackHairAsset(hairAsset Asset) *Asset {
 	for _, ba := range GetAssets().GetBackHairAssets() {
+		if ba.FileName == hairAsset.FileName {
+			return &ba
+		}
+	}
+	return nil
+}
+
+// GetHairOutlineAsset - return hair outline illustration for a given hair asset
+func GetHairOutlineAsset(hairAsset Asset) *Asset {
+	for _, ba := range GetAssets().GetHairOutlineAssets() {
 		if ba.FileName == hairAsset.FileName {
 			return &ba
 		}
@@ -215,4 +251,14 @@ func GetMouthAsset(entropy string, sex Sex) (Asset, error) {
 	mouthIndex := r.Int31n(int32(len(mouthAssetOptions)))
 
 	return mouthAssetOptions[mouthIndex], nil
+}
+
+// GetMouthOutlineAsset - return mouth outline illustration for a given mouth asset
+func GetMouthOutlineAsset(mouthAsset Asset) *Asset {
+	for _, ba := range GetAssets().GetMouthOutlineAssets() {
+		if ba.FileName == mouthAsset.FileName {
+			return &ba
+		}
+	}
+	return nil
 }

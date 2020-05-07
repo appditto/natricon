@@ -54,6 +54,29 @@ func LoadAssetsToArray() {
 	})
 	ret += "}\n"
 
+	var bodyOutlineAsset image.Asset
+	ret += "\nvar BodyOutlineIllustrations = [][]byte{\n"
+	fPath = path.Join(wd, "assets", "illustrations", string(image.BodyOutline))
+	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
+		if strings.Contains(info.Name(), ".svg") {
+			bodyOutlineAsset = image.Asset{}
+			bodyOutlineAsset.FileName = info.Name()
+			bodyOutlineAsset.IllustrationPath = path
+			bodyOutlineAsset.SVGContents, err = ioutil.ReadFile(path)
+			if err != nil {
+				glog.Fatalf("Couldn't load file %s", path)
+				panic(err.Error())
+			}
+			bodyOutlineAsset.HairColored = false
+			bodyOutlineAsset.BodyColored = false
+			bodyOutlineAsset.Sex = getSex(info.Name())
+			encoded, _ := json.Marshal(bodyOutlineAsset)
+			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
+		}
+		return nil
+	})
+	ret += "}\n"
+
 	var hairAssets image.Asset
 	ret += "\nvar HairIllustrations = [][]byte{\n"
 	fPath = path.Join(wd, "assets", "illustrations", string(image.Hair))
@@ -100,6 +123,29 @@ func LoadAssetsToArray() {
 	})
 	ret += "}\n"
 
+	var hairOutlineAsset image.Asset
+	ret += "\nvar HairOutlineIllustrations = [][]byte{\n"
+	fPath = path.Join(wd, "assets", "illustrations", string(image.HairOutline))
+	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
+		if strings.Contains(info.Name(), ".svg") {
+			hairOutlineAsset = image.Asset{}
+			hairOutlineAsset.FileName = info.Name()
+			hairOutlineAsset.IllustrationPath = path
+			hairOutlineAsset.SVGContents, err = ioutil.ReadFile(path)
+			if err != nil {
+				glog.Fatalf("Couldn't load file %s", path)
+				panic(err.Error())
+			}
+			hairOutlineAsset.HairColored = false
+			hairOutlineAsset.BodyColored = false
+			hairOutlineAsset.Sex = getSex(info.Name())
+			encoded, _ := json.Marshal(hairOutlineAsset)
+			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
+		}
+		return nil
+	})
+	ret += "}\n"
+
 	var eyeAssets image.Asset
 	ret += "\nvar EyeIllustrations = [][]byte{\n"
 	fPath = path.Join(wd, "assets", "illustrations", string(image.Eye))
@@ -140,6 +186,29 @@ func LoadAssetsToArray() {
 			mouthAssets.BodyColored = false
 			mouthAssets.Sex = getSex(info.Name())
 			encoded, _ := json.Marshal(mouthAssets)
+			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
+		}
+		return nil
+	})
+	ret += "}\n"
+
+	var mouthOutlineAsset image.Asset
+	ret += "\nvar MouthOutlineIllustrations = [][]byte{\n"
+	fPath = path.Join(wd, "assets", "illustrations", string(image.MouthOutline))
+	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
+		if strings.Contains(info.Name(), ".svg") {
+			mouthOutlineAsset = image.Asset{}
+			mouthOutlineAsset.FileName = info.Name()
+			mouthOutlineAsset.IllustrationPath = path
+			mouthOutlineAsset.SVGContents, err = ioutil.ReadFile(path)
+			if err != nil {
+				glog.Fatalf("Couldn't load file %s", path)
+				panic(err.Error())
+			}
+			mouthOutlineAsset.HairColored = false
+			mouthOutlineAsset.BodyColored = false
+			mouthOutlineAsset.Sex = getSex(info.Name())
+			encoded, _ := json.Marshal(mouthOutlineAsset)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
 		return nil
