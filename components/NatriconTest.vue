@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col shadow-xl rounded-lg">
     <div class="w-48 h-48 mx-auto relative">
-      <svg class="absolute" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="absolute" viewBox="20 20 472 472" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect
           x="128"
           y="128"
@@ -28,7 +28,7 @@
           fill-opacity="0.3"
         />
       </svg>
-      <svg class="absolute" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="absolute" viewBox="20 20 472 472" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M221 273C229.837 273 237 265.837 237 257C237 248.163 229.837 241 221 241C212.163 241 205 248.163 205 257C205 265.837 212.163 273 221 273Z"
           fill="black"
@@ -40,7 +40,7 @@
           fill-opacity="0.4"
         />
       </svg>
-      <svg class="absolute" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="absolute" viewBox="20 20 472 472" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
@@ -49,7 +49,7 @@
           fill-opacity="0.4"
         />
       </svg>
-      <svg class="absolute" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="absolute" viewBox="20 20 472 472" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M302 194C359 194 408 177 408 132.5C408 50.5001 317 98.6221 223.5 92.5C158.76 88.2611 120.816 111.709 120 161.5C119.5 192 129 225.5 129 225.5C129 225.5 124 189.5 149 178C174 166.5 245 194 302 194Z"
           fill="#FFE600"

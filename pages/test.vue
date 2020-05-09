@@ -1,7 +1,7 @@
 <template>
   <div class="pb-24 flex flex-row justify-center">
     <div>
-      <div class="flex flex-row justify-center items-center mt-6">
+      <div class="flex flex-row justify-center items-center mt-8">
         <h2 class="title text-primary text-xl font-bold break-all pr-2">Hue:</h2>
         <input
           placeholder="240"
@@ -12,14 +12,14 @@
           class="border-2 border-primary px-2 py-1 text-lg rounded-lg"
         />
       </div>
-      <div v-for="(y, t) in 9" :key="t" class="flex flex-row justify-center flex-wrap">
+      <div v-for="(y, t) in 9" :key="t" class="flex flex-row justify-center flex-wrap mt-4">
         <natricon-test
           v-for="(x, i) in 7"
           :key="i"
           :bodyH="hue%360"
           :bodyS="(saturation - t*0.1)"
           :bodyV="(brightness - i*0.1)"
-          class="mx-2 my-4 px-4 pb-4"
+          class="mx-2 my-4 px-3 pb-4"
         />
       </div>
     </div>
