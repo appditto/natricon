@@ -2,7 +2,6 @@ package image
 
 import (
 	"errors"
-	"math"
 	"regexp"
 	"strconv"
 
@@ -45,21 +44,14 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 
 	// Create empty Accessories object
 	var accessories = Accessories{}
-	// Body color is first 6 digits as hex string
-	bodyColorHex := hash[0:6]
-
-	accessories.BodyColor, err = color.HTMLToRGB(bodyColorHex)
+	// Body color uses first 12 digits of hash as seed
+	accessories.BodyColor, err = GetBodyColor(hash[0:12])
 	if err != nil {
 		return Accessories{}, err
 	}
-	// Enforce min saturation and brightness
-	bodyColorHSV := accessories.BodyColor.ToHSV()
-	bodyColorHSV.V = math.Max(MinBrightness, bodyColorHSV.V)
-	bodyColorHSV.S = math.Max(MinSaturation, bodyColorHSV.S)
-	accessories.BodyColor = bodyColorHSV.ToRGB()
 
-	// Get hair color using next 6 bits
-	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[6:12], hash[12:16], hash[16:20])
+	// Get hair color
+	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[12:18], hash[18:22], hash[22:26])
 
 	// Get body and hair illustrations
 	accessories.BodyAsset, err = GetBodyAsset(hash[20:26])
@@ -94,16 +86,48 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	return accessories, nil
 }
 
+// GetBodyColor - Get body color with given entropy
+func GetBodyColor(entropy string) (color.RGB, error) {
+	// Want to generate hue between 0-360
+	// Get detemrinistic RNG
+	randSeed, err := strconv.ParseInt(entropy[0:4], 16, 64)
+	if err != nil {
+		return color.RGB{}, err
+	}
+	outHSV := color.HSV{}
+	// Generate hue
+	r := rand.Init()
+	r.Seed(uint32(randSeed))
+	outHSV.H = float64(r.Int31n(360))
+	// Generate Saturation
+	randSeed, err = strconv.ParseInt(entropy[4:8], 16, 64)
+	if err != nil {
+		return color.RGB{}, err
+	}
+	r = rand.Init()
+	r.Seed(uint32(randSeed))
+	minSatInt := int32(MinSaturation * 100)
+	outHSV.S = float64(r.Int31n(100-minSatInt) + minSatInt)
+	// Generate Brightness
+	randSeed, err = strconv.ParseInt(entropy[8:12], 16, 64)
+	if err != nil {
+		return color.RGB{}, err
+	}
+	r = rand.Init()
+	r.Seed(uint32(randSeed))
+	minBInt := int32(MinBrightness * 100)
+	outHSV.V = float64(r.Int31n(100-minBInt) + minBInt)
+	return outHSV.ToRGB(), nil
+}
+
 // GetHairColor - Get a complementary color with given entropy
 func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntropy string) (color.RGB, error) {
 	var err error
 	// Get as HSV color
 	bodyColorHSV := bodyColor.ToHSV()
+	hairColorHSV := color.HSV{}
 
 	var randSeed int64
-	var shiftedHue float64
-	var shiftedSaturation float64
-	var shiftedBrightness float64
 	// Want to shift the hue between 90-270
 	// Get detemrinistic RNG
 	randSeed, err = strconv.ParseInt(hEntropy, 16, 64)
@@ -114,45 +138,32 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	// Generate random shift between 90...270
 	r := rand.Init()
 	r.Seed(uint32(randSeed))
-	shiftedHue = float64(r.Int31n(270-90)+90) + bodyColorHSV.H
+	hairColorHSV.H = float64(r.Int31n(270-90)+90) + bodyColorHSV.H
 
 	// If > 360, subtract
-	if shiftedHue > 360 {
-		shiftedHue = shiftedHue - 360
+	if hairColorHSV.H > 360 {
+		hairColorHSV.H = hairColorHSV.H - 360
 	}
 
-	// Generate random shift between 0..20 for saturation
+	// Generate random saturation between MinimumSaturation - 100
 	randSeed, err = strconv.ParseInt(sEntropy, 16, 64)
 	if err != nil {
 		return color.RGB{}, err
 	}
+	r = rand.Init()
 	r.Seed(uint32(randSeed))
-	// Adjust saturation by -20 to + 40
-	randNum := float64(r.Int31n(121) - 20)
-	shiftedSaturation = (bodyColorHSV.S * 100.0) + randNum
-	// Cap at 100
-	if shiftedSaturation > 100 {
-		shiftedSaturation = 100
-	}
+	minSatInt := int32(MinSaturation * 100)
+	hairColorHSV.S = float64(r.Int31n(100-minSatInt) + minSatInt)
 
-	// Generate random shift between 0..20 for brightness
+	// Generate random brightess between MinimumBrightness - 100
 	randSeed, err = strconv.ParseInt(bEntropy, 16, 64)
 	if err != nil {
 		return color.RGB{}, err
 	}
+	r = rand.Init()
 	r.Seed(uint32(randSeed))
-	// Adjust brightness by -20 to + 40
-	randNum = float64(r.Int31n(121) - 20)
-	shiftedBrightness = (bodyColorHSV.V * 100.0) + randNum
-	// Cap at 100
-	if shiftedBrightness > 100 {
-		shiftedBrightness = 100
-	}
-
-	hairColorHSV := color.HSV{}
-	hairColorHSV.H = shiftedHue
-	hairColorHSV.S = math.Max(MinSaturation, shiftedSaturation/100.0)
-	hairColorHSV.V = math.Max(MinBrightness, shiftedBrightness/100.0)
+	minBInt := int32(MinBrightness * 100)
+	hairColorHSV.V = float64(r.Int31n(100-minBInt) + minBInt)
 
 	return hairColorHSV.ToRGB(), nil
 }
