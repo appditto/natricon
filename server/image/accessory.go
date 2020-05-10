@@ -2,6 +2,7 @@ package image
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -54,8 +55,8 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[12:18], hash[18:22], hash[22:26])
 
 	// Get body and hair illustrations
-	accessories.BodyAsset, err = GetBodyAsset(hash[20:26])
-	accessories.HairAsset, err = GetHairAsset(hash[26:32], &accessories.BodyAsset)
+	accessories.BodyAsset, err = GetBodyAsset(hash[26:32])
+	accessories.HairAsset, err = GetHairAsset(hash[32:38], &accessories.BodyAsset)
 	accessories.BackHairAsset = GetBackHairAsset(accessories.HairAsset)
 
 	// Get mouth and eyes
@@ -65,11 +66,11 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	} else if accessories.HairAsset.Sex != Neutral {
 		targetSex = accessories.HairAsset.Sex
 	}
-	accessories.MouthAsset, err = GetMouthAsset(hash[32:40], targetSex)
+	accessories.MouthAsset, err = GetMouthAsset(hash[38:48], targetSex)
 	if targetSex == Neutral && accessories.MouthAsset.Sex != Neutral {
 		targetSex = accessories.MouthAsset.Sex
 	}
-	accessories.EyeAsset, err = GetEyeAsset(hash[40:48], targetSex)
+	accessories.EyeAsset, err = GetEyeAsset(hash[46:56], targetSex)
 
 	// Get outlines
 	if outline {
@@ -107,7 +108,7 @@ func GetBodyColor(entropy string) (color.RGB, error) {
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	minSatInt := int32(MinSaturation * 100)
-	outHSV.S = float64(r.Int31n(100-minSatInt) + minSatInt)
+	outHSV.S = float64(r.Int31n(100-minSatInt)+minSatInt) / 100.0
 	// Generate Brightness
 	randSeed, err = strconv.ParseInt(entropy[8:12], 16, 64)
 	if err != nil {
@@ -116,7 +117,10 @@ func GetBodyColor(entropy string) (color.RGB, error) {
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	minBInt := int32(MinBrightness * 100)
-	outHSV.V = float64(r.Int31n(100-minBInt) + minBInt)
+	outHSV.V = float64(r.Int31n(100-minBInt)+minBInt) / 100.0
+
+	print(fmt.Sprintf("Got %f %f %f", outHSV.H, outHSV.S, outHSV.V))
+
 	return outHSV.ToRGB(), nil
 }
 
@@ -153,7 +157,7 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	minSatInt := int32(MinSaturation * 100)
-	hairColorHSV.S = float64(r.Int31n(100-minSatInt) + minSatInt)
+	hairColorHSV.S = float64(r.Int31n(100-minSatInt)+minSatInt) / 100.0
 
 	// Generate random brightess between MinimumBrightness - 100
 	randSeed, err = strconv.ParseInt(bEntropy, 16, 64)
@@ -163,7 +167,7 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	minBInt := int32(MinBrightness * 100)
-	hairColorHSV.V = float64(r.Int31n(100-minBInt) + minBInt)
+	hairColorHSV.V = float64(r.Int31n(100-minBInt)+minBInt) / 100.0
 
 	return hairColorHSV.ToRGB(), nil
 }
