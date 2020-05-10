@@ -46,17 +46,17 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	// Create empty Accessories object
 	var accessories = Accessories{}
 	// Body color uses first 12 digits of hash as seed
-	accessories.BodyColor, err = GetBodyColor(hash[0:12])
+	accessories.BodyColor, err = GetBodyColor(hash[0:16])
 	if err != nil {
 		return Accessories{}, err
 	}
 
 	// Get hair color
-	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[12:18], hash[18:22], hash[22:26])
+	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[16:26], hash[26:30], hash[30:34])
 
 	// Get body and hair illustrations
-	accessories.BodyAsset, err = GetBodyAsset(hash[26:32])
-	accessories.HairAsset, err = GetHairAsset(hash[32:38], &accessories.BodyAsset)
+	accessories.BodyAsset, err = GetBodyAsset(hash[34:40])
+	accessories.HairAsset, err = GetHairAsset(hash[40:46], &accessories.BodyAsset)
 	accessories.BackHairAsset = GetBackHairAsset(accessories.HairAsset)
 
 	// Get mouth and eyes
@@ -66,11 +66,11 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	} else if accessories.HairAsset.Sex != Neutral {
 		targetSex = accessories.HairAsset.Sex
 	}
-	accessories.MouthAsset, err = GetMouthAsset(hash[38:48], targetSex)
+	accessories.MouthAsset, err = GetMouthAsset(hash[46:55], targetSex)
 	if targetSex == Neutral && accessories.MouthAsset.Sex != Neutral {
 		targetSex = accessories.MouthAsset.Sex
 	}
-	accessories.EyeAsset, err = GetEyeAsset(hash[46:56], targetSex)
+	accessories.EyeAsset, err = GetEyeAsset(hash[55:64], targetSex)
 
 	// Get outlines
 	if outline {
