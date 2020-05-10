@@ -138,6 +138,8 @@ func getRandom(c *gin.Context) {
 	}
 	bodyHsv := accessories.BodyColor.ToHSV()
 	hairHsv := accessories.HairColor.ToHSV()
+	bodyHsl := accessories.BodyColor.ToHSL()
+	hairHsl := accessories.HairColor.ToHSL()
 	deltaHsv := color.HSV{}
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
@@ -156,9 +158,15 @@ func getRandom(c *gin.Context) {
 		"bodyH":     int16(bodyHsv.H),
 		"bodyS":     int16(bodyHsv.S * 100.0),
 		"bodyV":     int16(bodyHsv.V * 100.0),
+		"bodyHSLH":  int16(bodyHsl.H),
+		"bodyHSLS":  int16(bodyHsl.S * 100.0),
+		"bodyHSLV":  int16(bodyHsl.L * 100.0),
 		"hairH":     int16(hairHsv.H),
 		"hairS":     int16(hairHsv.S * 100.0),
 		"hairV":     int16(hairHsv.V * 100.0),
+		"hairHSLH":  int16(hairHsl.H),
+		"hairHSLS":  int16(hairHsl.S * 100.0),
+		"haiorHSLV": int16(hairHsl.L * 100.0),
 		"deltaH":    int16(deltaHsv.H),
 		"deltaS":    int16(deltaHsv.S * 100.0),
 		"deltaV":    int16(deltaHsv.V * 100.0),

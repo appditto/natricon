@@ -108,7 +108,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 		canvas.Gid("backhair")
 		if accessories.HairAsset.HairColored {
 			backHair.Doc = strings.ReplaceAll(backHair.Doc, "#FF0000", accessories.HairColor.ToHTML(true))
-			backHair.Doc = strings.ReplaceAll(backHair.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.HairColor.ToHSV())))
+			backHair.Doc = strings.ReplaceAll(backHair.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.HairColor.ToHSL())))
 		}
 		io.WriteString(canvas.Writer, backHair.Doc)
 		canvas.Gend()
@@ -117,7 +117,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	canvas.Gid("body")
 	if accessories.BodyAsset.BodyColored {
 		body.Doc = strings.ReplaceAll(body.Doc, "#00FFFF", accessories.BodyColor.ToHTML(true))
-		body.Doc = strings.ReplaceAll(body.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.BodyColor.ToHSV())))
+		body.Doc = strings.ReplaceAll(body.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.BodyColor.ToHSL())))
 	}
 	io.WriteString(canvas.Writer, body.Doc)
 	canvas.Gend()
@@ -125,7 +125,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	canvas.Gid("hair")
 	if accessories.HairAsset.HairColored {
 		hair.Doc = strings.ReplaceAll(hair.Doc, "#FF0000", accessories.HairColor.ToHTML(true))
-		hair.Doc = strings.ReplaceAll(hair.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.HairColor.ToHSV())))
+		hair.Doc = strings.ReplaceAll(hair.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.HairColor.ToHSL())))
 	}
 	io.WriteString(canvas.Writer, hair.Doc)
 	canvas.Gend()
@@ -150,9 +150,8 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	return ret, nil
 }
 
-func GetTargetOpacity(color color.HSV) float64 {
-	brightness := color.V
-	ret := (1.0-brightness)*(opacityUpper-opacityLower)/(1.0-MinBrightness) + opacityLower
+func GetTargetOpacity(color color.HSL) float64 {
+	ret := opacityLower + (MaxLightness-color.L)*(opacityUpper-opacityLower)/(MaxLightness-MinLightness)
 	// Return result rounded to 2 places
 	return math.Round(ret*100) / 100
 }
