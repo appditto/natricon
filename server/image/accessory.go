@@ -2,7 +2,7 @@ package image
 
 import (
 	"errors"
-	"math"
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -11,8 +11,10 @@ import (
 )
 
 // Constants
-var MinSaturation float64 = 0.2 // Minimum allowed saturation
-var MinBrightness float64 = 0.4 // Minimum allowed brightness
+var MinSaturation float64 = 0.3 // Minimum allowed saturation
+var MinLightness float64 = 0.3  // Minimum allowed lightness
+var MaxLightness float64 = 0.85 // Maximum allowed lightness
+var MinHairShift int32 = 90     // Minimum distance hair hue must be from body hue
 
 // Accessories - represents accessories for natricon
 type Accessories struct {
@@ -45,25 +47,18 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 
 	// Create empty Accessories object
 	var accessories = Accessories{}
-	// Body color is first 6 digits as hex string
-	bodyColorHex := hash[0:6]
-
-	accessories.BodyColor, err = color.HTMLToRGB(bodyColorHex)
+	// Body color uses first 12 digits of hash as seed
+	accessories.BodyColor, err = GetBodyColor(hash[0:16])
 	if err != nil {
 		return Accessories{}, err
 	}
-	// Enforce min saturation and brightness
-	bodyColorHSV := accessories.BodyColor.ToHSV()
-	bodyColorHSV.V = math.Max(MinBrightness, bodyColorHSV.V)
-	bodyColorHSV.S = math.Max(MinSaturation, bodyColorHSV.S)
-	accessories.BodyColor = bodyColorHSV.ToRGB()
 
-	// Get hair color using next 6 bits
-	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[6:12], hash[12:16], hash[16:20])
+	// Get hair color
+	accessories.HairColor, err = GetHairColor(accessories.BodyColor, hash[16:26], hash[26:30], hash[30:34])
 
 	// Get body and hair illustrations
-	accessories.BodyAsset, err = GetBodyAsset(hash[20:26])
-	accessories.HairAsset, err = GetHairAsset(hash[26:32], &accessories.BodyAsset)
+	accessories.BodyAsset, err = GetBodyAsset(hash[34:40])
+	accessories.HairAsset, err = GetHairAsset(hash[40:46], &accessories.BodyAsset)
 	accessories.BackHairAsset = GetBackHairAsset(accessories.HairAsset)
 
 	// Get mouth and eyes
@@ -73,11 +68,11 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	} else if accessories.HairAsset.Sex != Neutral {
 		targetSex = accessories.HairAsset.Sex
 	}
-	accessories.MouthAsset, err = GetMouthAsset(hash[32:40], targetSex)
+	accessories.MouthAsset, err = GetMouthAsset(hash[46:55], targetSex)
 	if targetSex == Neutral && accessories.MouthAsset.Sex != Neutral {
 		targetSex = accessories.MouthAsset.Sex
 	}
-	accessories.EyeAsset, err = GetEyeAsset(hash[40:48], targetSex)
+	accessories.EyeAsset, err = GetEyeAsset(hash[55:64], targetSex)
 
 	// Get outlines
 	if outline {
@@ -94,16 +89,53 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	return accessories, nil
 }
 
+// GetBodyColor - Get body color with given entropy
+func GetBodyColor(entropy string) (color.RGB, error) {
+	// Want to generate hue between 0-360
+	// Get detemrinistic RNG
+	randSeed, err := strconv.ParseInt(entropy[0:4], 16, 64)
+	if err != nil {
+		return color.RGB{}, err
+	}
+	outHSL := color.HSL{}
+	// Generate hue
+	r := rand.Init()
+	r.Seed(uint32(randSeed))
+	outHSL.H = float64(r.Int31n(360))
+	// Generate Saturation
+	randSeed, err = strconv.ParseInt(entropy[4:8], 16, 64)
+	if err != nil {
+		return color.RGB{}, err
+	}
+	r = rand.Init()
+	r.Seed(uint32(randSeed))
+	minSatInt := int32(MinSaturation * 100)
+	outHSL.S = float64(r.Int31n(100-minSatInt)+minSatInt) / 100.0
+	// Generate Lightness
+	randSeed, err = strconv.ParseInt(entropy[8:12], 16, 64)
+	if err != nil {
+		return color.RGB{}, err
+	}
+	r = rand.Init()
+	r.Seed(uint32(randSeed))
+	minBInt := int32(MinLightness * 100)
+	maxBInt := int32(MaxLightness * 100)
+	outHSL.L = float64(r.Int31n(maxBInt-minBInt)+minBInt) / 100.0
+
+	print(fmt.Sprintf("BODY H %f S %f L %f", outHSL.H, outHSL.S, outHSL.L))
+	print(fmt.Sprintf("\nBODY R %f G %f B %f", outHSL.ToRGB().R, outHSL.ToRGB().G, outHSL.ToRGB().B))
+
+	return outHSL.ToRGB(), nil
+}
+
 // GetHairColor - Get a complementary color with given entropy
 func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntropy string) (color.RGB, error) {
 	var err error
-	// Get as HSV color
-	bodyColorHSV := bodyColor.ToHSV()
+	// Get as HSL color
+	bodyColorHSL := bodyColor.ToHSL()
+	hairColorHSL := color.HSL{}
 
 	var randSeed int64
-	var shiftedHue float64
-	var shiftedSaturation float64
-	var shiftedBrightness float64
 	// Want to shift the hue between 90-270
 	// Get detemrinistic RNG
 	randSeed, err = strconv.ParseInt(hEntropy, 16, 64)
@@ -111,50 +143,38 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 		return color.RGB{}, err
 	}
 
-	// Generate random shift between 90...270
+	// Generate random shift between <minDistance>...270
 	r := rand.Init()
 	r.Seed(uint32(randSeed))
-	shiftedHue = float64(r.Int31n(270-90)+90) + bodyColorHSV.H
+	hairColorHSL.H = float64(r.Int31n((360-MinHairShift)-MinHairShift)+MinHairShift) + bodyColorHSL.H
 
 	// If > 360, subtract
-	if shiftedHue > 360 {
-		shiftedHue = shiftedHue - 360
+	if hairColorHSL.H > 360 {
+		hairColorHSL.H = hairColorHSL.H - 360
 	}
 
-	// Generate random shift between 0..20 for saturation
+	// Generate random saturation between MinimumSaturation - 100
 	randSeed, err = strconv.ParseInt(sEntropy, 16, 64)
 	if err != nil {
 		return color.RGB{}, err
 	}
+	r = rand.Init()
 	r.Seed(uint32(randSeed))
-	// Adjust saturation by -20 to + 40
-	randNum := float64(r.Int31n(121) - 20)
-	shiftedSaturation = (bodyColorHSV.S * 100.0) + randNum
-	// Cap at 100
-	if shiftedSaturation > 100 {
-		shiftedSaturation = 100
-	}
+	minSatInt := int32(MinSaturation * 100)
+	hairColorHSL.S = float64(r.Int31n(100-minSatInt)+minSatInt) / 100.0
 
-	// Generate random shift between 0..20 for brightness
+	// Generate random brightess between MinimumBrightness - 100
 	randSeed, err = strconv.ParseInt(bEntropy, 16, 64)
 	if err != nil {
 		return color.RGB{}, err
 	}
+	r = rand.Init()
 	r.Seed(uint32(randSeed))
-	// Adjust brightness by -20 to + 40
-	randNum = float64(r.Int31n(121) - 20)
-	shiftedBrightness = (bodyColorHSV.V * 100.0) + randNum
-	// Cap at 100
-	if shiftedBrightness > 100 {
-		shiftedBrightness = 100
-	}
+	minBInt := int32(MinLightness * 100)
+	maxBInt := int32(MaxLightness * 100)
+	hairColorHSL.L = float64(r.Int31n(maxBInt-minBInt)+minBInt) / 100.0
 
-	hairColorHSV := color.HSV{}
-	hairColorHSV.H = shiftedHue
-	hairColorHSV.S = math.Max(MinSaturation, shiftedSaturation/100.0)
-	hairColorHSV.V = math.Max(MinBrightness, shiftedBrightness/100.0)
-
-	return hairColorHSV.ToRGB(), nil
+	return hairColorHSL.ToRGB(), nil
 }
 
 // GetBodyAsset - return body illustration to use with given entropy

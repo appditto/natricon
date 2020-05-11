@@ -38,6 +38,8 @@ func (c RGB) ToHTML(withHash bool) string {
 	return fmt.Sprintf("%02x%02x%02x", byte((c.R + delta)), byte((c.G + delta)), byte((c.B + delta)))
 }
 
+// HSB/HSV
+
 type HSV struct {
 	H, S, V float64
 }
@@ -111,5 +113,109 @@ func (c HSV) ToRGB() RGB {
 }
 
 func (c HSV) ToHTML(withHash bool) string {
+	return c.ToRGB().ToHTML(withHash)
+}
+
+// HSL
+type HSL struct {
+	H, S, L float64
+}
+
+// ToHSL - Returns HSL as (0..360, 0..1, 0..1)
+func (c RGB) ToHSL() HSL {
+	var h, s, l float64
+
+	r := c.R / 255
+	g := c.G / 255
+	b := c.B / 255
+
+	min := math.Min(math.Min(r, g), b)
+	max := math.Max(math.Max(r, g), b)
+	delta := max - min
+
+	// Luminosity is the average of the max and min rgb color intensities.
+	l = (max + min) / 2
+
+	// saturation
+	if delta == 0 {
+		// it's gray
+		return HSL{0, 0, l}
+	}
+
+	// it's not gray
+	if l < 0.5 {
+		s = delta / (max + min)
+	} else {
+		s = delta / (2 - max - min)
+	}
+
+	// hue
+	if delta != 0 {
+		if r == max {
+			h = (g - b) / delta
+		} else if g == max {
+			h = 2.0 + ((b - r) / delta)
+		} else {
+			h = 4 + ((r - g) / delta)
+		}
+	}
+	h = h * 60
+	if h < 0 {
+		h = h + 360
+	}
+
+	return HSL{h, s, l}
+}
+
+// ToRGB - convert HSL to RGB
+func (c HSL) ToRGB() RGB {
+	h := c.H
+	s := c.S
+	l := c.L
+
+	if s == 0 {
+		// it's gray
+		return RGB{l * 255.0, l * 255.0, l * 255.0}
+	}
+
+	v := (1.0 - math.Abs(2.0*l-1.0)) * s
+	x := v * (1.0 - math.Abs(math.Mod(h/60.0, 2.0)-1.0))
+	m := l - v/2.0
+
+	var r, g, b float64
+
+	if 0 <= h && h < 60 {
+		r = v
+		g = x
+		b = 0
+	} else if 60 <= h && h < 120 {
+		r = x
+		g = v
+		b = 0
+	} else if 120 <= h && h < 180 {
+		r = 0
+		g = v
+		b = x
+	} else if 180 <= h && h < 240 {
+		r = 0
+		g = x
+		b = v
+	} else if 240 <= h && h < 300 {
+		r = x
+		g = 0
+		b = v
+	} else if 300 <= h && h < 360 {
+		r = v
+		g = 0
+		b = x
+	}
+	r = math.Round((r + m) * 255)
+	g = math.Round((g + m) * 255)
+	b = math.Round((b + m) * 255)
+
+	return RGB{r, g, b}
+}
+
+func (c HSL) ToHTML(withHash bool) string {
 	return c.ToRGB().ToHTML(withHash)
 }

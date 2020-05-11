@@ -31,10 +31,11 @@ RUN mkdir /imagemagick-build
 WORKDIR /imagemagick-build
 
 # ImageMagick
-RUN wget https://www.imagemagick.org/download/ImageMagick-7.0.10-10.tar.gz
-RUN tar zxvpf ImageMagick-7.0.10-10.tar.gz
+RUN wget https://www.imagemagick.org/download/ImageMagick.tar.gz
+RUN mkdir ImageMagick7
+RUN tar zxvpf ImageMagick.tar.gz -C ImageMagick7 --strip-components 1
 
-WORKDIR /imagemagick-build/ImageMagick-7.0.10-10
+WORKDIR /imagemagick-build/ImageMagick7
 RUN ./configure --with-rsvg=yes && make && make install && ldconfig /usr/local/lib
 
 WORKDIR /
