@@ -14,6 +14,7 @@ import (
 var MinSaturation float64 = 0.3 // Minimum allowed saturation
 var MinLightness float64 = 0.3  // Minimum allowed lightness
 var MaxLightness float64 = 0.85 // Maximum allowed lightness
+var MinHairShift int32 = 90     // Minimum distance hair hue must be from body hue
 
 // Accessories - represents accessories for natricon
 type Accessories struct {
@@ -142,10 +143,10 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 		return color.RGB{}, err
 	}
 
-	// Generate random shift between 90...270
+	// Generate random shift between <minDistance>...270
 	r := rand.Init()
 	r.Seed(uint32(randSeed))
-	hairColorHSL.H = float64(r.Int31n(270-90)+90) + bodyColorHSL.H
+	hairColorHSL.H = float64(r.Int31n((360-MinHairShift)-MinHairShift)+MinHairShift) + bodyColorHSL.H
 
 	// If > 360, subtract
 	if hairColorHSL.H > 360 {
