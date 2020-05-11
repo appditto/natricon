@@ -23,6 +23,30 @@ func getSex(name string) image.Sex {
 	return image.Neutral
 }
 
+// getLightOnly - get whether t his asset should only be available on light backgrounds
+func getLightOnly(name string) bool {
+	if strings.Contains(name, "_lod") || strings.Contains(name, "_ld") {
+		return false
+	}
+	return true
+}
+
+// getDarkColored - get whether this asset should have colors altered
+func getDarkColored(name string) bool {
+	if strings.Contains(name, "_lod") {
+		return true
+	}
+	return false
+}
+
+// getDarkBWColored - get whether this asset should have colors altered
+func getDarkBWColored(name string) bool {
+	if strings.Contains(name, "_lod_bw") {
+		return true
+	}
+	return false
+}
+
 func LoadAssetsToArray() {
 	wd, err := os.Getwd()
 	if err != nil {
@@ -46,6 +70,9 @@ func LoadAssetsToArray() {
 			}
 			bodyAsset.HairColored = false
 			bodyAsset.BodyColored = true
+			bodyAsset.LightOnly = false
+			bodyAsset.DarkColored = false
+			bodyAsset.DarkBWColored = false
 			bodyAsset.Sex = getSex(info.Name())
 			encoded, _ := json.Marshal(bodyAsset)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
@@ -69,6 +96,7 @@ func LoadAssetsToArray() {
 			}
 			bodyOutlineAsset.HairColored = false
 			bodyOutlineAsset.BodyColored = false
+			bodyOutlineAsset.DarkBWColored = false
 			bodyOutlineAsset.Sex = getSex(info.Name())
 			encoded, _ := json.Marshal(bodyOutlineAsset)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
@@ -92,6 +120,9 @@ func LoadAssetsToArray() {
 			}
 			hairAssets.HairColored = true
 			hairAssets.BodyColored = false
+			hairAssets.LightOnly = false
+			hairAssets.DarkColored = false
+			hairAssets.DarkBWColored = false
 			hairAssets.Sex = getSex(info.Name())
 			encoded, _ := json.Marshal(hairAssets)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
@@ -116,6 +147,9 @@ func LoadAssetsToArray() {
 			hairBackAssets.HairColored = true
 			hairBackAssets.BodyColored = false
 			hairBackAssets.Sex = getSex(info.Name())
+			hairBackAssets.LightOnly = false
+			hairBackAssets.DarkColored = false
+			hairBackAssets.DarkBWColored = false
 			encoded, _ := json.Marshal(hairBackAssets)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -139,6 +173,9 @@ func LoadAssetsToArray() {
 			hairOutlineAsset.HairColored = false
 			hairOutlineAsset.BodyColored = false
 			hairOutlineAsset.Sex = getSex(info.Name())
+			hairOutlineAsset.LightOnly = false
+			hairOutlineAsset.DarkColored = false
+			hairOutlineAsset.DarkBWColored = false
 			encoded, _ := json.Marshal(hairOutlineAsset)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -162,6 +199,9 @@ func LoadAssetsToArray() {
 			eyeAssets.HairColored = false
 			eyeAssets.BodyColored = false
 			eyeAssets.Sex = getSex(info.Name())
+			eyeAssets.LightOnly = getLightOnly(info.Name())
+			eyeAssets.DarkColored = getDarkColored(info.Name())
+			eyeAssets.DarkBWColored = getDarkBWColored(info.Name())
 			encoded, _ := json.Marshal(eyeAssets)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -185,6 +225,9 @@ func LoadAssetsToArray() {
 			mouthAssets.HairColored = strings.Contains(info.Name(), "_hc")
 			mouthAssets.BodyColored = false
 			mouthAssets.Sex = getSex(info.Name())
+			mouthAssets.LightOnly = getLightOnly(info.Name())
+			mouthAssets.DarkColored = getDarkColored(info.Name())
+			mouthAssets.DarkBWColored = getDarkBWColored(info.Name())
 			encoded, _ := json.Marshal(mouthAssets)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -208,6 +251,9 @@ func LoadAssetsToArray() {
 			mouthOutlineAsset.HairColored = false
 			mouthOutlineAsset.BodyColored = false
 			mouthOutlineAsset.Sex = getSex(info.Name())
+			mouthOutlineAsset.LightOnly = false
+			mouthOutlineAsset.DarkColored = false
+			mouthOutlineAsset.DarkBWColored = false
 			encoded, _ := json.Marshal(mouthOutlineAsset)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}

@@ -34,6 +34,9 @@ type Asset struct {
 	HairColored      bool             // Whether this asset should be colored the same as hair color
 	BodyColored      bool             // Whether this asset should be colored the same as body color
 	Sex              Sex              // The Sex condition of this asset
+	LightOnly        bool             // Whether this asset can only be used on light colors
+	DarkColored      bool             // Whether this asset gets adjusted on dark colors
+	DarkBWColored    bool             // Whether this asset has a secondary color adjustmetn on dark backgrounds
 }
 
 // getIllustrationPath - get full path of image
@@ -197,9 +200,12 @@ func (sm *assetManager) GetBackHairAssets() []Asset {
 }
 
 // GetMouthAssets - Get mouth assets
-func (sm *assetManager) GetMouthAssets(sex Sex) []Asset {
+func (sm *assetManager) GetMouthAssets(sex Sex, luminosity float64) []Asset {
 	var ret []Asset
 	for _, v := range sm.mouthAssets {
+		if DarkLuminosityThreshold > luminosity && v.LightOnly {
+			continue
+		}
 		if sex == Neutral {
 			ret = append(ret, v)
 		} else if v.Sex == sex || v.Sex == Neutral {
@@ -215,9 +221,12 @@ func (sm *assetManager) GetMouthOutlineAssets() []Asset {
 }
 
 // GetEyeAssets - Get eye asset list
-func (sm *assetManager) GetEyeAssets(sex Sex) []Asset {
+func (sm *assetManager) GetEyeAssets(sex Sex, luminosity float64) []Asset {
 	var ret []Asset
 	for _, v := range sm.eyeAssets {
+		if DarkLuminosityThreshold > luminosity && v.LightOnly {
+			continue
+		}
 		if sex == Neutral {
 			ret = append(ret, v)
 		} else if v.Sex == sex || v.Sex == Neutral {

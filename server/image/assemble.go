@@ -16,9 +16,10 @@ import (
 	minifysvg "github.com/tdewolff/minify/v2/svg"
 )
 
-const DefaultSize = 512   // Default SVG width/height attribute
-const opacityLower = 0.15 // Minimum lower opacity threshold
-const opacityUpper = 0.6  // Maximum upper opacity threshold
+const DefaultSize = 512            // Default SVG width/height attribute
+const opacityLower = 0.15          // Minimum lower opacity threshold
+const opacityUpper = 0.6           // Maximum upper opacity threshold
+const lodBwReplacement = "#9CA2AF" // Replace white with this color on bw assets
 
 type SVG struct {
 	Width  int    `xml:"width,attr"`
@@ -134,10 +135,22 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	if accessories.HairAsset.HairColored {
 		mouth.Doc = strings.ReplaceAll(mouth.Doc, "#FFFF00", accessories.HairColor.ToHTML(true))
 	}
+	if DarkLuminosityThreshold > accessories.BodyColor.ToHSL().L && accessories.MouthAsset.DarkBWColored {
+		mouth.Doc = strings.ReplaceAll(mouth.Doc, "white", lodBwReplacement)
+	}
+	if DarkLuminosityThreshold > accessories.BodyColor.ToHSL().L && accessories.MouthAsset.DarkColored {
+		mouth.Doc = strings.ReplaceAll(mouth.Doc, "black", "white")
+	}
 	io.WriteString(canvas.Writer, mouth.Doc)
 	canvas.Gend()
 	// Eye group
 	canvas.Gid("eye")
+	if DarkLuminosityThreshold > accessories.BodyColor.ToHSL().L && accessories.EyeAsset.DarkBWColored {
+		eye.Doc = strings.ReplaceAll(eye.Doc, "white", lodBwReplacement)
+	}
+	if DarkLuminosityThreshold > accessories.BodyColor.ToHSL().L && accessories.EyeAsset.DarkColored {
+		eye.Doc = strings.ReplaceAll(eye.Doc, "black", "white")
+	}
 	io.WriteString(canvas.Writer, eye.Doc)
 	canvas.Gend()
 	// End document

@@ -11,10 +11,11 @@ import (
 )
 
 // Constants
-var MinSaturation float64 = 0.3 // Minimum allowed saturation
-var MinLightness float64 = 0.3  // Minimum allowed lightness
-var MaxLightness float64 = 0.85 // Maximum allowed lightness
-var MinHairShift int32 = 90     // Minimum distance hair hue must be from body hue
+var MinSaturation float64 = 0.3            // Minimum allowed saturation
+var MinLightness float64 = 0.3             // Minimum allowed lightness
+var MaxLightness float64 = 0.85            // Maximum allowed lightness
+var MinHairShift int32 = 90                // Minimum distance hair hue must be from body hue
+var DarkLuminosityThreshold float64 = 0.45 // Bodys <= this threshold will get dark-compatible assets
 
 // Accessories - represents accessories for natricon
 type Accessories struct {
@@ -68,11 +69,11 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	} else if accessories.HairAsset.Sex != Neutral {
 		targetSex = accessories.HairAsset.Sex
 	}
-	accessories.MouthAsset, err = GetMouthAsset(hash[46:55], targetSex)
+	accessories.MouthAsset, err = GetMouthAsset(hash[46:55], targetSex, accessories.BodyColor.ToHSL().L)
 	if targetSex == Neutral && accessories.MouthAsset.Sex != Neutral {
 		targetSex = accessories.MouthAsset.Sex
 	}
-	accessories.EyeAsset, err = GetEyeAsset(hash[55:64], targetSex)
+	accessories.EyeAsset, err = GetEyeAsset(hash[55:64], targetSex, accessories.BodyColor.ToHSL().L)
 
 	// Get outlines
 	if outline {
@@ -240,14 +241,14 @@ func GetHairOutlineAsset(hairAsset Asset) *Asset {
 }
 
 // GetEyeAsset - return hair illustration to use with given entropy
-func GetEyeAsset(entropy string, sex Sex) (Asset, error) {
+func GetEyeAsset(entropy string, sex Sex, luminosity float64) (Asset, error) {
 	// Get detemrinistic RNG
 	randSeed, err := strconv.ParseInt(entropy, 16, 64)
 	if err != nil {
 		return Asset{}, err
 	}
 
-	eyeAssetOptions := GetAssets().GetEyeAssets(sex)
+	eyeAssetOptions := GetAssets().GetEyeAssets(sex, luminosity)
 
 	r := rand.Init()
 	r.Seed(uint32(randSeed))
@@ -257,14 +258,14 @@ func GetEyeAsset(entropy string, sex Sex) (Asset, error) {
 }
 
 // GetEyeAsset - return hair illustration to use with given entropy
-func GetMouthAsset(entropy string, sex Sex) (Asset, error) {
+func GetMouthAsset(entropy string, sex Sex, luminosity float64) (Asset, error) {
 	// Get detemrinistic RNG
 	randSeed, err := strconv.ParseInt(entropy, 16, 64)
 	if err != nil {
 		return Asset{}, err
 	}
 
-	mouthAssetOptions := GetAssets().GetMouthAssets(sex)
+	mouthAssetOptions := GetAssets().GetMouthAssets(sex, luminosity)
 
 	r := rand.Init()
 	r.Seed(uint32(randSeed))
