@@ -18,7 +18,7 @@ import (
 
 const DefaultSize = 512            // Default SVG width/height attribute
 const opacityLower = 0.15          // Minimum lower opacity threshold
-const opacityUpper = 0.6           // Maximum upper opacity threshold
+const opacityUpper = 0.4           // Maximum upper opacity threshold
 const lodBwReplacement = "#9CA2AF" // Replace white with this color on bw assets
 
 type SVG struct {

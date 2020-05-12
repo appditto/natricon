@@ -11,11 +11,11 @@ import (
 )
 
 // Constants
-var MinSaturation float64 = 0.3            // Minimum allowed saturation
-var MinLightness float64 = 0.3             // Minimum allowed lightness
-var MaxLightness float64 = 0.85            // Maximum allowed lightness
-var MinHairShift int32 = 90                // Minimum distance hair hue must be from body hue
-var DarkLuminosityThreshold float64 = 0.45 // Bodys <= this threshold will get dark-compatible assets
+var MinSaturation float64 = 0.3           // Minimum allowed saturation
+var MinLightness float64 = 0.2            // Minimum allowed lightness
+var MaxLightness float64 = 0.85           // Maximum allowed lightness
+var MinHairShift int32 = 90               // Minimum distance hair hue must be from body hue
+var DarkLuminosityThreshold float64 = 0.3 // Bodys <= this threshold will get dark-compatible assets
 
 // Accessories - represents accessories for natricon
 type Accessories struct {
