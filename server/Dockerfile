@@ -22,7 +22,7 @@ FROM base
 
 WORKDIR /usr/src/app
 
-COPY --from=0 /usr/src/app/natricon /usr/src/app/natricon
+COPY --from=builder /usr/src/app/natricon /usr/src/app/natricon
 
 ENV GIN_MODE="release"
 
