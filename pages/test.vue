@@ -76,25 +76,23 @@ export default {
         for (var g = 0; g < 256; g++) {
           totalNumber =
             totalNumber +
-            Math.abs(
-              Math.min(
-                Math.sqrt(
-                  Math.max(
-                    (maxPB * maxPB - 0.241 * r * r - 0.691 * g * g) / 0.068,
-                    0
-                  )
-                ),
-                255
-              ) -
+            Math.min(
+              Math.sqrt(
                 Math.max(
-                  Math.sqrt(
-                    Math.max(
-                      (minPB * minPB - 0.241 * r * r - 0.691 * g * g) / 0.068,
-                      0
-                    )
-                  ),
+                  (maxPB * maxPB - 0.241 * r * r - 0.691 * g * g) / 0.068,
                   0
                 )
+              ),
+              255
+            ) -
+            Math.max(
+              Math.sqrt(
+                Math.max(
+                  (minPB * minPB - 0.241 * r * r - 0.691 * g * g) / 0.068,
+                  0
+                )
+              ),
+              0
             );
         }
       }
