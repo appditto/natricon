@@ -2,7 +2,6 @@ package image
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 	"strconv"
 
@@ -122,9 +121,6 @@ func GetBodyColor(entropy string) (color.RGB, error) {
 	minBInt := int32(MinLightness * 100)
 	maxBInt := int32(MaxLightness * 100)
 	outHSL.L = float64(r.Int31n(maxBInt-minBInt)+minBInt) / 100.0
-
-	print(fmt.Sprintf("BODY H %f S %f L %f", outHSL.H, outHSL.S, outHSL.L))
-	print(fmt.Sprintf("\nBODY R %f G %f B %f", outHSL.ToRGB().R, outHSL.ToRGB().G, outHSL.ToRGB().B))
 
 	return outHSL.ToRGB(), nil
 }

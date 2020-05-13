@@ -14,8 +14,12 @@ ADD . .
 # add assets
 ADD assets assets
 # Dependencies and buil
-RUN go get -u
-RUN go build -o natricon
+# Install dependencies, imagemagick, go, and cleanup
+RUN apt-get update && apt-get install -y \
+    gcc pkg-config \
+&& go get -u \
+&& go build -o natricon \
+&& rm -rf /var/lib/apt/lists/*
 
 # Only copy binary
 FROM base
