@@ -2,6 +2,9 @@
   <div class="pb-24 flex flex-row justify-center">
     <div>
       <div class="flex flex-row justify-center items-center mt-8">
+        <h2
+          class="title text-primary text-xl font-bold break-all pr-2"
+        >Total: {{ calculatePossibleBodyCombinations()}}</h2>
         <h2 class="title text-primary text-xl font-bold break-all pr-2">Hue:</h2>
         <input
           placeholder="240"
@@ -64,6 +67,38 @@ export default {
       } else {
         this.$refs.btn2.classList.add("pulse");
       }
+    },
+    calculatePossibleBodyCombinations() {
+      var minPB = 50;
+      var maxPB = 240;
+      var totalNumber = 0;
+      for (var r = 0; r < 256; r++) {
+        for (var g = 0; g < 256; g++) {
+          totalNumber =
+            totalNumber +
+            Math.abs(
+              Math.min(
+                Math.sqrt(
+                  Math.max(
+                    (maxPB * maxPB - 0.241 * r * r - 0.691 * g * g) / 0.068,
+                    0
+                  )
+                ),
+                255
+              ) -
+                Math.max(
+                  Math.sqrt(
+                    Math.max(
+                      (minPB * minPB - 0.241 * r * r - 0.691 * g * g) / 0.068,
+                      0
+                    )
+                  ),
+                  0
+                )
+            );
+        }
+      }
+      return totalNumber.toFixed();
     }
   }
 };

@@ -84,6 +84,76 @@
         </div>
       </div>
     </div>
+    <div class="w-48 flex flex-row justify-center font-mono mx-auto mt-2">
+      <div class="w-full flex flex-col items-center px-1">
+        <div class="w-full flex flex-col items-center bg-black-05 rounded px-4 py-1">
+          <span class="font-bold">Perceived B</span>
+          <span>
+            {{(Math.sqrt(0.241 * (tinyRgb(
+            'hsv(' +
+            this.bodyH +
+            ', ' +
+            this.bodyS * 100 +
+            '%' +
+            ', ' +
+            this.bodyV * 100 +
+            '%' +
+            ') '
+            ).r) * (tinyRgb(
+            'hsv(' +
+            this.bodyH +
+            ', ' +
+            this.bodyS * 100 +
+            '%' +
+            ', ' +
+            this.bodyV * 100 +
+            '%' +
+            ') '
+            ).r) + 0.691 * (tinyRgb(
+            'hsv(' +
+            this.bodyH +
+            ', ' +
+            this.bodyS * 100 +
+            '%' +
+            ', ' +
+            this.bodyV * 100 +
+            '%' +
+            ') '
+            ).g) * (tinyRgb(
+            'hsv(' +
+            this.bodyH +
+            ', ' +
+            this.bodyS * 100 +
+            '%' +
+            ', ' +
+            this.bodyV * 100 +
+            '%' +
+            ') '
+            ).g) + 0.068 * (tinyRgb(
+            'hsv(' +
+            this.bodyH +
+            ', ' +
+            this.bodyS * 100 +
+            '%' +
+            ', ' +
+            this.bodyV * 100 +
+            '%' +
+            ') '
+            ).b) * (tinyRgb(
+            'hsv(' +
+            this.bodyH +
+            ', ' +
+            this.bodyS * 100 +
+            '%' +
+            ', ' +
+            this.bodyV * 100 +
+            '%' +
+            ') '
+            ).b))/255*100).toFixed(2)}}
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -92,27 +162,21 @@ export default {
   props: {
     bodyH: null,
     bodyS: null,
-    bodyV: null
+    bodyV: null,
+    bodyR: null,
+    bodyG: null,
+    bodyB: null
   },
   methods: {
     tinyFunc(string) {
       return tinycolor(string).toHexString();
+    },
+    tinyRgb(string) {
+      return tinycolor(string).toRgb();
     }
   },
   data() {
-    return {
-      bodyColor: tinycolor(
-        "hsv(" +
-          this.bodyH +
-          ", " +
-          this.bodyS * 100 +
-          "%" +
-          ", " +
-          this.bodyV * 100 +
-          "%" +
-          ") "
-      ).toHexString()
-    };
+    return {};
   }
 };
 </script>
