@@ -17,6 +17,7 @@ jobs:
     - name: Run Tests
       run: |
         cd server
+        apt-get update && apt-get install -y gcc pkg-config
         go test ./...
 
   build_and_publish_nuxt:

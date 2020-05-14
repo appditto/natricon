@@ -1,9 +1,12 @@
 # Build docker image with imagemagick/go/ubuntu
 FROM ubuntu:20.04
 
+RUN mkdir /imagemagick-build
+WORKDIR /imagemagick-build
+
 ENV DEBIAN_FRONTEND="noninteractive"
 
-# Install dependencies for imagemagick
+# Install dependencies, imagemagick, go, and cleanup
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     build-essential \
@@ -23,25 +26,19 @@ RUN apt-get update && apt-get install -y \
     libxml2 \
     libxml2-dev \
     ghostscript \
+&& ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
+&& dpkg-reconfigure --frontend noninteractive tzdata \
+&& wget https://www.imagemagick.org/download/ImageMagick.tar.gz \
+&& mkdir ImageMagick7 && tar zxvpf ImageMagick.tar.gz -C ImageMagick7 --strip-components 1 \
+&& cd ImageMagick7 && ./configure --with-rsvg=yes && make && make install && ldconfig /usr/local/lib \
+&& rm -rf ImageMagick7 && rm -rf ImageMagick.tar.gz \
+&& wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | tar -xz -C /usr/local \
+&& rm -rf go1.14.2.linux-amd64.tar.gz \
+&& apt-get remove --autoremove --purge -y build-essential libwebp-dev \
+    librsvg2-dev libpng-dev libjpeg-turbo8-dev libxml2-dev wget software-properties-common \
 && rm -rf /var/lib/apt/lists/*
-RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime
-RUN dpkg-reconfigure --frontend noninteractive tzdata
-
-RUN mkdir /imagemagick-build
-WORKDIR /imagemagick-build
-
-# ImageMagick
-RUN wget https://www.imagemagick.org/download/ImageMagick.tar.gz
-RUN mkdir ImageMagick7
-RUN tar zxvpf ImageMagick.tar.gz -C ImageMagick7 --strip-components 1
-
-WORKDIR /imagemagick-build/ImageMagick7
-RUN ./configure --with-rsvg=yes && make && make install && ldconfig /usr/local/lib
 
 WORKDIR /
-RUN rm -rf  imagemagick-build
+RUN rm -rf imagemagick-build
 
-# Install GO
-RUN wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | tar -xz -C /usr/local
 ENV PATH="/usr/local/go/bin:${PATH}"
-RUN rm -rf go1.14.2.linux-amd64.tar.gz
