@@ -131,6 +131,7 @@ bodyShadowOpacity = minShadowOpacity + (1 - bodyPerceivedBrightness / 100) * (ma
 
 ////////////////////////////////
 // BLK29 ACCESSORY OPACITY PICKING PROCESS //
+// If body is dark, just ignore this process all together
 // With the accessories that have _blk29 tag, search for fill-opacity="0.299" and replace its opacity with blk29AccessoryOpacity
 ////////////////////////////////
 blk29AccessoryOpacity = minBlk29AccessoryOpacity + (1 - bodyPerceivedBrightness / 100) * (maxBlk29AccessoryOpacity - minBlk29AccessoryOpacity)
