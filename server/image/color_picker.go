@@ -51,7 +51,7 @@ func GetBodyColor(entropy string) (color.RGB, error) {
 	// Generate R between 0..255
 	r := rand.Init()
 	r.Seed(uint32(randSeed))
-	outRGB.R = float64(r.Int31n(255))
+	outRGB.R = float64(r.Int31n(255*10000)) / 10000
 	// Generate G between 0.255
 	randSeed, err = strconv.ParseInt(entropy[4:8], 16, 64)
 	if err != nil {
@@ -59,7 +59,7 @@ func GetBodyColor(entropy string) (color.RGB, error) {
 	}
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
-	outRGB.G = float64(r.Int31n(255))
+	outRGB.G = float64(r.Int31n(255*10000)) / 10000
 	// Generate Blue
 	randSeed, err = strconv.ParseInt(entropy[8:12], 16, 64)
 	if err != nil {
@@ -82,10 +82,10 @@ func GetBodyColor(entropy string) (color.RGB, error) {
 				(MaxPerceivedBrightness255*MaxPerceivedBrightness255-color.RedPBMultiplier*outRGB.R*outRGB.R-color.GreenPBMultiplier*outRGB.G*outRGB.G)/color.GreenPBMultiplier,
 				0.0,
 			),
-		),
-		255.0,
+		)*10000,
+		255.0*10000,
 	)
-	outRGB.B = float64(r.Int31n(int32(upperBound)-int32(lowerBound))) + lowerBound
+	outRGB.B = (float64(r.Int31n(int32(upperBound)-int32(lowerBound))) + lowerBound) / 10000
 
 	return outRGB, nil
 }
@@ -110,7 +110,7 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r.Seed(uint32(randSeed))
 	lowerBound := bodyColorHSB.H - 180 - BodyAndHairHueDistance
 	upperBound := bodyColorHSB.H - 180 + BodyAndHairHueDistance
-	hairColorHSB.H = float64(r.Int31n(int32(upperBound)-int32(lowerBound))) + lowerBound
+	hairColorHSB.H = (float64(r.Int31n(int32(upperBound*10000)-int32(lowerBound*10000))) + lowerBound*10000) / 10000
 
 	// If < 0 normalize
 	if hairColorHSB.H < 0 {
@@ -125,8 +125,8 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	// When body saturation is high enough, hair saturation can end up being less than 0 here, so we're making sure that hair saturation's minimum value never goes below 0v
-	lowerSBound := int32(math.Max(MinTotalSaturation-bodyColorHSB.S*100.0, 0))
-	hairColorHSB.S = float64(r.Int31n(100-lowerSBound)+lowerSBound) / 100.0
+	lowerSBound := int32(math.Max(MinTotalSaturation-bodyColorHSB.S*100.0, 0)) * 10000
+	hairColorHSB.S = float64(r.Int31n(100*10000-lowerSBound)+lowerSBound) / (100.0 * 10000.0)
 
 	// Generate random brightess between MinimumBrightness - 100
 	randSeed, err = strconv.ParseInt(bEntropy, 16, 64)
@@ -136,8 +136,8 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	// When the perceived brightness of body is low enough, hair brightness can end up being more than 100 here, so we're making sure that hair brightness's minimum value never goes above 100
-	lowerBBound := int32(math.Min(math.Max(MinTotalBrightness-bodyColorHSB.B*100.0, MinHairBrightness), 100))
-	hairColorHSB.B = float64(r.Int31n(100-lowerBBound)+lowerBBound) / 100.0
+	lowerBBound := int32(math.Min(math.Max(MinTotalBrightness-bodyColorHSB.B*100.0, MinHairBrightness), 100)) * 10000
+	hairColorHSB.B = float64(r.Int31n(100*10000-lowerBBound)+lowerBBound) / (100.0 * 10000.0)
 
 	return hairColorHSB.ToRGB(), nil
 }
