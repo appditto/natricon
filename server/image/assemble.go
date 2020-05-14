@@ -133,6 +133,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	canvas.Gid("mouth")
 	if accessories.HairAsset.HairColored {
 		mouth.Doc = strings.ReplaceAll(mouth.Doc, "#FFFF00", accessories.HairColor.ToHTML(true))
+		mouth.Doc = strings.ReplaceAll(mouth.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.HairColor)))
 	}
 	if LightToDarkSwitchPoint > perceivedBrightness && accessories.MouthAsset.DarkBWColored {
 		mouth.Doc = strings.ReplaceAll(mouth.Doc, "white", lodBwReplacement)
