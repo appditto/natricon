@@ -125,7 +125,7 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	// When body saturation is high enough, hair saturation can end up being less than 0 here, so we're making sure that hair saturation's minimum value never goes below 0v
-	lowerSBound := int32(math.Max(MinTotalSaturation-bodyColorHSB.S*100.0, 0)) * 10000
+	lowerSBound := int32(math.Max(MinTotalSaturation-bodyColorHSB.S*100.0, 0) * 10000)
 	hairColorHSB.S = float64(r.Int31n(100*10000-lowerSBound)+lowerSBound) / (100.0 * 10000.0)
 
 	// Generate random brightess between MinimumBrightness - 100
@@ -136,7 +136,7 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	// When the perceived brightness of body is low enough, hair brightness can end up being more than 100 here, so we're making sure that hair brightness's minimum value never goes above 100
-	lowerBBound := int32(math.Min(math.Max(MinTotalBrightness-bodyColorHSB.B*100.0, MinHairBrightness), 100)) * 10000
+	lowerBBound := int32(math.Min(math.Max(MinTotalBrightness-bodyColorHSB.B*100.0, MinHairBrightness), 100) * 10000)
 	hairColorHSB.B = float64(r.Int31n(100*10000-lowerBBound)+lowerBBound) / (100.0 * 10000.0)
 
 	return hairColorHSB.ToRGB(), nil
