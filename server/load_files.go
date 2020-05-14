@@ -23,7 +23,7 @@ func getSex(name string) image.Sex {
 	return image.Neutral
 }
 
-// getLightOnly - get whether t his asset should only be available on light backgrounds
+// getLightOnly - get whether this asset should only be available on light backgrounds
 func getLightOnly(name string) bool {
 	if strings.Contains(name, "_lod") || strings.Contains(name, "_ld") {
 		return false
@@ -33,7 +33,7 @@ func getLightOnly(name string) bool {
 
 // getDarkColored - get whether this asset should have colors altered
 func getDarkColored(name string) bool {
-	if strings.Contains(name, "_lod") {
+	if strings.Contains(name, "_lod_b") {
 		return true
 	}
 	return false
