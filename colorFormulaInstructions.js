@@ -14,6 +14,7 @@ var bodyPerceivedBrightness255;
 
 // Variable for body shadow opacity
 var bodyShadowOpacity;
+var blk29AccessoryOpacity;
 
 // Variables for hair R G B values
 var hairRed;
@@ -59,7 +60,11 @@ var bluePBMultiplier = 0.068;
 
 // Min and max shadow opacity
 var minShadowOpacity = 0.075;
-var maxShadowOpacity = 0.4;
+var maxShadowOpacity = 0.4
+
+// Min and max for _blk29 tagged accessory opacity
+var minBlk29AccessoryOpacity = 0.15
+var maxBlk29AccessoryOpacity = 0.5
 
 
 
@@ -117,6 +122,15 @@ bodyPerceivedBrightness = bodyPerceivedBrightness255 / 255 * 100;
 ////////////////////////////////
 bodyShadowOpacity = minShadowOpacity + (1 - bodyPerceivedBrightness / 100) * (maxShadowOpacity - minShadowOpacity)
 
+
+
+
+
+////////////////////////////////
+// BLK29 ACCESSORY OPACITY PICKING PROCESS //
+// With the accessories that have _blk29 tag, search for fill-opacity="0.299" and replace it with the following
+////////////////////////////////
+blk29AccessoryOpacity = minBlk29AccessoryOpacity + (1 - bodyPerceivedBrightness / 100) * (maxBlk29AccessoryOpacity - minBlk29AccessoryOpacity)
 
 
 ////////////////////////////////

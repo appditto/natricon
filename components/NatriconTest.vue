@@ -92,7 +92,7 @@
         <path
           d="M221 273C229.837 273 237 265.837 237 257C237 248.163 229.837 241 221 241C212.163 241 205 248.163 205 257C205 265.837 212.163 273 221 273Z"
           fill="black"
-          :fill-opacity="0.2 + (1-((Math.sqrt(0.241 * (tinyRgb(
+          :fill-opacity="0.15 + (1-((Math.sqrt(0.241 * (tinyRgb(
             'hsv(' +
             bodyH +
             ', ' +
@@ -152,12 +152,12 @@
             bodyV * 100 +
             '%' +
             ') '
-            ).b))/255*100)/100))*0.4"
+            ).b))/255*100)/100))*0.35"
         />
         <path
           d="M291 273C299.837 273 307 265.837 307 257C307 248.163 299.837 241 291 241C282.163 241 275 248.163 275 257C275 265.837 282.163 273 291 273Z"
           fill="black"
-          :fill-opacity="0.2 + (1-((Math.sqrt(0.241 * (tinyRgb(
+          :fill-opacity="0.15 + (1-((Math.sqrt(0.241 * (tinyRgb(
             'hsv(' +
             bodyH +
             ', ' +
@@ -217,7 +217,7 @@
             bodyV * 100 +
             '%' +
             ') '
-            ).b))/255*100)/100))*0.4"
+            ).b))/255*100)/100))*0.35"
         />
       </svg>
       <svg class="absolute" viewBox="20 20 472 472" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -226,7 +226,7 @@
           clip-rule="evenodd"
           d="M256 326C270.359 326 282 316.15 282 304C266.135 304 245.846 304 230 304C230 316.15 241.641 326 256 326Z"
           fill="black"
-          :fill-opacity="0.2 + (1-((Math.sqrt(0.241 * (tinyRgb(
+          :fill-opacity="0.15 + (1-((Math.sqrt(0.241 * (tinyRgb(
             'hsv(' +
             bodyH +
             ', ' +
@@ -286,7 +286,7 @@
             bodyV * 100 +
             '%' +
             ') '
-            ).b))/255*100)/100))*0.4"
+            ).b))/255*100)/100))*0.35"
         />
       </svg>
       <svg class="absolute" viewBox="20 20 472 472" fill="none" xmlns="http://www.w3.org/2000/svg">
