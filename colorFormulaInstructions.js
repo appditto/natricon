@@ -92,8 +92,6 @@ if (hairHue < 0) {
     hairHue += 360;
 }
 
-hairSaturation = minTotalSaturation + bodySaturation
-
 // STEP 2 //
 // Pick a random hair saturation between
 Math.max(minTotalSaturation - bodySaturation, 0)
