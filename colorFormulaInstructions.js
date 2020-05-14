@@ -24,6 +24,19 @@ var maxPerceivedBrightness255 = maxPerceivedBrightness / 100 * 255;
 // Variable for body and hair hue distance
 var bodyAndHairHueDistance = 90;
 
+// Min total saturation (bodySaturation + hairSaturation shouldn't be below this value)
+var minTotalSaturation = 60;
+
+// Min total brightness
+var minTotalBrightness = 120;
+
+// Min hair brightness value
+var minHairBrightness = 30;
+
+
+
+
+
 ////////////////////////////////
 // BODY COLOR PICKING PROCESS //
 ////////////////////////////////
@@ -58,6 +71,12 @@ Math.min(
     255
 )
 
+// STEP 4 //
+// Convert these RGB values so that we have hairHue, hairSaturation and hairBrightness as well (to be used on hair color picking process)
+
+
+
+
 
 ////////////////////////////////
 // HAIR COLOR PICKING PROCESS //
@@ -73,5 +92,16 @@ if (hairHue < 0) {
     hairHue += 360;
 }
 
+hairSaturation = minTotalSaturation + bodySaturation
+
 // STEP 2 //
-// Pick a random hair hue between
+// Pick a random hair saturation between
+Math.max(minTotalSaturation - bodySaturation, 0)
+// and
+100
+
+// STEP 3 //
+// Pick a random hair brightness between
+Math.min(minTotalBrightness - bodyBrightness, 100) // When the perceived brightness of body is low enough, hair brightness can end up being more than 100 here, so we're making sure that hair brightness's minimum value never goes above 100
+// and
+100
