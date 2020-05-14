@@ -140,7 +140,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	if LightToDarkSwitchPoint > perceivedBrightness && accessories.MouthAsset.DarkColored {
 		mouth.Doc = strings.ReplaceAll(mouth.Doc, "black", "white")
 	} else if perceivedBrightness > LightToDarkSwitchPoint && accessories.MouthAsset.BLK299 {
-		mouth.Doc = strings.ReplaceAll(mouth.Doc, "fill-opacity=\"0.299\"", fmt.Sprintf("fill-opacity=\"%f\"", GetBlk299Opacity(accessories.BodyColor)))
+		mouth.Doc = strings.ReplaceAll(mouth.Doc, "fill-opacity=\".299\"", fmt.Sprintf("fill-opacity=\"%f\"", GetBlk299Opacity(accessories.BodyColor)))
 	}
 	io.WriteString(canvas.Writer, mouth.Doc)
 	canvas.Gend()
@@ -152,7 +152,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	if LightToDarkSwitchPoint > perceivedBrightness && accessories.EyeAsset.DarkColored {
 		eye.Doc = strings.ReplaceAll(eye.Doc, "black", "white")
 	} else if perceivedBrightness > LightToDarkSwitchPoint && accessories.EyeAsset.BLK299 {
-		eye.Doc = strings.ReplaceAll(eye.Doc, "fill-opacity=\"0.299\"", fmt.Sprintf("fill-opacity=\"%f\"", GetBlk299Opacity(accessories.BodyColor)))
+		eye.Doc = strings.ReplaceAll(eye.Doc, "fill-opacity=\".299\"", fmt.Sprintf("fill-opacity=\"%f\"", GetBlk299Opacity(accessories.BodyColor)))
 	}
 	io.WriteString(canvas.Writer, eye.Doc)
 	canvas.Gend()
