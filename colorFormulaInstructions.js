@@ -66,6 +66,9 @@ var maxShadowOpacity = 0.4
 var minBlk29AccessoryOpacity = 0.15
 var maxBlk29AccessoryOpacity = 0.5
 
+// Light-Dark switch for Natricon body (depends on perceived brightness of 0-100)
+var lightToDarkSwitchPoint = 30
+
 
 
 
@@ -128,9 +131,12 @@ bodyShadowOpacity = minShadowOpacity + (1 - bodyPerceivedBrightness / 100) * (ma
 
 ////////////////////////////////
 // BLK29 ACCESSORY OPACITY PICKING PROCESS //
-// With the accessories that have _blk29 tag, search for fill-opacity="0.299" and replace it with the following
+// With the accessories that have _blk29 tag, search for fill-opacity="0.299" and replace its opacity with blk29AccessoryOpacity
 ////////////////////////////////
 blk29AccessoryOpacity = minBlk29AccessoryOpacity + (1 - bodyPerceivedBrightness / 100) * (maxBlk29AccessoryOpacity - minBlk29AccessoryOpacity)
+
+
+
 
 
 ////////////////////////////////
