@@ -37,6 +37,7 @@ type Asset struct {
 	LightOnly        bool             // Whether this asset can only be used on light colors
 	DarkColored      bool             // Whether this asset gets adjusted on dark colors
 	DarkBWColored    bool             // Whether this asset has a secondary color adjustmetn on dark backgrounds
+	BLK299           bool             // Opacity replacements for _blk299 assets
 }
 
 // getIllustrationPath - get full path of image
@@ -202,8 +203,9 @@ func (sm *assetManager) GetBackHairAssets() []Asset {
 // GetMouthAssets - Get mouth assets
 func (sm *assetManager) GetMouthAssets(sex Sex, luminosity float64) []Asset {
 	var ret []Asset
+	luminosityInt := int(luminosity)
 	for _, v := range sm.mouthAssets {
-		if DarkLuminosityThreshold > luminosity && v.LightOnly {
+		if LightToDarkSwitchPoint > luminosityInt && v.LightOnly {
 			continue
 		}
 		if sex == Neutral {
@@ -223,8 +225,9 @@ func (sm *assetManager) GetMouthOutlineAssets() []Asset {
 // GetEyeAssets - Get eye asset list
 func (sm *assetManager) GetEyeAssets(sex Sex, luminosity float64) []Asset {
 	var ret []Asset
+	luminosityInt := int(luminosity)
 	for _, v := range sm.eyeAssets {
-		if DarkLuminosityThreshold > luminosity && v.LightOnly {
+		if LightToDarkSwitchPoint > luminosityInt && v.LightOnly {
 			continue
 		}
 		if sex == Neutral {

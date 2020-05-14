@@ -77,78 +77,78 @@ func TestRGBtoHTML(t *testing.T) {
 	}
 }
 
-func TestRGBtoHSV(t *testing.T) {
-	expectedHSV := HSV{
+func TestRGBtoHSB(t *testing.T) {
+	expectedHSB := HSB{
 		H: 0.0,
 		S: 0.5,
-		V: 0.53,
+		B: 0.53,
 	}
 	rgb := RGB{
 		R: 136.0,
 		G: 68.0,
 		B: 68.0,
 	}
-	convertedHSV := rgb.ToHSV()
+	convertedHSB := rgb.ToHSB()
 	// Round to 2 decimals
-	convertedHSV.H = math.Round(convertedHSV.H*100) / 100
-	convertedHSV.S = math.Round(convertedHSV.S*100) / 100
-	convertedHSV.V = math.Round(convertedHSV.V*100) / 100
-	if convertedHSV.H != expectedHSV.H {
-		t.Errorf("Expected H %f but got %f", expectedHSV.H, convertedHSV.H)
+	convertedHSB.H = math.Round(convertedHSB.H*100) / 100
+	convertedHSB.S = math.Round(convertedHSB.S*100) / 100
+	convertedHSB.B = math.Round(convertedHSB.B*100) / 100
+	if convertedHSB.H != expectedHSB.H {
+		t.Errorf("Expected H %f but got %f", expectedHSB.H, convertedHSB.H)
 	}
-	if convertedHSV.S != expectedHSV.S {
-		t.Errorf("Expected S %f but got %f", expectedHSV.S, convertedHSV.S)
+	if convertedHSB.S != expectedHSB.S {
+		t.Errorf("Expected S %f but got %f", expectedHSB.S, convertedHSB.S)
 	}
-	if convertedHSV.V != expectedHSV.V {
-		t.Errorf("Expected V %f but got %f", expectedHSV.V, convertedHSV.V)
+	if convertedHSB.B != expectedHSB.B {
+		t.Errorf("Expected V %f but got %f", expectedHSB.B, convertedHSB.B)
 	}
-	expectedHSV = HSV{
+	expectedHSB = HSB{
 		H: 0.0,
 		S: 0.0,
-		V: 1.0,
+		B: 1.0,
 	}
 	rgb = RGB{
 		R: 255.0,
 		G: 255.0,
 		B: 255.0,
 	}
-	convertedHSV = rgb.ToHSV()
+	convertedHSB = rgb.ToHSB()
 	// Round to 2 decimals
-	convertedHSV.H = math.Round(convertedHSV.H*100) / 100
-	convertedHSV.S = math.Round(convertedHSV.S*100) / 100
-	convertedHSV.V = math.Round(convertedHSV.V*100) / 100
-	if convertedHSV.H != expectedHSV.H {
-		t.Errorf("Expected H %f but got %f", expectedHSV.H, convertedHSV.H)
+	convertedHSB.H = math.Round(convertedHSB.H*100) / 100
+	convertedHSB.S = math.Round(convertedHSB.S*100) / 100
+	convertedHSB.B = math.Round(convertedHSB.B*100) / 100
+	if convertedHSB.H != expectedHSB.H {
+		t.Errorf("Expected H %f but got %f", expectedHSB.H, convertedHSB.H)
 	}
-	if convertedHSV.S != expectedHSV.S {
-		t.Errorf("Expected S %f but got %f", expectedHSV.S, convertedHSV.S)
+	if convertedHSB.S != expectedHSB.S {
+		t.Errorf("Expected S %f but got %f", expectedHSB.S, convertedHSB.S)
 	}
-	if convertedHSV.V != expectedHSV.V {
-		t.Errorf("Expected V %f but got %f", expectedHSV.V, convertedHSV.V)
+	if convertedHSB.B != expectedHSB.B {
+		t.Errorf("Expected V %f but got %f", expectedHSB.B, convertedHSB.B)
 	}
-	expectedHSV = HSV{
+	expectedHSB = HSB{
 		H: 0.0,
 		S: 0.0,
-		V: 0.0,
+		B: 0.0,
 	}
 	rgb = RGB{
 		R: 0.0,
 		G: 0.0,
 		B: 0.0,
 	}
-	convertedHSV = rgb.ToHSV()
+	convertedHSB = rgb.ToHSB()
 	// Round to 2 decimals
-	convertedHSV.H = math.Round(convertedHSV.H*100) / 100
-	convertedHSV.S = math.Round(convertedHSV.S*100) / 100
-	convertedHSV.V = math.Round(convertedHSV.V*100) / 100
-	if convertedHSV.H != expectedHSV.H {
-		t.Errorf("Expected H %f but got %f", expectedHSV.H, convertedHSV.H)
+	convertedHSB.H = math.Round(convertedHSB.H*100) / 100
+	convertedHSB.S = math.Round(convertedHSB.S*100) / 100
+	convertedHSB.B = math.Round(convertedHSB.B*100) / 100
+	if convertedHSB.H != expectedHSB.H {
+		t.Errorf("Expected H %f but got %f", expectedHSB.H, convertedHSB.H)
 	}
-	if convertedHSV.S != expectedHSV.S {
-		t.Errorf("Expected S %f but got %f", expectedHSV.S, convertedHSV.S)
+	if convertedHSB.S != expectedHSB.S {
+		t.Errorf("Expected S %f but got %f", expectedHSB.S, convertedHSB.S)
 	}
-	if convertedHSV.V != expectedHSV.V {
-		t.Errorf("Expected V %f but got %f", expectedHSV.V, convertedHSV.V)
+	if convertedHSB.B != expectedHSB.B {
+		t.Errorf("Expected V %f but got %f", expectedHSB.B, convertedHSB.B)
 	}
 }
 

@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"math"
 	"strings"
 	"sync"
 
@@ -17,8 +16,6 @@ import (
 )
 
 const DefaultSize = 512            // Default SVG width/height attribute
-const opacityLower = 0.15          // Minimum lower opacity threshold
-const opacityUpper = 0.4           // Maximum upper opacity threshold
 const lodBwReplacement = "#9CA2AF" // Replace white with this color on bw assets
 
 type SVG struct {
@@ -79,6 +76,8 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 			return nil, err
 		}
 	}
+	// Perceved brightness of body used for some manipulations
+	perceivedBrightness := int(accessories.BodyColor.PerceivedBrightness())
 	// Create new SVG writer
 	var b bytes.Buffer
 	canvas := svg.New(&b)
@@ -109,7 +108,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 		canvas.Gid("backhair")
 		if accessories.HairAsset.HairColored {
 			backHair.Doc = strings.ReplaceAll(backHair.Doc, "#FF0000", accessories.HairColor.ToHTML(true))
-			backHair.Doc = strings.ReplaceAll(backHair.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.HairColor.ToHSL())))
+			backHair.Doc = strings.ReplaceAll(backHair.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.HairColor)))
 		}
 		io.WriteString(canvas.Writer, backHair.Doc)
 		canvas.Gend()
@@ -118,7 +117,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	canvas.Gid("body")
 	if accessories.BodyAsset.BodyColored {
 		body.Doc = strings.ReplaceAll(body.Doc, "#00FFFF", accessories.BodyColor.ToHTML(true))
-		body.Doc = strings.ReplaceAll(body.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.BodyColor.ToHSL())))
+		body.Doc = strings.ReplaceAll(body.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.BodyColor)))
 	}
 	io.WriteString(canvas.Writer, body.Doc)
 	canvas.Gend()
@@ -126,7 +125,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	canvas.Gid("hair")
 	if accessories.HairAsset.HairColored {
 		hair.Doc = strings.ReplaceAll(hair.Doc, "#FF0000", accessories.HairColor.ToHTML(true))
-		hair.Doc = strings.ReplaceAll(hair.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.HairColor.ToHSL())))
+		hair.Doc = strings.ReplaceAll(hair.Doc, "fill-opacity=\"0.15\"", fmt.Sprintf("fill-opacity=\"%f\"", GetTargetOpacity(accessories.HairColor)))
 	}
 	io.WriteString(canvas.Writer, hair.Doc)
 	canvas.Gend()
@@ -135,21 +134,25 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	if accessories.HairAsset.HairColored {
 		mouth.Doc = strings.ReplaceAll(mouth.Doc, "#FFFF00", accessories.HairColor.ToHTML(true))
 	}
-	if DarkLuminosityThreshold > accessories.BodyColor.ToHSL().L && accessories.MouthAsset.DarkBWColored {
+	if LightToDarkSwitchPoint > perceivedBrightness && accessories.MouthAsset.DarkBWColored {
 		mouth.Doc = strings.ReplaceAll(mouth.Doc, "white", lodBwReplacement)
 	}
-	if DarkLuminosityThreshold > accessories.BodyColor.ToHSL().L && accessories.MouthAsset.DarkColored {
+	if LightToDarkSwitchPoint > perceivedBrightness && accessories.MouthAsset.DarkColored {
 		mouth.Doc = strings.ReplaceAll(mouth.Doc, "black", "white")
+	} else if perceivedBrightness > LightToDarkSwitchPoint && accessories.MouthAsset.BLK299 {
+		mouth.Doc = strings.ReplaceAll(mouth.Doc, "fill-opacity=\"0.299\"", fmt.Sprintf("fill-opacity=\"%f\"", GetBlk299Opacity(accessories.BodyColor)))
 	}
 	io.WriteString(canvas.Writer, mouth.Doc)
 	canvas.Gend()
 	// Eye group
 	canvas.Gid("eye")
-	if DarkLuminosityThreshold > accessories.BodyColor.ToHSL().L && accessories.EyeAsset.DarkBWColored {
+	if LightToDarkSwitchPoint > perceivedBrightness && accessories.EyeAsset.DarkBWColored {
 		eye.Doc = strings.ReplaceAll(eye.Doc, "white", lodBwReplacement)
 	}
-	if DarkLuminosityThreshold > accessories.BodyColor.ToHSL().L && accessories.EyeAsset.DarkColored {
+	if LightToDarkSwitchPoint > perceivedBrightness && accessories.EyeAsset.DarkColored {
 		eye.Doc = strings.ReplaceAll(eye.Doc, "black", "white")
+	} else if perceivedBrightness > LightToDarkSwitchPoint && accessories.EyeAsset.BLK299 {
+		eye.Doc = strings.ReplaceAll(eye.Doc, "fill-opacity=\"0.299\"", fmt.Sprintf("fill-opacity=\"%f\"", GetBlk299Opacity(accessories.BodyColor)))
 	}
 	io.WriteString(canvas.Writer, eye.Doc)
 	canvas.Gend()
@@ -163,10 +166,12 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	return ret, nil
 }
 
-func GetTargetOpacity(color color.HSL) float64 {
-	ret := opacityLower + (MaxLightness-color.L)*(opacityUpper-opacityLower)/(MaxLightness-MinLightness)
-	// Return result rounded to 2 places
-	return math.Round(ret*100) / 100
+func GetTargetOpacity(color color.RGB) float64 {
+	return MinShadowOpacity + (1-color.PerceivedBrightness()/100)*(MaxShadowOpacity-MinShadowOpacity)
+}
+
+func GetBlk299Opacity(color color.RGB) float64 {
+	return MinBlk29AccessoryOpacity + (1-color.PerceivedBrightness()/100)*(MaxBlk29AccessoryOpacity-MinBlk29AccessoryOpacity)
 }
 
 // Singleton to get minifier

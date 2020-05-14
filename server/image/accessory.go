@@ -9,13 +9,6 @@ import (
 	"github.com/appditto/natricon/server/rand"
 )
 
-// Constants
-var MinSaturation float64 = 0.3           // Minimum allowed saturation
-var MinLightness float64 = 0.2            // Minimum allowed lightness
-var MaxLightness float64 = 0.85           // Maximum allowed lightness
-var MinHairShift int32 = 90               // Minimum distance hair hue must be from body hue
-var DarkLuminosityThreshold float64 = 0.3 // Bodys <= this threshold will get dark-compatible assets
-
 // Accessories - represents accessories for natricon
 type Accessories struct {
 	BodyColor         color.RGB
@@ -68,11 +61,11 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	} else if accessories.HairAsset.Sex != Neutral {
 		targetSex = accessories.HairAsset.Sex
 	}
-	accessories.MouthAsset, err = GetMouthAsset(hash[46:55], targetSex, accessories.BodyColor.ToHSL().L)
+	accessories.MouthAsset, err = GetMouthAsset(hash[46:55], targetSex, accessories.BodyColor.PerceivedBrightness())
 	if targetSex == Neutral && accessories.MouthAsset.Sex != Neutral {
 		targetSex = accessories.MouthAsset.Sex
 	}
-	accessories.EyeAsset, err = GetEyeAsset(hash[55:64], targetSex, accessories.BodyColor.ToHSL().L)
+	accessories.EyeAsset, err = GetEyeAsset(hash[55:64], targetSex, accessories.BodyColor.PerceivedBrightness())
 
 	// Get outlines
 	if outline {
@@ -87,91 +80,6 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	}
 
 	return accessories, nil
-}
-
-// GetBodyColor - Get body color with given entropy
-func GetBodyColor(entropy string) (color.RGB, error) {
-	// Want to generate hue between 0-360
-	// Get detemrinistic RNG
-	randSeed, err := strconv.ParseInt(entropy[0:4], 16, 64)
-	if err != nil {
-		return color.RGB{}, err
-	}
-	outHSL := color.HSL{}
-	// Generate hue
-	r := rand.Init()
-	r.Seed(uint32(randSeed))
-	outHSL.H = float64(r.Int31n(360))
-	// Generate Saturation
-	randSeed, err = strconv.ParseInt(entropy[4:8], 16, 64)
-	if err != nil {
-		return color.RGB{}, err
-	}
-	r = rand.Init()
-	r.Seed(uint32(randSeed))
-	minSatInt := int32(MinSaturation * 100)
-	outHSL.S = float64(r.Int31n(100-minSatInt)+minSatInt) / 100.0
-	// Generate Lightness
-	randSeed, err = strconv.ParseInt(entropy[8:12], 16, 64)
-	if err != nil {
-		return color.RGB{}, err
-	}
-	r = rand.Init()
-	r.Seed(uint32(randSeed))
-	minBInt := int32(MinLightness * 100)
-	maxBInt := int32(MaxLightness * 100)
-	outHSL.L = float64(r.Int31n(maxBInt-minBInt)+minBInt) / 100.0
-
-	return outHSL.ToRGB(), nil
-}
-
-// GetHairColor - Get a complementary color with given entropy
-func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntropy string) (color.RGB, error) {
-	var err error
-	// Get as HSL color
-	bodyColorHSL := bodyColor.ToHSL()
-	hairColorHSL := color.HSL{}
-
-	var randSeed int64
-	// Want to shift the hue between 90-270
-	// Get detemrinistic RNG
-	randSeed, err = strconv.ParseInt(hEntropy, 16, 64)
-	if err != nil {
-		return color.RGB{}, err
-	}
-
-	// Generate random shift between <minDistance>...270
-	r := rand.Init()
-	r.Seed(uint32(randSeed))
-	hairColorHSL.H = float64(r.Int31n((360-MinHairShift)-MinHairShift)+MinHairShift) + bodyColorHSL.H
-
-	// If > 360, subtract
-	if hairColorHSL.H > 360 {
-		hairColorHSL.H = hairColorHSL.H - 360
-	}
-
-	// Generate random saturation between MinimumSaturation - 100
-	randSeed, err = strconv.ParseInt(sEntropy, 16, 64)
-	if err != nil {
-		return color.RGB{}, err
-	}
-	r = rand.Init()
-	r.Seed(uint32(randSeed))
-	minSatInt := int32(MinSaturation * 100)
-	hairColorHSL.S = float64(r.Int31n(100-minSatInt)+minSatInt) / 100.0
-
-	// Generate random brightess between MinimumBrightness - 100
-	randSeed, err = strconv.ParseInt(bEntropy, 16, 64)
-	if err != nil {
-		return color.RGB{}, err
-	}
-	r = rand.Init()
-	r.Seed(uint32(randSeed))
-	minBInt := int32(MinLightness * 100)
-	maxBInt := int32(MaxLightness * 100)
-	hairColorHSL.L = float64(r.Int31n(maxBInt-minBInt)+minBInt) / 100.0
-
-	return hairColorHSL.ToRGB(), nil
 }
 
 // GetBodyAsset - return body illustration to use with given entropy

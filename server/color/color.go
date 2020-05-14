@@ -6,8 +6,23 @@ import (
 	"math"
 )
 
+// Red, green and blue multipliers to be used on perceived brightness calculations
+var RedPBMultiplier = 0.241
+var GreenPBMultiplier = 0.691
+var BluePBMultiplier = 0.068
+
 type RGB struct {
 	R, G, B float64
+}
+
+// Calculates perceived brightness on a scale of 0,255
+func (c RGB) PerceivedBrightness255() float64 {
+	return math.Sqrt(RedPBMultiplier*c.R*c.R + GreenPBMultiplier*c.G*c.G + BluePBMultiplier*c.B*c.B)
+}
+
+// Calculates perceived brightness on a scale of 0,100
+func (c RGB) PerceivedBrightness() float64 {
+	return c.PerceivedBrightness255() / 255 * 100
 }
 
 // Takes a string like '#123456' or 'ABCDEF' and returns an RGB between 0..255
@@ -38,14 +53,14 @@ func (c RGB) ToHTML(withHash bool) string {
 	return fmt.Sprintf("%02x%02x%02x", byte((c.R + delta)), byte((c.G + delta)), byte((c.B + delta)))
 }
 
-// HSB/HSV
+// HSB/HSB
 
-type HSV struct {
-	H, S, V float64
+type HSB struct {
+	H, S, B float64
 }
 
-// ToHSV - Returns HSV as (0..360, 0..1, 0..1)
-func (c RGB) ToHSV() HSV {
+// ToHSB - Returns HSB as (0..360, 0..1, 0..1)
+func (c RGB) ToHSB() HSB {
 	var h, s, v float64
 
 	r := c.R
@@ -76,16 +91,16 @@ func (c RGB) ToHSV() HSV {
 		h = h + 360
 	}
 
-	return HSV{h, s, v}
+	return HSB{h, s, v}
 }
 
-// ToRGB - convert HSV to RGB
-func (c HSV) ToRGB() RGB {
+// ToRGB - convert HSB to RGB
+func (c HSB) ToRGB() RGB {
 	Hp := c.H / 60.0
-	C := c.V * c.S
+	C := c.B * c.S
 	X := C * (1.0 - math.Abs(math.Mod(Hp, 2.0)-1.0))
 
-	m := c.V - C
+	m := c.B - C
 	r, g, b := 0.0, 0.0, 0.0
 
 	switch {
@@ -112,7 +127,7 @@ func (c HSV) ToRGB() RGB {
 	return RGB{255 * (m + r), 255 * (m + g), 255 * (m + b)}
 }
 
-func (c HSV) ToHTML(withHash bool) string {
+func (c HSB) ToHTML(withHash bool) string {
 	return c.ToRGB().ToHTML(withHash)
 }
 

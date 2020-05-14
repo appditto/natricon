@@ -47,6 +47,13 @@ func getDarkBWColored(name string) bool {
 	return false
 }
 
+func getBlk299(name string) bool {
+	if strings.Contains(name, "_blk299") {
+		return true
+	}
+	return false
+}
+
 func LoadAssetsToArray() {
 	wd, err := os.Getwd()
 	if err != nil {
@@ -74,6 +81,7 @@ func LoadAssetsToArray() {
 			bodyAsset.DarkColored = false
 			bodyAsset.DarkBWColored = false
 			bodyAsset.Sex = getSex(info.Name())
+			bodyAsset.BLK299 = false
 			encoded, _ := json.Marshal(bodyAsset)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -98,6 +106,7 @@ func LoadAssetsToArray() {
 			bodyOutlineAsset.BodyColored = false
 			bodyOutlineAsset.DarkBWColored = false
 			bodyOutlineAsset.Sex = getSex(info.Name())
+			bodyOutlineAsset.BLK299 = false
 			encoded, _ := json.Marshal(bodyOutlineAsset)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -124,6 +133,7 @@ func LoadAssetsToArray() {
 			hairAssets.DarkColored = false
 			hairAssets.DarkBWColored = false
 			hairAssets.Sex = getSex(info.Name())
+			hairAssets.BLK299 = false
 			encoded, _ := json.Marshal(hairAssets)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -150,6 +160,7 @@ func LoadAssetsToArray() {
 			hairBackAssets.LightOnly = false
 			hairBackAssets.DarkColored = false
 			hairBackAssets.DarkBWColored = false
+			hairBackAssets.BLK299 = false
 			encoded, _ := json.Marshal(hairBackAssets)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -176,6 +187,7 @@ func LoadAssetsToArray() {
 			hairOutlineAsset.LightOnly = false
 			hairOutlineAsset.DarkColored = false
 			hairOutlineAsset.DarkBWColored = false
+			hairOutlineAsset.BLK299 = false
 			encoded, _ := json.Marshal(hairOutlineAsset)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -202,6 +214,7 @@ func LoadAssetsToArray() {
 			eyeAssets.LightOnly = getLightOnly(info.Name())
 			eyeAssets.DarkColored = getDarkColored(info.Name())
 			eyeAssets.DarkBWColored = getDarkBWColored(info.Name())
+			eyeAssets.BLK299 = getBlk299(info.Name())
 			encoded, _ := json.Marshal(eyeAssets)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -228,6 +241,7 @@ func LoadAssetsToArray() {
 			mouthAssets.LightOnly = getLightOnly(info.Name())
 			mouthAssets.DarkColored = getDarkColored(info.Name())
 			mouthAssets.DarkBWColored = getDarkBWColored(info.Name())
+			mouthAssets.BLK299 = getBlk299(info.Name())
 			encoded, _ := json.Marshal(mouthAssets)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
@@ -254,6 +268,7 @@ func LoadAssetsToArray() {
 			mouthOutlineAsset.LightOnly = false
 			mouthOutlineAsset.DarkColored = false
 			mouthOutlineAsset.DarkBWColored = false
+			mouthOutlineAsset.BLK299 = false
 			encoded, _ := json.Marshal(mouthOutlineAsset)
 			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
 		}
