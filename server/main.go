@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"os"
+	"path"
 	"strconv"
 	"strings"
 
@@ -219,9 +221,31 @@ func getNatricon(c *gin.Context) {
 	})
 }
 
+func testBodyDistribution() {
+	wd, _ := os.Getwd()
+	output := path.Join(wd, "body_distribution.csv")
+	outputF, err := os.Create(output)
+	defer outputF.Close()
+	if err != nil {
+		fmt.Printf("Failed to open file for writing %s", output)
+	}
+	var address string
+	var sha256 string
+	var accessories image.Accessories
+	ret := "h,s,b\n"
+	for i := 0; i < 10000; i++ {
+		address = nano.GenerateAddress()
+		sha256 = nano.AddressSha256(address, *seed)
+		accessories, _ = image.GetAccessoriesForHash(sha256, false, nil)
+		ret += fmt.Sprintf("%f,%f,%f\n", accessories.BodyColor.ToHSB().H, accessories.BodyColor.ToHSB().S*100.0, accessories.BodyColor.ToHSB().B*100.0)
+	}
+	outputF.WriteString(ret)
+}
+
 func main() {
 	// Parse server options
 	loadFiles := flag.Bool("load-files", false, "Print assets as GO arrays")
+	testBodyDist := flag.Bool("test-bd", false, "Test body distribution")
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
 	seed = flag.String("seed", "1234567890", "Seed to use for icon generation")
@@ -229,6 +253,9 @@ func main() {
 
 	if *loadFiles {
 		LoadAssetsToArray()
+		return
+	} else if *testBodyDist {
+		testBodyDistribution()
 		return
 	}
 
