@@ -263,10 +263,53 @@ func testBodyDistribution() {
 	print(fmt.Sprintf("S 80-100 %d\n", lt100))
 }
 
+func testHairDistribution() {
+	wd, _ := os.Getwd()
+	output := path.Join(wd, "hair_distribution.csv")
+	outputF, err := os.Create(output)
+	defer outputF.Close()
+	if err != nil {
+		fmt.Printf("Failed to open file for writing %s", output)
+	}
+	var address string
+	var sha256 string
+	var accessories image.Accessories
+	ret := "h,s,b\n"
+	lt20 := 0
+	lt40 := 0
+	lt60 := 0
+	lt80 := 0
+	lt100 := 0
+	for i := 0; i < 10000; i++ {
+		address = nano.GenerateAddress()
+		sha256 = nano.AddressSha256(address, *seed)
+		accessories, _ = image.GetAccessoriesForHash(sha256, false, nil)
+		ret += fmt.Sprintf("%f,%f,%f\n", accessories.HairColor.ToHSB().H, accessories.HairColor.ToHSB().S*100.0, accessories.HairColor.ToHSB().B*100.0)
+		if accessories.HairColor.ToHSB().S*100.0 < 20 {
+			lt20 += 1
+		} else if accessories.HairColor.ToHSB().S*100.0 < 40 {
+			lt40 += 1
+		} else if accessories.HairColor.ToHSB().S*100.0 < 60 {
+			lt60 += 1
+		} else if accessories.HairColor.ToHSB().S*100.0 < 80 {
+			lt80 += 1
+		} else {
+			lt100 += 1
+		}
+	}
+	outputF.WriteString(ret)
+	print(fmt.Sprintf("S 0-20 %d\n", lt20))
+	print(fmt.Sprintf("S 20-40 %d\n", lt40))
+	print(fmt.Sprintf("S 40-60 %d\n", lt60))
+	print(fmt.Sprintf("S 60-80 %d\n", lt80))
+	print(fmt.Sprintf("S 80-100 %d\n", lt100))
+}
+
 func main() {
 	// Parse server options
 	loadFiles := flag.Bool("load-files", false, "Print assets as GO arrays")
 	testBodyDist := flag.Bool("test-bd", false, "Test body distribution")
+	testHairDist := flag.Bool("test-hd", false, "Test hair distribution")
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
 	seed = flag.String("seed", "1234567890", "Seed to use for icon generation")
@@ -277,6 +320,9 @@ func main() {
 		return
 	} else if *testBodyDist {
 		testBodyDistribution()
+		return
+	} else if *testHairDist {
+		testHairDistribution()
 		return
 	}
 
