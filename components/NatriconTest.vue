@@ -10,12 +10,12 @@
           rx="48"
           :fill="tinyFunc(
         'hsv(' +
-        this.bodyH +
+        bodyH +
         ', ' +
-        this.bodyS * 100 +
+        bodyS * 100 +
         '%' +
         ', ' +
-        this.bodyV * 100 +
+        bodyV * 100 +
         '%' +
         ') '
         )"
@@ -25,19 +25,199 @@
           clip-rule="evenodd"
           d="M138.883 366.438C147.686 377.16 161.044 384 176 384H336C362.51 384 384 362.51 384 336V176C384 161.044 377.16 147.686 366.438 138.883C368.094 143.273 369 148.031 369 153V329C369 351.091 351.091 369 329 369H153C148.031 369 143.273 368.094 138.883 366.438Z"
           fill="black"
-          fill-opacity="0.3"
+          :fill-opacity="0.075 + (1-((Math.sqrt(0.241 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).r) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).r) + 0.691 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).g) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).g) + 0.068 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).b) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).b))/255*100)/100))*0.325"
         />
       </svg>
       <svg class="absolute" viewBox="20 20 472 472" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M221 273C229.837 273 237 265.837 237 257C237 248.163 229.837 241 221 241C212.163 241 205 248.163 205 257C205 265.837 212.163 273 221 273Z"
           fill="black"
-          fill-opacity="0.4"
+          :fill-opacity="0.2 + (1-((Math.sqrt(0.241 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).r) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).r) + 0.691 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).g) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).g) + 0.068 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).b) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).b))/255*100)/100))*0.4"
         />
         <path
           d="M291 273C299.837 273 307 265.837 307 257C307 248.163 299.837 241 291 241C282.163 241 275 248.163 275 257C275 265.837 282.163 273 291 273Z"
           fill="black"
-          fill-opacity="0.4"
+          :fill-opacity="0.2 + (1-((Math.sqrt(0.241 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).r) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).r) + 0.691 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).g) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).g) + 0.068 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).b) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).b))/255*100)/100))*0.4"
         />
       </svg>
       <svg class="absolute" viewBox="20 20 472 472" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +226,67 @@
           clip-rule="evenodd"
           d="M256 326C270.359 326 282 316.15 282 304C266.135 304 245.846 304 230 304C230 316.15 241.641 326 256 326Z"
           fill="black"
-          fill-opacity="0.4"
+          :fill-opacity="0.2 + (1-((Math.sqrt(0.241 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).r) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).r) + 0.691 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).g) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).g) + 0.068 * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).b) * (tinyRgb(
+            'hsv(' +
+            bodyH +
+            ', ' +
+            bodyS * 100 +
+            '%' +
+            ', ' +
+            bodyV * 100 +
+            '%' +
+            ') '
+            ).b))/255*100)/100))*0.4"
         />
       </svg>
       <svg class="absolute" viewBox="20 20 472 472" fill="none" xmlns="http://www.w3.org/2000/svg">

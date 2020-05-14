@@ -12,6 +12,9 @@ var bodyBrightness;
 var bodyPerceivedBrightness;
 var bodyPerceivedBrightness255;
 
+// Variable for body shadow opacity
+var bodyShadowOpacity;
+
 // Variables for hair R G B values
 var hairRed;
 var hairGreen;
@@ -25,6 +28,9 @@ var hairBrightness;
 // Variable for hair perceived brightness
 var hairPerceivedBrightness;
 var hairPerceivedBrightness255;
+
+// Variable for hair shadow opacity
+var hairShadowOpacity;
 
 // Min and max perceivedBrightness values (between 0 and 100)
 var minPerceivedBrightness = 15;
@@ -41,19 +47,19 @@ var bodyAndHairHueDistance = 90;
 var minTotalSaturation = 60;
 
 // Min total brightness
-var minTotalBrightness = 120;
+var minTotalBrightness = 130;
 
-// Min hair brightness value
-var minHairBrightness = 30;
-
-// Min and max shadow opacity
-var minShadowOpacity = 0.15;
-var maxShadowOpacity = 0.45
+// Min hair brightness
+var minHairBrightness = 40;
 
 // Red, green and blue multipliers to be used on perceived brightness calculations
 var redPBMultiplier = 0.241;
 var greenPBMultiplier = 0.691;
 var bluePBMultiplier = 0.068;
+
+// Min and max shadow opacity
+var minShadowOpacity = 0.075;
+var maxShadowOpacity = 0.4;
 
 
 
@@ -107,6 +113,13 @@ bodyPerceivedBrightness = bodyPerceivedBrightness255 / 255 * 100;
 
 
 ////////////////////////////////
+// BODY SHADOW OPACITY PICKING PROCESS //
+////////////////////////////////
+bodyShadowOpacity = minShadowOpacity + (1 - bodyPerceivedBrightness / 100) * (maxShadowOpacity - minShadowOpacity)
+
+
+
+////////////////////////////////
 // HAIR COLOR PICKING PROCESS //
 ////////////////////////////////
 
@@ -128,7 +141,7 @@ Math.max(minTotalSaturation - bodySaturation, 0) // When body saturation is high
 
 // STEP 3 //
 // Pick a random hair brightness between
-Math.min(minTotalBrightness - bodyBrightness, 100) // When the perceived brightness of body is low enough, hair brightness can end up being more than 100 here, so we're making sure that hair brightness's minimum value never goes above 100
+Math.min(Math.max(minTotalBrightness - bodyBrightness, minHairBrightness), 100) // When the perceived brightness of body is low enough, hair brightness can end up being more than 100 here, so we're making sure that hair brightness's minimum value never goes above 100
 // and
 100
 
@@ -140,3 +153,12 @@ Math.min(minTotalBrightness - bodyBrightness, 100) // When the perceived brightn
 hairPerceivedBrightness255 = Math.sqrt(redPBMultiplier * hairRed * hairRed + greenPBMultiplier * hairGreen * hairGreen + bluePBMultiplier * hairBlue * hairBlue);
 // Perceived brightness for hair (0,100)
 hairPerceivedBrightness = hairPerceivedBrightness255 / 255 * 100;
+
+
+
+
+
+////////////////////////////////
+// HAIR SHADOW OPACITY PICKING PROCESS //
+////////////////////////////////
+hairShadowOpacity = minShadowOpacity + (1 - hairPerceivedBrightness / 100) * (maxShadowOpacity - minShadowOpacity)

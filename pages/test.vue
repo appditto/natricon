@@ -2,9 +2,7 @@
   <div class="pb-24 flex flex-row justify-center">
     <div>
       <div class="flex flex-row justify-center items-center mt-8">
-        <h2
-          class="title text-primary text-xl font-bold break-all pr-2"
-        >Total: {{ calculatePossibleBodyCombinations()}}</h2>
+        <h2 class="title text-primary text-xl font-bold break-all pr-2">Total: {{}}</h2>
         <h2 class="title text-primary text-xl font-bold break-all pr-2">Hue:</h2>
         <input
           placeholder="240"
