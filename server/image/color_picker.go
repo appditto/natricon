@@ -75,16 +75,16 @@ func GetBodyColor(entropy string) (color.RGB, error) {
 			),
 		),
 		0.0,
-	)
+	) * 10000
 	upperBound := math.Min(
 		math.Sqrt(
 			math.Max(
 				(MaxPerceivedBrightness255*MaxPerceivedBrightness255-color.RedPBMultiplier*outRGB.R*outRGB.R-color.GreenPBMultiplier*outRGB.G*outRGB.G)/color.GreenPBMultiplier,
 				0.0,
 			),
-		)*10000,
-		255.0*10000,
-	)
+		),
+		255.0,
+	) * 10000
 	outRGB.B = (float64(r.Int31n(int32(upperBound)-int32(lowerBound))) + lowerBound) / 10000
 
 	return outRGB, nil
