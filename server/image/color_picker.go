@@ -9,7 +9,7 @@ import (
 )
 
 // Min and max perceivedBrightness values (between 0 and 100)
-var MinPerceivedBrightness = 15.0
+var MinPerceivedBrightness = 18.0
 var MaxPerceivedBrightness = 95.0
 
 // Min and max perceivedBrightness values (between 0 and 255)
@@ -33,7 +33,7 @@ var MinShadowOpacity = 0.075
 var MaxShadowOpacity = 0.4
 
 // Min and max for _blk29 tagged accessory opacity
-var MinBlk29AccessoryOpacity = 0.15
+var MinBlk29AccessoryOpacity = 0.2
 var MaxBlk29AccessoryOpacity = 0.5
 
 // Light-Dark switch for Natricon body (depends on perceived brightness of 0-100)

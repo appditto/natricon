@@ -39,7 +39,7 @@ var hairSaturationDynamicMin = 10;
 
 
 // Min and max perceivedBrightness values (between 0 and 100)
-var minPerceivedBrightness = 15;
+var minPerceivedBrightness = 18;
 var maxPerceivedBrightness = 95;
 
 // Min and max perceivedBrightness values (between 0 and 255)
@@ -68,7 +68,7 @@ var minShadowOpacity = 0.075;
 var maxShadowOpacity = 0.4
 
 // Min and max for _blk29 tagged accessory opacity
-var minBlk29AccessoryOpacity = 0.15
+var minBlk29AccessoryOpacity = 0.2
 var maxBlk29AccessoryOpacity = 0.5
 
 // Light-Dark switch for Natricon body (depends on perceived brightness of 0-100)
@@ -169,7 +169,7 @@ Math.max(minTotalSaturation - bodySaturation, 0) // When body saturation is high
 // Pick a random hair brightness between
 Math.min(Math.max(minTotalBrightness - bodyBrightness, minHairBrightness), 100) // When the perceived brightness of body is low enough, hair brightness can end up being more than 100 here, so we're making sure that hair brightness's minimum value never goes above 100
 // and
-bodySaturation > hairSaturationDynamicMin ? 100 : hairBrightnessDynamicMax
+hairSaturation > hairSaturationDynamicMin ? 100 : hairBrightnessDynamicMax
 
 // STEP 4 //
 // Convert these HSB values to RGB so that we have hairRed, hairGreen and hairBlue as well
