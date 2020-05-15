@@ -48,7 +48,7 @@ func getDarkBWColored(name string) bool {
 }
 
 func getBlk299(name string) bool {
-	if strings.Contains(name, "_blk299") {
+	if strings.Contains(name, "_blk29") {
 		return true
 	}
 	return false
