@@ -99,7 +99,6 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	var err error
 	// Get as HSB color
 	bodyColorHSB := bodyColor.ToHSB()
-	hairColorHSB := color.HSB{}
 
 	var randSeed int64
 	// Want to shift the hue between 90-270
@@ -114,11 +113,11 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r.Seed(uint32(randSeed))
 	lowerBound := bodyColorHSB.H - 180 - BodyAndHairHueDistance
 	upperBound := bodyColorHSB.H - 180 + BodyAndHairHueDistance
-	hairColorHSB.H = (float64(r.Int31n(int32(upperBound*10000)-int32(lowerBound*10000))) + lowerBound*10000) / 10000
+	H := (float64(r.Int31n(int32(upperBound*10000)-int32(lowerBound*10000))) + lowerBound*10000) / 10000
 
 	// If < 0 normalize
-	if hairColorHSB.H < 0 {
-		hairColorHSB.H += 360
+	if H < 0 {
+		H += 360
 	}
 
 	// Generate saturation
@@ -130,7 +129,7 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r.Seed(uint32(randSeed))
 	// When body saturation is high enough, hair saturation can end up being less than 0 here, so we're making sure that hair saturation's minimum value never goes below 0v
 	lowerSBound := int32(math.Max(MinTotalSaturation-bodyColorHSB.S*100.0, 0) * 10000)
-	hairColorHSB.S = float64(r.Int31n(100*10000-lowerSBound)+lowerSBound) / (100.0 * 10000.0)
+	S := float64(r.Int31n(100*10000-lowerSBound)+lowerSBound) / (100.0 * 10000.0)
 
 	// Generate random brightess between MinimumBrightness - 100
 	randSeed, err = strconv.ParseInt(bEntropy, 16, 64)
@@ -140,12 +139,18 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	// When the perceived brightness of body is low enough, hair brightness can end up being more than 100 here, so we're making sure that hair brightness's minimum value never goes above 100
-	lowerBBound := math.Min(math.Max(MinTotalBrightness-bodyColorHSB.B*100.0, MinHairBrightness), 100) * 10000
 	upperBBound := hairBrightnessDynamicMax
-	if hairColorHSB.S*100 > hairSaturationDynamicMin {
+	if S*100 > hairSaturationDynamicMin {
 		upperBBound = 100
 	}
-	hairColorHSB.B = float64(r.Int31n(int32(upperBBound)*10000-int32(lowerBBound))+int32(lowerBBound)) / (100.0 * 10000.0)
-
-	return hairColorHSB.ToRGB(), nil
+	lowerBBound := math.Min(math.Max(MinTotalBrightness-bodyColorHSB.B*100.0, MinHairBrightness), upperBBound)
+	// Allow more precision for RNG
+	upperBBound *= 10000
+	lowerBBound *= 10000
+	B := float64(r.Int31n(int32(upperBBound)-int32(lowerBBound))+int32(lowerBBound)) / (100 * 10000)
+	return color.HSB{
+		H: H,
+		S: S,
+		B: B,
+	}.ToRGB(), nil
 }
