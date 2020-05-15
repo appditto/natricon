@@ -39,6 +39,10 @@ var MaxBlk29AccessoryOpacity = 0.5
 // Light-Dark switch for Natricon body (depends on perceived brightness of 0-100)
 var LightToDarkSwitchPoint = 30
 
+// Limits that will be used on hairBrightness depending on the hairSaturation
+var hairBrightnessDynamicMax = 90.0
+var hairSaturationDynamicMin = 10.0
+
 // GetBodyColor - Get body color with given entropy
 func GetBodyColor(entropy string) (color.RGB, error) {
 	// Want to generate hue between 0-360
@@ -136,8 +140,12 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	r = rand.Init()
 	r.Seed(uint32(randSeed))
 	// When the perceived brightness of body is low enough, hair brightness can end up being more than 100 here, so we're making sure that hair brightness's minimum value never goes above 100
-	lowerBBound := int32(math.Min(math.Max(MinTotalBrightness-bodyColorHSB.B*100.0, MinHairBrightness), 100) * 10000)
-	hairColorHSB.B = float64(r.Int31n(100*10000-lowerBBound)+lowerBBound) / (100.0 * 10000.0)
+	lowerBBound := math.Min(math.Max(MinTotalBrightness-bodyColorHSB.B*100.0, MinHairBrightness), 100) * 10000
+	upperBBound := hairBrightnessDynamicMax
+	if bodyColorHSB.S*100 > hairSaturationDynamicMin {
+		upperBBound = 100
+	}
+	hairColorHSB.B = float64(r.Int31n(int32(upperBBound)*10000-int32(lowerBBound))+int32(lowerBBound)) / (100.0 * 10000.0)
 
 	return hairColorHSB.ToRGB(), nil
 }
