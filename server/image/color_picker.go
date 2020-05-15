@@ -142,7 +142,7 @@ func GetHairColor(bodyColor color.RGB, hEntropy string, sEntropy string, bEntrop
 	// When the perceived brightness of body is low enough, hair brightness can end up being more than 100 here, so we're making sure that hair brightness's minimum value never goes above 100
 	lowerBBound := math.Min(math.Max(MinTotalBrightness-bodyColorHSB.B*100.0, MinHairBrightness), 100) * 10000
 	upperBBound := hairBrightnessDynamicMax
-	if bodyColorHSB.S*100 > hairSaturationDynamicMin {
+	if hairColorHSB.S*100 > hairSaturationDynamicMin {
 		upperBBound = 100
 	}
 	hairColorHSB.B = float64(r.Int31n(int32(upperBBound)*10000-int32(lowerBBound))+int32(lowerBBound)) / (100.0 * 10000.0)
