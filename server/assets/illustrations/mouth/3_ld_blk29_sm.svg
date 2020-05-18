@@ -1,5 +1,5 @@
 <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M285 304V301H227V304C227 318.257 240.473 329 256 329C271.527 329 285 318.257 285 304Z" fill="black" fill-opacity="0.299"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M279.732 313H232.268C230.811 310.253 230 307.206 230 304H282C282 307.206 281.189 310.253 279.732 313Z" fill="white"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M270.311 322.37C266.206 324.664 261.287 326 256 326C250.712 326 245.794 324.664 241.689 322.37C244.713 319.741 249.992 318 256 318C262.008 318 267.287 319.741 270.311 322.37Z" fill="#FF5858"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M285 301H227C227 317.387 239.424 329 256 329C272.576 329 285 317.387 285 301Z" fill="black" fill-opacity="0.299"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M279.145 313H232.855C231.438 310.309 230.51 307.282 230.158 304H281.842C281.49 307.282 280.562 310.309 279.145 313Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M241.762 322.307C245.778 324.675 250.628 326 256 326C261.372 326 266.222 324.675 270.238 322.307C267.202 319.714 261.959 318 256 318C250.041 318 244.797 319.714 241.762 322.307Z" fill="#FF4949"/>
 </svg>
