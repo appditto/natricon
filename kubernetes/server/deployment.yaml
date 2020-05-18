@@ -21,5 +21,11 @@ spec:
         ports:
           - containerPort: 5555
         imagePullPolicy: "Always"
+        env:
+          - name: REDIS_HOST
+            value: redis-0.redis
+          - name: REDIS_DB
+            value: "13"
       imagePullSecrets:
           - name: regcred
+ 
