@@ -19,16 +19,16 @@ func getNatriconStr(this js.Value, inputs []js.Value) interface{} {
 	}
 	sha256 := nano.AddressSha256(message, seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256)
+	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
 	if err != nil {
 		return js.Null()
 	}
-	bodyHsv := accessories.BodyColor.ToHSV()
-	hairHsv := accessories.HairColor.ToHSV()
-	deltaHsv := color.HSV{}
+	bodyHsv := accessories.BodyColor.ToHSB()
+	hairHsv := accessories.HairColor.ToHSB()
+	deltaHsv := color.HSB{}
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
-	deltaHsv.V = hairHsv.V - bodyHsv.V
+	deltaHsv.B = hairHsv.B - bodyHsv.B
 	svg, err := image.CombineSVG(accessories)
 	if err != nil {
 		return js.Null()

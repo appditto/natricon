@@ -7,9 +7,9 @@ import (
 )
 
 // Red, green and blue multipliers to be used on perceived brightness calculations
-var RedPBMultiplier = 0.241
-var GreenPBMultiplier = 0.691
-var BluePBMultiplier = 0.068
+const RedPBMultiplier = 0.241
+const GreenPBMultiplier = 0.691
+const BluePBMultiplier = 0.068
 
 type RGB struct {
 	R, G, B float64
