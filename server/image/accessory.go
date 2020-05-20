@@ -25,7 +25,9 @@ type Accessories struct {
 }
 
 // Hex string regex
-var hexRegex = regexp.MustCompile("^[0-9a-fA-F]+$")
+const hexRegexStr = "^[0-9a-fA-F]+$"
+
+var hexRegex = regexp.MustCompile(hexRegexStr)
 
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
 func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (Accessories, error) {

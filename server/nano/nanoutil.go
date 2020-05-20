@@ -9,7 +9,9 @@ import (
 	"github.com/bbedward/nano/types"
 )
 
-var nanoRegex = regexp.MustCompile("(?:xrb|nano)(?:_)(?:1|3)(?:[13456789abcdefghijkmnopqrstuwxyz]{59})")
+const nanoRegexStr = "(?:xrb|nano)(?:_)(?:1|3)(?:[13456789abcdefghijkmnopqrstuwxyz]{59})"
+
+var nanoRegex = regexp.MustCompile(nanoRegexStr)
 
 func GenerateAddress() string {
 	pub, _ := address.GenerateKey()

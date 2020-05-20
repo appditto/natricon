@@ -9,39 +9,39 @@ import (
 )
 
 // Min and max perceivedBrightness values (between 0 and 100)
-var MinPerceivedBrightness = 18.0
-var MaxPerceivedBrightness = 95.0
+const MinPerceivedBrightness = 18.0
+const MaxPerceivedBrightness = 95.0
 
 // Min and max perceivedBrightness values (between 0 and 255)
-var MinPerceivedBrightness255 = MinPerceivedBrightness / 100 * 255
-var MaxPerceivedBrightness255 = MaxPerceivedBrightness / 100 * 255
+const MinPerceivedBrightness255 = MinPerceivedBrightness / 100 * 255
+const MaxPerceivedBrightness255 = MaxPerceivedBrightness / 100 * 255
 
 // Variable for body and hair hue distance
-var BodyAndHairHueDistance = 90.0
+const BodyAndHairHueDistance = 90.0
 
 // Min total saturation (bodySaturation + hairSaturation shouldn't be below this value)
-var MinTotalSaturation = 60.0
+const MinTotalSaturation = 60.0
 
 // Min total brightness
-var MinTotalBrightness = 130.0
+const MinTotalBrightness = 130.0
 
 // Min hair brightness
-var MinHairBrightness = 40.0
+const MinHairBrightness = 40.0
 
 // Min and max shadow opacity
-var MinShadowOpacity = 0.075
-var MaxShadowOpacity = 0.4
+const MinShadowOpacity = 0.075
+const MaxShadowOpacity = 0.4
 
 // Min and max for _blk29 tagged accessory opacity
-var MinBlk29AccessoryOpacity = 0.2
-var MaxBlk29AccessoryOpacity = 0.5
+const MinBlk29AccessoryOpacity = 0.2
+const MaxBlk29AccessoryOpacity = 0.5
 
 // Light-Dark switch for Natricon body (depends on perceived brightness of 0-100)
-var LightToDarkSwitchPoint = 30
+const LightToDarkSwitchPoint = 30
 
 // Limits that will be used on hairBrightness depending on the hairSaturation
-var hairBrightnessDynamicMax = 90.0
-var hairSaturationDynamicMin = 10.0
+const hairBrightnessDynamicMax = 90.0
+const hairSaturationDynamicMin = 10.0
 
 // GetBodyColor - Get body color with given entropy
 func GetBodyColor(entropy string) (color.RGB, error) {
