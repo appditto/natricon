@@ -26,6 +26,11 @@ spec:
             value: redis-0.redis
           - name: REDIS_DB
             value: "13"
+          - name: NATRICON_SEED
+            valueFrom:
+              secretKeyRef:
+                name: natricon
+                key: seed
       imagePullSecrets:
           - name: regcred
  

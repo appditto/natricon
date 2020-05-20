@@ -1,4 +1,4 @@
-package nano
+package utils
 
 import (
 	"crypto/sha256"
