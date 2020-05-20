@@ -12,12 +12,12 @@ import (
 	"github.com/appditto/natricon/server/color"
 	"github.com/appditto/natricon/server/image"
 	"github.com/appditto/natricon/server/magickwand"
-	"github.com/appditto/natricon/server/nano"
+	"github.com/appditto/natricon/server/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-var seed *string
+var seed string
 
 const minConvertedSize = 100  // Minimum size of PNG/WEBP/JPG converted output
 const maxConvertedSize = 1000 // Maximum size of PNG/WEBP/JPG converted output
@@ -90,13 +90,13 @@ func generateIcon(hash *string, c *gin.Context) {
 // Generate natricon with given nano address
 func getNano(c *gin.Context) {
 	address := c.Query("address")
-	valid := nano.ValidateAddress(address)
+	valid := utils.ValidateAddress(address)
 	if !valid {
 		c.String(http.StatusBadRequest, "Invalid address")
 		return
 	}
 
-	sha256 := nano.AddressSha256(address, *seed)
+	sha256 := utils.AddressSha256(address, seed)
 
 	generateIcon(&sha256, c)
 }
@@ -105,8 +105,8 @@ func getNano(c *gin.Context) {
 func getRandomSvg(c *gin.Context) {
 	var err error
 
-	address := nano.GenerateAddress()
-	sha256 := nano.AddressSha256(address, *seed)
+	address := utils.GenerateAddress()
+	sha256 := utils.AddressSha256(address, seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
 	if err != nil {
@@ -130,8 +130,8 @@ func getRandomSvg(c *gin.Context) {
 func getRandom(c *gin.Context) {
 	var err error
 
-	address := nano.GenerateAddress()
-	sha256 := nano.AddressSha256(address, *seed)
+	address := utils.GenerateAddress()
+	sha256 := utils.AddressSha256(address, seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
 	if err != nil {
@@ -185,12 +185,12 @@ func getNatricon(c *gin.Context) {
 	var err error
 
 	address := c.Query("address")
-	// valid := nano.BalidateAddress(address)
+	// valid := utils.BalidateAddress(address)
 	// if !valid {
 	// c.String(http.StatusBadRequest, "Invalid address")
 	// return
 	// }
-	sha256 := nano.AddressSha256(address, *seed)
+	sha256 := utils.AddressSha256(address, seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
 	if err != nil {
@@ -239,8 +239,8 @@ func testBodyDistribution() {
 	lt80 := 0
 	lt100 := 0
 	for i := 0; i < 10000; i++ {
-		address = nano.GenerateAddress()
-		sha256 = nano.AddressSha256(address, *seed)
+		address = utils.GenerateAddress()
+		sha256 = utils.AddressSha256(address, seed)
 		accessories, _ = image.GetAccessoriesForHash(sha256, false, nil)
 		ret += fmt.Sprintf("%f,%f,%f\n", accessories.BodyColor.ToHSB().H, accessories.BodyColor.ToHSB().S*100.0, accessories.BodyColor.ToHSB().B*100.0)
 		if accessories.BodyColor.ToHSB().S*100.0 < 20 {
@@ -281,8 +281,8 @@ func testHairDistribution() {
 	lt80 := 0
 	lt100 := 0
 	for i := 0; i < 10000; i++ {
-		address = nano.GenerateAddress()
-		sha256 = nano.AddressSha256(address, *seed)
+		address = utils.GenerateAddress()
+		sha256 = utils.AddressSha256(address, seed)
 		accessories, _ = image.GetAccessoriesForHash(sha256, false, nil)
 		ret += fmt.Sprintf("%f,%f,%f\n", accessories.HairColor.ToHSB().H, accessories.HairColor.ToHSB().S*100.0, accessories.HairColor.ToHSB().B*100.0)
 		if accessories.HairColor.ToHSB().S*100.0 < 20 {
@@ -306,13 +306,14 @@ func testHairDistribution() {
 }
 
 func main() {
+	// Get seed from env
+	seed = utils.GetEnv("NATRICON_SEED", "1234567890")
 	// Parse server options
 	loadFiles := flag.Bool("load-files", false, "Print assets as GO arrays")
 	testBodyDist := flag.Bool("test-bd", false, "Test body distribution")
 	testHairDist := flag.Bool("test-hd", false, "Test hair distribution")
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
-	seed = flag.String("seed", "1234567890", "Seed to use for icon generation")
 	flag.Parse()
 
 	if *loadFiles {

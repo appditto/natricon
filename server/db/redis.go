@@ -2,10 +2,10 @@ package db
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"sync"
 
+	"github.com/appditto/natricon/server/utils"
 	"github.com/go-redis/redis/v7"
 )
 
@@ -17,26 +17,18 @@ type redisManager struct {
 var singleton *redisManager
 var once sync.Once
 
-func getEnv(key, fallback string) string {
-	value := os.Getenv(key)
-	if len(value) == 0 {
-		return fallback
-	}
-	return value
-}
-
 func GetDB() *redisManager {
 	once.Do(func() {
-		redis_port, err := strconv.Atoi(getEnv("REDIS_PORT", "6379"))
+		redis_port, err := strconv.Atoi(utils.GetEnv("REDIS_PORT", "6379"))
 		if err != nil {
 			panic("Invalid REDIS_PORT specified")
 		}
-		redis_db, err := strconv.Atoi(getEnv("REDIS_DB", "0"))
+		redis_db, err := strconv.Atoi(utils.GetEnv("REDIS_DB", "0"))
 		if err != nil {
 			panic("Invalid REDIS_DB specified")
 		}
 		client := redis.NewClient(&redis.Options{
-			Addr: fmt.Sprintf("%s:%d", getEnv("REDIS_HOST", "localhost"), redis_port),
+			Addr: fmt.Sprintf("%s:%d", utils.GetEnv("REDIS_HOST", "localhost"), redis_port),
 			DB:   redis_db,
 		})
 		// Create object
