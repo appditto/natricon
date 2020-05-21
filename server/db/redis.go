@@ -129,12 +129,17 @@ func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDa
 func (r *redisManager) HasDonorStatus(account string) bool {
 	account = strings.ReplaceAll(account, "xrb_", "nano_")
 	key := fmt.Sprintf("%s:donor:%s", keyPrefix, account)
+	r.set(key, `{"address":"nano_1bboss18y784j9rbwgt95uwqamjpsi9oips5syohsjk37rn5ud7ndbjq61ft","expires_at":"2020-06-20T18:47:21.273390939Z"}`)
 	raw, err := r.get(key)
 	if err != nil {
 		return false
 	}
-	var donor *Donor
-	json.Unmarshal([]byte(raw), donor)
+	var donor Donor
+	err = json.Unmarshal([]byte(raw), &donor)
+	if err != nil {
+		glog.Errorf("Error unmarshalling donor json %s", err)
+		return false
+	}
 	// See if expired
 	curDate := time.Now().UTC()
 	if donor.ExpiresAt.Sub(curDate).Seconds() < 0 {

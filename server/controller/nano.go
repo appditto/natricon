@@ -62,7 +62,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 	if err == redislock.ErrNotObtained {
 		return
 	} else if err != nil {
-		glog.Fatalln(err)
+		glog.Error(err)
 		return
 	}
 	defer lock.Release()
@@ -72,7 +72,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 		10,
 	)
 	if err != nil {
-		glog.Fatalf("Error occured checking donation account history %s", err)
+		glog.Error("Error occured checking donation account history %s", err)
 		return
 	}
 	for i := 0; i < len(historyResponse.History); i++ {
