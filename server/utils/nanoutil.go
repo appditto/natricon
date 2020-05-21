@@ -27,12 +27,25 @@ func GenerateAddress() string {
 	return string(address.PubKeyToAddress(pub))
 }
 
+func AddressToPub(account string) string {
+	pubkey, _ := address.AddressToPub(types.Account(account))
+	return hex.EncodeToString(pubkey)
+}
+
 // ValidateAddress - Returns true if a nano address is valid
 func ValidateAddress(account string) bool {
 	if !nanoRegex.MatchString(account) {
 		return false
 	}
 	return address.ValidateAddress(types.Account(account))
+}
+
+// PKSha256 - Hashes a public key with seed
+func PKSha256(pubkey string, seed string) string {
+	hasher := sha256.New()
+	hasher.Write([]byte(pubkey))
+	hasher.Write([]byte(seed))
+	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 // AddressSha256 - Hashes an address excluding prefix

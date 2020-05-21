@@ -7,19 +7,19 @@ import (
 
 	"github.com/appditto/natricon/server/color"
 	"github.com/appditto/natricon/server/image"
-	"github.com/appditto/natricon/server/nano"
+	"github.com/appditto/natricon/server/utils"
 )
 
 var seed string = "123456789"
 
 func getNatriconStr(this js.Value, inputs []js.Value) interface{} {
 	message := inputs[0].String()
-	if !nano.ValidateAddress(message) {
+	if !utils.ValidateAddress(message) {
 		return js.Null()
 	}
-	sha256 := nano.AddressSha256(message, seed)
+	sha256 := utils.AddressSha256(utils.AddressToPub(message), seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
+	accessories, err := image.GetAccessoriesForHash(sha256, false, false, nil)
 	if err != nil {
 		return js.Null()
 	}

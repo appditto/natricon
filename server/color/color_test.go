@@ -210,3 +210,16 @@ func TestRGBtoHSL(t *testing.T) {
 		t.Errorf("Expected B %f but got %f", expectedRgb.B, convertedRgb.B)
 	}
 }
+
+func TestPercevedBrightness(t *testing.T) {
+	hsb := HSB{
+		H: 240.0,
+		S: 1.0,
+		B: 0.6,
+	}
+	expectedPercevedB := 16.0
+	hasPB := math.Round(hsb.ToRGB().PerceivedBrightness())
+	if hasPB != expectedPercevedB {
+		t.Errorf("Wrong perceived brightness expected %f got %f", expectedPercevedB, hasPB)
+	}
+}

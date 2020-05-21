@@ -21,6 +21,10 @@ type NatriconController struct {
 	Seed string
 }
 
+var vanities = map[string]string{
+	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": "2f2f45946be8ee4f4a9fdc328f2ebb2ba6a163fbf4c8a5c8f5e23d43790ef7d8",
+}
+
 // APIs
 // Generate natricon with given nano address
 func (nc NatriconController) GetNano(c *gin.Context) {
@@ -31,7 +35,11 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 		return
 	}
 
-	sha256 := utils.AddressSha256(address, nc.Seed)
+	pubKey := utils.AddressToPub(address)
+	sha256 := vanities[pubKey]
+	if sha256 == "" {
+		sha256 = utils.PKSha256(pubKey, nc.Seed)
+	}
 
 	// See if badge eligible
 	hasBadge := db.GetDB().HasDonorStatus(address)
@@ -44,7 +52,7 @@ func (nc NatriconController) GetRandomSvg(c *gin.Context) {
 	var err error
 
 	address := utils.GenerateAddress()
-	sha256 := utils.AddressSha256(address, nc.Seed)
+	sha256 := utils.PKSha256(utils.AddressToPub(address), nc.Seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256, false, false, nil)
 	if err != nil {
@@ -69,7 +77,7 @@ func (nc NatriconController) GetRandom(c *gin.Context) {
 	var err error
 
 	address := utils.GenerateAddress()
-	sha256 := utils.AddressSha256(address, nc.Seed)
+	sha256 := utils.AddressSha256(utils.AddressToPub(address), nc.Seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256, false, false, nil)
 	if err != nil {
@@ -128,7 +136,7 @@ func (nc NatriconController) GetNatricon(c *gin.Context) {
 	// c.String(http.StatusBadRequest, "Invalid address")
 	// return
 	// }
-	sha256 := utils.AddressSha256(address, nc.Seed)
+	sha256 := utils.AddressSha256(utils.AddressToPub(address), nc.Seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256, false, false, nil)
 	if err != nil {
