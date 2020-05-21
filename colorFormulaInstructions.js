@@ -95,7 +95,7 @@ bodyGreen = Math.floor(Math.random() * 256);
 Math.max(
     Math.sqrt(
         Math.max(
-            (minPerceivedBrightness255 * minPerceivedBrightness255 - redPBMultiplier * bodyRed * bodyRed - greenPBMultiplier * bodyGreen * bodyGreen) / greenPBMultiplier,
+            (minPerceivedBrightness255 * minPerceivedBrightness255 - redPBMultiplier * bodyRed * bodyRed - greenPBMultiplier * bodyGreen * bodyGreen) / bluePBMultiplier,
             0
         )
     ),
@@ -105,7 +105,7 @@ Math.max(
 Math.min(
     Math.sqrt(
         Math.max(
-            (maxPerceivedBrightness255 * maxPerceivedBrightness255 - redPBMultiplier * bodyRed * bodyRed - greenPBMultiplier * bodyGreen * bodyGreen) / greenPBMultiplier,
+            (maxPerceivedBrightness255 * maxPerceivedBrightness255 - redPBMultiplier * bodyRed * bodyRed - greenPBMultiplier * bodyGreen * bodyGreen) / bluePBMultiplier,
             0
         )
     ),
