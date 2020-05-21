@@ -9,6 +9,7 @@ type Callback struct {
 }
 
 type Block struct {
+	Account       string `json:"account"`
 	LinkAsAccount string `json:"link_as_account"`
 }
 

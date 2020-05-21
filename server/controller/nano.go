@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"math"
 	"time"
 
 	"github.com/appditto/natricon/server/db"
@@ -16,7 +17,7 @@ import (
 // Account donations are checked to
 const donationAccount = "nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd"
 
-// Donations at or above this threshold will award "vip" status
+// Donations at or above this threshold will award "vip" status for 30 days
 const donationThresholdNano = 2.0
 
 // Maximum donation days allowed at a time (cannot buy bigger chunks than this at a time)
@@ -40,9 +41,14 @@ func (nc NanoController) Callback(c *gin.Context) {
 		glog.Errorf("Error parsing callback block json")
 		return
 	}
-	glog.Infof("Received callback link %s", blockData.LinkAsAccount)
-	amount, err := utils.RawToNano(callbackData.Amount)
-	glog.Infof("Received callback amount %f", amount)
+	// Check if send to doantion account
+	if blockData.LinkAsAccount == donationAccount && blockData.LinkAsAccount != blockData.Account {
+		durationDays := nc.calcDonorDurationDays(callbackData.Amount)
+		if durationDays > 0 {
+			glog.Infof("Giving donor status to %s for %d days", blockData.Account, durationDays)
+			db.GetDB().UpdateDonorStatus(callbackData.Hash, blockData.Account, durationDays, maxVIPDays)
+		}
+	}
 }
 
 // Cron job for checking missed callbacks
@@ -69,8 +75,20 @@ func (nc NanoController) CheckMissedCallbacks() {
 		glog.Fatalf("Error occured checking donation account history %s", err)
 		return
 	}
-	// TODO - implement
 	for i := 0; i < len(historyResponse.History); i++ {
-		glog.Infof("Found history item %s", historyResponse.History[i].Hash)
+		if historyResponse.History[i].Account != donationAccount {
+			durationDays := nc.calcDonorDurationDays(historyResponse.History[i].Amount)
+			if durationDays > 0 {
+				glog.Infof("Checking donor status to %s for %d days", historyResponse.History[i].Account, durationDays)
+				db.GetDB().UpdateDonorStatus(historyResponse.History[i].Hash, historyResponse.History[i].Account, durationDays, maxVIPDays)
+			}
+		}
 	}
+}
+
+// calcDonorDurationDays - calculate how long badge will persist with given donation amount
+func (nc NanoController) calcDonorDurationDays(amountRaw string) uint {
+	amountNano, _ := utils.RawToNano(amountRaw)
+	chunks := uint(amountNano / donationThresholdNano)
+	return uint(math.Min(float64(chunks*30), maxVIPDays))
 }
