@@ -72,7 +72,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 		10,
 	)
 	if err != nil {
-		glog.Error("Error occured checking donation account history %s", err)
+		glog.Errorf("Error occured checking donation account history %s", err)
 		return
 	}
 	for i := 0; i < len(historyResponse.History); i++ {
