@@ -24,7 +24,8 @@ RUN apt-get update && apt-get install -y \
 # Only copy binary
 FROM base
 
-WORKDIR /usr/src/app
+USER root
+WORKDIR /root
 
 COPY --from=builder /usr/src/app/natricon /usr/bin/natricon
 

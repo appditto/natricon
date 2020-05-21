@@ -15,20 +15,23 @@ type RPCClient struct {
 	Url string
 }
 
+// Nano account_history request
 func (client RPCClient) MakeAccountHistoryRequest(account string, count uint) (*model.AccountHistoryResponse, error) {
+	// Build request
 	request := model.AccountHistoryRequest{
 		BaseRequest: model.AccountHistoryAction,
 		Account:     account,
 		Count:       count,
 	}
 	requestBody, _ := json.Marshal(request)
+	// HTTP post
 	resp, err := http.Post(client.Url, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		glog.Fatalf("Error making RPC request %s", err)
 		return nil, errors.New("Error")
 	}
 	defer resp.Body.Close()
-	// Try to deserialize
+	// Try to decode+deserialize
 	var historyResponse model.AccountHistoryResponse
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
