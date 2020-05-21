@@ -21,8 +21,16 @@ type NatriconController struct {
 	Seed string
 }
 
-var vanities = map[string]string{
-	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": "2f2f45946be8ee4f4a9fdc328f2ebb2ba6a163fbf4c8a5c8f5e23d43790ef7d8",
+type Vanity struct {
+	hash  string
+	check bool
+}
+
+var vanities = map[string]*Vanity{
+	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": &Vanity{
+		hash:  "2f2f45946be8ee4f4a9fdc328f2ebb2ba6a163fbf4c8a5c8f5e23d43790ef7d8",
+		check: true,
+	},
 }
 
 // APIs
@@ -35,13 +43,15 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 		return
 	}
 
+	var sha256 string
 	hasBadge := false
 	pubKey := utils.AddressToPub(address)
-	sha256 := vanities[pubKey]
-	if sha256 == "" {
+	vanity := vanities[pubKey]
+	if vanity == nil {
 		sha256 = utils.PKSha256(pubKey, nc.Seed)
 	} else {
-		hasBadge = true
+		hasBadge = vanity.check
+		sha256 = vanity.hash
 	}
 
 	// See if badge eligible
