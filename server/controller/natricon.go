@@ -35,14 +35,19 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 		return
 	}
 
+	hasBadge := false
 	pubKey := utils.AddressToPub(address)
 	sha256 := vanities[pubKey]
 	if sha256 == "" {
 		sha256 = utils.PKSha256(pubKey, nc.Seed)
+	} else {
+		hasBadge = true
 	}
 
 	// See if badge eligible
-	hasBadge := db.GetDB().HasDonorStatus(address)
+	if !hasBadge {
+		hasBadge = db.GetDB().HasDonorStatus(address)
+	}
 
 	generateIcon(&sha256, hasBadge, c)
 }
