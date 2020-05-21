@@ -21,13 +21,14 @@ type NatriconController struct {
 	Seed string
 }
 
+// Special addresses
 type Vanity struct {
 	hash  string
 	check bool
 }
 
 var vanities = map[string]*Vanity{
-	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": &Vanity{
+	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": {
 		hash:  "2f2f45946be8ee4f4a9fdc328f2ebb2ba6a163fbf4c8a5c8f5e23d43790ef7d8",
 		check: true,
 	},
