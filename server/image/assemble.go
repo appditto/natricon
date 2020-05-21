@@ -34,6 +34,7 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 		bodyOutline  SVG
 		hairOutline  SVG
 		mouthOutline SVG
+		badgeAsset   SVG
 	)
 	// Parse all SVG assets
 	if err := xml.Unmarshal(accessories.BodyAsset.SVGContents, &body); err != nil {
@@ -73,6 +74,12 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	if accessories.MouthOutlineAsset != nil {
 		if err := xml.Unmarshal(accessories.MouthOutlineAsset.SVGContents, &mouthOutline); err != nil {
 			glog.Fatalf("Unable to parse mouth outline SVG %v", err)
+			return nil, err
+		}
+	}
+	if accessories.BadgeAsset != nil {
+		if err := xml.Unmarshal(accessories.BadgeAsset.SVGContents, &badgeAsset); err != nil {
+			glog.Fatalf("Unable to parse badge SVG %v", err)
 			return nil, err
 		}
 	}
@@ -157,6 +164,12 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	}
 	io.WriteString(canvas.Writer, eye.Doc)
 	canvas.Gend()
+	// Badge group
+	if accessories.BadgeAsset != nil {
+		canvas.Gid("badge")
+		io.WriteString(canvas.Writer, badgeAsset.Doc)
+		canvas.Gend()
+	}
 	// End document
 	canvas.End()
 
