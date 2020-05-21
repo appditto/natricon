@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"net/http"
@@ -12,9 +13,11 @@ import (
 	"github.com/appditto/natricon/server/color"
 	"github.com/appditto/natricon/server/image"
 	"github.com/appditto/natricon/server/magickwand"
+	"github.com/appditto/natricon/server/model"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 )
 
 var seed string
@@ -85,6 +88,23 @@ func generateIcon(hash *string, c *gin.Context) {
 		return
 	}
 	c.Data(200, "image/svg+xml; charset=utf-8", svg)
+}
+
+// Handle callback for donation listener
+func callback(c *gin.Context) {
+	var callbackData model.Callback
+	err := c.BindJSON(&callbackData)
+	if err != nil {
+		glog.Errorf("Error processing callback")
+		return
+	}
+	var blockData model.Block
+	err = json.Unmarshal([]byte(callbackData.Block), &blockData)
+	if err != nil {
+		glog.Errorf("Error parsing callback block json")
+		return
+	}
+	glog.Infof("Received callback link %s", blockData.LinkAsAccount)
 }
 
 // Generate natricon with given nano address
@@ -332,6 +352,8 @@ func main() {
 	router.Use(cors.Default())
 	// V1 API
 	router.GET("/api/v1/nano", getNano)
+	// Donation callback
+	router.POST("/api/nanocallback", callback)
 	// For testing
 	router.GET("/api/natricon", getNatricon)
 	router.GET("/api/random", getRandom)

@@ -6,6 +6,11 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/server-snippet: |-
+      location /api/nanocallback {
+          deny all;
+          return 404;
+      }
 spec:
   tls:
   - hosts:
