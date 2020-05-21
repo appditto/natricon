@@ -2,8 +2,10 @@ package image
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/appditto/natricon/server/color"
 	"github.com/appditto/natricon/server/rand"
@@ -21,6 +23,7 @@ type Accessories struct {
 	BodyOutlineAsset  *Asset
 	HairOutlineAsset  *Asset
 	MouthOutlineAsset *Asset
+	BadgeAsset        *Asset
 	OutlineColor      color.RGB
 }
 
@@ -30,7 +33,7 @@ const hexRegexStr = "^[0-9a-fA-F]+$"
 var hexRegex = regexp.MustCompile(hexRegexStr)
 
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
-func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (Accessories, error) {
+func GetAccessoriesForHash(hash string, withBadge bool, outline bool, outlineColor *color.RGB) (Accessories, error) {
 	var err error
 	if len(hash) != 64 {
 		return Accessories{}, errors.New("Invalid hash")
@@ -55,6 +58,11 @@ func GetAccessoriesForHash(hash string, outline bool, outlineColor *color.RGB) (
 	accessories.BodyAsset, err = GetBodyAsset(hash[34:40])
 	accessories.HairAsset, err = GetHairAsset(hash[40:46], &accessories.BodyAsset)
 	accessories.BackHairAsset = GetBackHairAsset(accessories.HairAsset)
+
+	// Get badge
+	if withBadge {
+		accessories.BadgeAsset = GetBadgeAsset(accessories.BodyAsset)
+	}
 
 	// Get mouth and eyes
 	targetSex := Neutral
@@ -104,6 +112,18 @@ func GetBodyOutlineAsset(bodyAsset Asset) *Asset {
 	for _, ba := range GetAssets().GetBodyOutlineAssets() {
 		if ba.FileName == bodyAsset.FileName {
 			return &ba
+		}
+	}
+	return nil
+}
+
+// GetBadgeAsset - return badge asset for a particular body
+func GetBadgeAsset(bodyAsset Asset) *Asset {
+	identifier, _ := strconv.Atoi(strings.Split(bodyAsset.FileName, "_")[0])
+	searchStr := fmt.Sprintf("b%d", identifier)
+	for _, v := range GetAssets().GetBadgeAssets() {
+		if strings.Contains(v.FileName, searchStr) {
+			return &v
 		}
 	}
 	return nil

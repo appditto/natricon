@@ -84,24 +84,24 @@ func (r *redisManager) hset(key string, field string, value string) error {
 // UpdateDonorStatus - Update donor status with given duration in days
 func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDays uint, maxDays uint) {
 	hashKey := fmt.Sprintf("%s:processedHashes", keyPrefix)
-	key := fmt.Sprintf("%s:donator:%s", keyPrefix, account)
+	key := fmt.Sprintf("%s:donor:%s", keyPrefix, account)
 	// See if this hash was already processed
 	_, err := r.hget(hashKey, hash)
 	if err == nil {
 		glog.Infof("Hash already processed %s", hash)
 		return
 	}
-	// Get current donator if exists
+	// Get current donor if exists
 	cur, err := r.get(key)
-	var donator *Donator
+	var donor *Donor
 	if err == nil {
-		json.Unmarshal([]byte(cur), donator)
+		json.Unmarshal([]byte(cur), donor)
 	}
 	// Calculate new expiry
 	curDate := time.Now().UTC()
 	existingHours := 0.0
-	if donator != nil {
-		existingHours = donator.ExpiresAt.Sub(curDate).Hours()
+	if donor != nil {
+		existingHours = donor.ExpiresAt.Sub(curDate).Hours()
 		if existingHours < 0 {
 			existingHours = 0.0
 		}
@@ -109,8 +109,8 @@ func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDa
 	// Calculate newExpiry
 	newExpiryHours := time.Duration(math.Min(float64(maxDays*24), existingHours+float64(durationDays*24)))
 	newExpiry := curDate.Add(newExpiryHours * time.Hour)
-	// Set new donator
-	newDonor := Donator{
+	// Set new donor
+	newDonor := Donor{
 		Address:   account,
 		ExpiresAt: newExpiry,
 	}
@@ -128,16 +128,16 @@ func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDa
 // HasDonorStatus - check if an account has donor status
 func (r *redisManager) HasDonorStatus(account string) bool {
 	account = strings.ReplaceAll(account, "xrb_", "nano_")
-	key := fmt.Sprintf("%s:donator:%s", keyPrefix, account)
+	key := fmt.Sprintf("%s:donor:%s", keyPrefix, account)
 	raw, err := r.get(key)
 	if err != nil {
 		return false
 	}
-	var donator *Donator
-	json.Unmarshal([]byte(raw), donator)
+	var donor *Donor
+	json.Unmarshal([]byte(raw), donor)
 	// See if expired
 	curDate := time.Now().UTC()
-	if donator.ExpiresAt.Sub(curDate).Seconds() < 0 {
+	if donor.ExpiresAt.Sub(curDate).Seconds() < 0 {
 		r.del(key)
 		return false
 	}

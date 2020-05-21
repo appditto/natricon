@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/appditto/natricon/server/color"
+	"github.com/appditto/natricon/server/db"
 	"github.com/appditto/natricon/server/image"
 	"github.com/appditto/natricon/server/magickwand"
 	"github.com/appditto/natricon/server/utils"
@@ -32,7 +33,10 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 
 	sha256 := utils.AddressSha256(address, nc.Seed)
 
-	generateIcon(&sha256, c)
+	// See if badge eligible
+	hasBadge := db.GetDB().HasDonorStatus(address)
+
+	generateIcon(&sha256, hasBadge, c)
 }
 
 // TODO - remove us: Testing APIs
@@ -42,7 +46,7 @@ func (nc NatriconController) GetRandomSvg(c *gin.Context) {
 	address := utils.GenerateAddress()
 	sha256 := utils.AddressSha256(address, nc.Seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
+	accessories, err := image.GetAccessoriesForHash(sha256, false, false, nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -67,7 +71,7 @@ func (nc NatriconController) GetRandom(c *gin.Context) {
 	address := utils.GenerateAddress()
 	sha256 := utils.AddressSha256(address, nc.Seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
+	accessories, err := image.GetAccessoriesForHash(sha256, false, false, nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -126,7 +130,7 @@ func (nc NatriconController) GetNatricon(c *gin.Context) {
 	// }
 	sha256 := utils.AddressSha256(address, nc.Seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256, false, nil)
+	accessories, err := image.GetAccessoriesForHash(sha256, false, false, nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -156,7 +160,7 @@ func (nc NatriconController) GetNatricon(c *gin.Context) {
 }
 
 // Generate natricon with given hash
-func generateIcon(hash *string, c *gin.Context) {
+func generateIcon(hash *string, withBadge bool, c *gin.Context) {
 	var err error
 
 	format := strings.ToLower(c.Query("format"))
@@ -190,7 +194,7 @@ func generateIcon(hash *string, c *gin.Context) {
 		}
 	}
 
-	accessories, err := image.GetAccessoriesForHash(*hash, outline, outlineColor)
+	accessories, err := image.GetAccessoriesForHash(*hash, withBadge, outline, outlineColor)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return

@@ -102,8 +102,8 @@ func main() {
 	// Get seed from env
 	seed := utils.GetEnv("NATRICON_SEED", "1234567890")
 	// Parse server options
-	/* TODO - remove me
 	loadFiles := flag.Bool("load-files", false, "Print assets as GO arrays")
+	/* TODO REMOVE ME
 	testBodyDist := flag.Bool("test-bd", false, "Test body distribution")
 	testHairDist := flag.Bool("test-hd", false, "Test hair distribution")*/
 
@@ -112,18 +112,19 @@ func main() {
 	rpcUrl := flag.String("rpc-url", "", "Optional URL to use for nano RPC Client")
 	flag.Parse()
 
+	if *loadFiles {
+		LoadAssetsToArray()
+		return
+	}
+
 	// TODO - remove me
-	/*
-		if *loadFiles {
-			LoadAssetsToArray()
-			return
-		} else if *testBodyDist {
-			testBodyDistribution()
-			return
-		} else if *testHairDist {
-			testHairDistribution()
-			return
-		}*/
+	/*if *testBodyDist {
+		testBodyDistribution()
+		return
+	} else if *testHairDist {
+		testHairDistribution()
+		return
+	}*/
 
 	var rpcClient *net.RPCClient
 	if *rpcUrl != "" {

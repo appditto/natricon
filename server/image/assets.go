@@ -15,6 +15,7 @@ type Sex string
 const (
 	Body         IllustrationType = "body"
 	BodyOutline  IllustrationType = "body-outline"
+	Badge        IllustrationType = "badge"
 	Hair         IllustrationType = "hair-front"
 	HairBack     IllustrationType = "hair-back"
 	HairOutline  IllustrationType = "hair-outline"
@@ -69,6 +70,7 @@ func getSex(name string) Sex {
 type assetManager struct {
 	bodyAssets         []Asset
 	bodyOutlineAssets  []Asset
+	badgeAssets        []Asset
 	hairAssets         []Asset
 	hairBackAssets     []Asset
 	hairOutlineAssets  []Asset
@@ -96,6 +98,13 @@ func GetAssets() *assetManager {
 			var a Asset
 			err = json.Unmarshal(ba, &a)
 			bodyOutlineAssets = append(bodyOutlineAssets, a)
+		}
+		// Load badges
+		var badgeAssets []Asset
+		for _, ba := range BadgeIllustrations {
+			var a Asset
+			err = json.Unmarshal(ba, &a)
+			badgeAssets = append(badgeAssets, a)
 		}
 		// Load hair assets
 		var hairAssets []Asset
@@ -146,6 +155,7 @@ func GetAssets() *assetManager {
 		singleton = &assetManager{
 			bodyAssets:         bodyAssets,
 			bodyOutlineAssets:  bodyOutlineAssets,
+			badgeAssets:        badgeAssets,
 			hairAssets:         hairAssets,
 			hairBackAssets:     hairBackAssets,
 			hairOutlineAssets:  hairOutlineAssets,
@@ -175,6 +185,11 @@ func (sm *assetManager) GetBodyOutlineAssets() []Asset {
 // GetNHairAssets - get # of hair assets
 func (sm *assetManager) GetNHairAssets() int {
 	return len(sm.hairAssets)
+}
+
+// GetBadges - get badge assets
+func (sm *assetManager) GetBadgeAssets() []Asset {
+	return sm.badgeAssets
 }
 
 // GetHairAssets - get complete list of hair assets
