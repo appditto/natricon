@@ -2,10 +2,13 @@ package controller
 
 import (
 	"encoding/json"
+	"time"
 
+	"github.com/appditto/natricon/server/db"
 	"github.com/appditto/natricon/server/model"
 	"github.com/appditto/natricon/server/net"
 	"github.com/appditto/natricon/server/utils"
+	"github.com/bsm/redislock"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
 )
@@ -47,6 +50,17 @@ func (nc NanoController) CheckMissedCallbacks() {
 	if nc.RPCClient == nil {
 		return
 	}
+
+	// Try to obtain lock.
+	lock, err := db.GetDB().Locker.Obtain("natricon:history_lock", 100*time.Second, nil)
+	if err == redislock.ErrNotObtained {
+		return
+	} else if err != nil {
+		glog.Fatalln(err)
+		return
+	}
+	defer lock.Release()
+	// Check history
 	historyResponse, err := nc.RPCClient.MakeAccountHistoryRequest(
 		donationAccount,
 		10,

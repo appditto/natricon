@@ -6,12 +6,14 @@ import (
 	"sync"
 
 	"github.com/appditto/natricon/server/utils"
+	"github.com/bsm/redislock"
 	"github.com/go-redis/redis/v7"
 )
 
 // Singleton to keep assets loaded in memory
 type redisManager struct {
-	client *redis.Client
+	Client *redis.Client
+	Locker *redislock.Client
 }
 
 var singleton *redisManager
@@ -31,9 +33,11 @@ func GetDB() *redisManager {
 			Addr: fmt.Sprintf("%s:%d", utils.GetEnv("REDIS_HOST", "localhost"), redis_port),
 			DB:   redis_db,
 		})
+		// Create locker
 		// Create object
 		singleton = &redisManager{
-			client: client,
+			Client: client,
+			Locker: redislock.New(client),
 		}
 	})
 	return singleton
@@ -41,10 +45,11 @@ func GetDB() *redisManager {
 
 // Get - Redis GET
 func (r *redisManager) Get(key string) string {
-	return r.Get(key)
+	val, _ := r.Client.Get(key).Result()
+	return val
 }
 
 // Get - Redis SET
-func (r *redisManager) Set(key string, value string) string {
-	return r.Set(key, value)
+func (r *redisManager) Set(key string, value string) {
+	r.Client.Set(key, value, 0)
 }
