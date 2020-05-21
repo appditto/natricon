@@ -18,6 +18,8 @@ spec:
       containers:
       - name: go-natricon
         image: replaceme
+        command: ["/bin/bash", "-c"]
+        args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://nano-node.nano:7076"]
         ports:
           - containerPort: 5555
         imagePullPolicy: "Always"

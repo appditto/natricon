@@ -14,6 +14,7 @@ import (
 	"github.com/appditto/natricon/server/image"
 	"github.com/appditto/natricon/server/magickwand"
 	"github.com/appditto/natricon/server/model"
+	"github.com/appditto/natricon/server/net"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,7 @@ import (
 )
 
 var seed string
+var rpcClient net.RPCClient
 
 const minConvertedSize = 100  // Minimum size of PNG/WEBP/JPG converted output
 const maxConvertedSize = 1000 // Maximum size of PNG/WEBP/JPG converted output
@@ -336,6 +338,7 @@ func main() {
 	testHairDist := flag.Bool("test-hd", false, "Test hair distribution")
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
+	rpcUrl := flag.String("rpc-url", "", "Optional URL to use for nano RPC Client")
 	flag.Parse()
 
 	if *loadFiles {
@@ -346,6 +349,10 @@ func main() {
 		return
 	} else if *testHairDist {
 		testHairDistribution()
+		return
+	} else if *rpcUrl != "" {
+		glog.Infof("RPC Client configured at %s", *rpcUrl)
+		rpcClient = net.RPCClient{Url: *rpcUrl}
 		return
 	}
 

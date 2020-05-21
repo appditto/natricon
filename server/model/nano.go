@@ -11,3 +11,30 @@ type Callback struct {
 type Block struct {
 	LinkAsAccount string `json:"link_as_account"`
 }
+
+// RPC requests
+type BaseRequest struct {
+	Action string `json:"action"`
+}
+
+var AccountHistoryAction BaseRequest = BaseRequest{Action: "account_history"}
+
+type AccountHistoryRequest struct {
+	BaseRequest
+	Account string `json:"account"`
+	Count   uint   `json:"count"`
+}
+
+// RPC responses
+type HistoryItem struct {
+	Type           string `json:"type"`
+	Account        string `json:"account"`
+	Amount         string `json:"amount"`
+	LocalTimestamp string `json:"local_timestamp"`
+	Hash           string `json:"hash"`
+}
+
+type AccountHistoryResponse struct {
+	Account string        `json:"account"`
+	History []HistoryItem `json:"history"`
+}
