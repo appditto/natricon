@@ -40,3 +40,41 @@ func TestAddressSha256(t *testing.T) {
 		t.Errorf("Expected %s got %s", expected, hashed)
 	}
 }
+
+func TestRawToNano(t *testing.T) {
+	// 1
+	raw := "1000000000000000000000000000000"
+	expected := 1.0
+	converted, _ := RawToNano(raw)
+	if converted != expected {
+		t.Errorf("Expected %f but got %f", expected, converted)
+	}
+	// 1.000001
+	raw = "1000001000000000000000000000000"
+	expected = 1.000001
+	converted, _ = RawToNano(raw)
+	if converted != expected {
+		t.Errorf("Expected %f but got %f", expected, converted)
+	}
+	// 1.0000019
+	raw = "1000001900000000000000000000000"
+	expected = 1.000001
+	converted, _ = RawToNano(raw)
+	if converted != expected {
+		t.Errorf("Expected %f but got %f", expected, converted)
+	}
+	// 1234.123456789
+	raw = "1234123456789000000000000000000000"
+	expected = 1234.123456
+	converted, _ = RawToNano(raw)
+	if converted != expected {
+		t.Errorf("Expected %f but got %f", expected, converted)
+	}
+	// Error
+	raw = "1234NotANumber"
+	expected = 1234.123456
+	_, err := RawToNano(raw)
+	if err == nil {
+		t.Errorf("Expected error converting %s but didn't get one", raw)
+	}
+}

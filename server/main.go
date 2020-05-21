@@ -105,6 +105,8 @@ func callback(c *gin.Context) {
 		return
 	}
 	glog.Infof("Received callback link %s", blockData.LinkAsAccount)
+	amount, err := utils.RawToNano(callbackData.Amount)
+	glog.Infof("Received callback amount %f", amount)
 }
 
 // Generate natricon with given nano address
