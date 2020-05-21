@@ -26,9 +26,9 @@ FROM base
 
 WORKDIR /usr/src/app
 
-COPY --from=builder /usr/src/app/natricon /usr/src/app/natricon
+COPY --from=builder /usr/src/app/natricon /usr/bin/natricon
 
 ENV GIN_MODE="release"
 
 # run main.go
-CMD ["./natricon", "-host=0.0.0.0", "-port=5555", "-logtostderr"]
+CMD ["natricon", "-host=0.0.0.0", "-port=5555", "-logtostderr"]
