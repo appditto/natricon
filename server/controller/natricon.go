@@ -52,7 +52,11 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 		sha256 = utils.PKSha256(pubKey, nc.Seed)
 	} else {
 		hasBadge = vanity.check
-		sha256 = vanity.hash
+		if vanity.hash == "" {
+			sha256 = utils.PKSha256(pubKey, nc.Seed)
+		} else {
+			sha256 = vanity.hash
+		}
 	}
 
 	// See if badge eligible
