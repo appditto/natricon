@@ -24,7 +24,7 @@ func (client RPCClient) MakeAccountHistoryRequest(account string, count uint) (*
 	requestBody, _ := json.Marshal(request)
 	resp, err := http.Post(client.Url, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		glog.Fatalf("Error making RPC request", err)
+		glog.Fatalf("Error making RPC request %s", err)
 		return nil, errors.New("Error")
 	}
 	defer resp.Body.Close()
@@ -32,12 +32,12 @@ func (client RPCClient) MakeAccountHistoryRequest(account string, count uint) (*
 	var historyResponse model.AccountHistoryResponse
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		glog.Fatalf("Error decoding request body", err)
+		glog.Fatalf("Error decoding request body %s", err)
 		return nil, errors.New("Error")
 	}
 	err = json.Unmarshal(body, &historyResponse)
 	if err != nil {
-		glog.Fatalf("Error unmarshaling response", err)
+		glog.Fatalf("Error unmarshaling response %s", err)
 		return nil, errors.New("Error")
 	}
 	return &historyResponse, nil
