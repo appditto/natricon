@@ -25,7 +25,7 @@ type NatriconController struct {
 type Vanity struct {
 	// Optional fields
 	hash  string // Will generate the natricon with specific hash
-	check bool   // Will generate natricon with vip/donation mark
+	badge string // Will generate natricon with specified badge
 	// If using any of the below then ALL of them are required
 	bodyColor    *color.RGB
 	hairColor    *color.RGB
@@ -35,7 +35,9 @@ type Vanity struct {
 	eyeAssetID   int
 }
 
-// func GetSpecificNatricon(withBadge bool, outline bool, outlineColor *color.RGB, bodyColor *color.RGB, hairColor *color.RGB, bodyAsset int, hairAsset int, mouthAsset int, eyeAsset int)
+const (
+	checkBadge string = "check"
+)
 
 var vanities = map[string]*Vanity{
 	/* Example to base off of a hash
@@ -50,7 +52,7 @@ var vanities = map[string]*Vanity{
 		hairAssetID:  14,
 		mouthAssetID: 15,
 		eyeAssetID:   12,
-		check:        true,
+		badge:        checkBadge,
 	},
 }
 
@@ -72,7 +74,7 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 	if vanity == nil {
 		sha256 = utils.PKSha256(pubKey, nc.Seed)
 	} else {
-		hasBadge = vanity.check
+		hasBadge = vanity.badge == checkBadge
 		if vanity.bodyAssetID > 0 && vanity.hairAssetID > 0 && vanity.eyeAssetID > 0 && vanity.bodyColor != nil && vanity.hairColor != nil {
 			specialNatricon = true
 		} else if vanity.hash == "" {
