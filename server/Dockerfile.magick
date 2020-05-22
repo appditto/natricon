@@ -1,4 +1,5 @@
-# Build docker image with imagemagick/go/ubuntu
+# appditto/imagemagick
+# Build docker image with imagemagick/ubuntu
 FROM ubuntu:20.04
 
 RUN mkdir /imagemagick-build
@@ -32,13 +33,9 @@ RUN apt-get update && apt-get install -y \
 && mkdir ImageMagick7 && tar zxvpf ImageMagick.tar.gz -C ImageMagick7 --strip-components 1 \
 && cd ImageMagick7 && ./configure --with-rsvg=yes && make && make install && ldconfig /usr/local/lib \
 && rm -rf ImageMagick7 && rm -rf ImageMagick.tar.gz \
-&& wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | tar -xz -C /usr/local \
-&& rm -rf go1.14.2.linux-amd64.tar.gz \
 && apt-get remove --autoremove --purge -y build-essential libwebp-dev \
     librsvg2-dev libpng-dev libjpeg-turbo8-dev libxml2-dev wget software-properties-common \
 && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /
 RUN rm -rf imagemagick-build
-
-ENV PATH="/usr/local/go/bin:${PATH}"

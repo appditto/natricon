@@ -2,12 +2,7 @@ FROM appditto/imagemagick_go:latest as base
 
 FROM base as builder
 
-RUN mkdir -p /usr/src/app
-
-WORKDIR /usr/src/app
-RUN rm -rf /imagemagick-build
-
-ENV CGO_CFLAGS_ALLOW="-Xpreprocessor"
+WORKDIR /root
 
 # add source code
 ADD . .
@@ -18,16 +13,17 @@ ADD assets assets
 RUN apt-get update && apt-get install -y \
     gcc pkg-config \
 && go get -u \
+&& echo "Building natricon" \
 && go build -o natricon \
 && rm -rf /var/lib/apt/lists/*
 
-# Only copy binary
-FROM base
+# Copy binary to imagemagick image
+FROM appditto/imagemagick:latest
 
 USER root
 WORKDIR /root
 
-COPY --from=builder /usr/src/app/natricon /usr/bin/natricon
+COPY --from=builder /root/natricon /usr/bin/natricon
 
 ENV GIN_MODE="release"
 
