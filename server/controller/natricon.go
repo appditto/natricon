@@ -99,7 +99,7 @@ func (nc NatriconController) GetRandomSvg(c *gin.Context) {
 	var err error
 
 	address := utils.GenerateAddress()
-	sha256 := utils.PKSha256(utils.AddressToPub(address), nc.Seed)
+	sha256 := utils.AddressSha256(address, nc.Seed)
 
 	accessories, err := image.GetAccessoriesForHash(sha256, false, false, nil)
 	if err != nil {
