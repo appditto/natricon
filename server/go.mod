@@ -16,7 +16,11 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/tdewolff/minify/v2 v2.7.4
+	go.uber.org/automaxprocs v1.3.0
 	golang.org/x/crypto v0.0.0-20200429183012-4b2356b1ed79 // indirect
+	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/sys v0.0.0-20200509044756-6aff5f38e54f // indirect
+	golang.org/x/tools v0.0.0-20200521211927-2b542361a4fc // indirect
 	gopkg.in/gographics/imagick.v3 v3.3.0
+	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
 )

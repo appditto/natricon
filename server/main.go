@@ -14,6 +14,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
 	"github.com/jasonlvhit/gocron"
+
+	_ "go.uber.org/automaxprocs"
 )
 
 func testBodyDistribution(seed string) {
