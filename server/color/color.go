@@ -43,6 +43,15 @@ func HTMLToRGB(in string) (RGB, error) {
 	return RGB{float64(r), float64(g), float64(b)}, nil
 }
 
+// HTMLToRGB but returns nil instead of error if an error occurs
+func HTMLToRGBAlt(in string) *RGB {
+	rgb, err := HTMLToRGB(in)
+	if err != nil {
+		return nil
+	}
+	return &rgb
+}
+
 // A nudge to make truncation round to nearest number instead of flooring
 const delta = 1 / 512.0
 

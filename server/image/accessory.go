@@ -32,6 +32,43 @@ const hexRegexStr = "^[0-9a-fA-F]+$"
 
 var hexRegex = regexp.MustCompile(hexRegexStr)
 
+// GetSpecificNatricon - Return Accessories object with specific parameters
+func GetSpecificNatricon(withBadge bool, outline bool, outlineColor *color.RGB, bodyColor *color.RGB, hairColor *color.RGB, bodyAsset int, hairAsset int, mouthAsset int, eyeAsset int) Accessories {
+	var accessories = Accessories{}
+
+	// Set colors
+	accessories.BodyColor = *bodyColor
+	accessories.HairColor = *hairColor
+
+	// Assets
+	accessories.BodyAsset = GetBodyAssetWithID(bodyAsset)
+	accessories.HairAsset = GetHairAssetWithID(hairAsset)
+	accessories.BackHairAsset = GetBackHairAsset(accessories.HairAsset)
+
+	// Get badge
+	if withBadge {
+		accessories.BadgeAsset = GetBadgeAsset(accessories.BodyAsset)
+	}
+
+	// Eyes and mouth
+	accessories.MouthAsset = GetMouthAssetWithID(mouthAsset)
+	accessories.EyeAsset = GetEyeAssetWithID(eyeAsset)
+
+	// Get outlines
+	if outline {
+		accessories.BodyOutlineAsset = GetBodyOutlineAsset(accessories.BodyAsset)
+		accessories.HairOutlineAsset = GetHairOutlineAsset(accessories.HairAsset)
+		accessories.MouthOutlineAsset = GetMouthOutlineAsset(accessories.MouthAsset)
+		if outlineColor != nil {
+			accessories.OutlineColor = *outlineColor
+		} else {
+			accessories.OutlineColor = color.RGB{R: 0, G: 0, B: 0}
+		}
+	}
+
+	return accessories
+}
+
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
 func GetAccessoriesForHash(hash string, withBadge bool, outline bool, outlineColor *color.RGB) (Accessories, error) {
 	var err error
@@ -107,6 +144,19 @@ func GetBodyAsset(entropy string) (Asset, error) {
 	return GetAssets().GetBodyAssets()[bodyIndex], nil
 }
 
+// GetBodyAssetWithID - return body illustration with given ID
+func GetBodyAssetWithID(id int) Asset {
+	for _, ba := range GetAssets().GetBodyAssets() {
+		baid, err := strconv.Atoi(strings.Split(ba.FileName, "_")[0])
+		if err != nil {
+			continue
+		} else if baid == id {
+			return ba
+		}
+	}
+	return GetAssets().GetBodyAssets()[0]
+}
+
 // GetBodyOutlineAsset - return body outline illustration for a given body asset
 func GetBodyOutlineAsset(bodyAsset Asset) *Asset {
 	for _, ba := range GetAssets().GetBodyOutlineAssets() {
@@ -146,6 +196,19 @@ func GetHairAsset(entropy string, bodyAsset *Asset) (Asset, error) {
 	return hairAssetOptions[hairIndex], nil
 }
 
+// GetHairAssetWithID - return body illustration with given ID
+func GetHairAssetWithID(id int) Asset {
+	for _, ha := range GetAssets().GetHairAssets(Neutral) {
+		haid, err := strconv.Atoi(strings.Split(ha.FileName, "_")[0])
+		if err != nil {
+			continue
+		} else if haid == id {
+			return ha
+		}
+	}
+	return GetAssets().GetHairAssets(Neutral)[0]
+}
+
 // GetBackHairAsset - return back hair illustration for a given hair asset
 func GetBackHairAsset(hairAsset Asset) *Asset {
 	for _, ba := range GetAssets().GetBackHairAssets() {
@@ -183,6 +246,19 @@ func GetEyeAsset(entropy string, sex Sex, luminosity float64) (Asset, error) {
 	return eyeAssetOptions[eyeIndex], nil
 }
 
+// GetEyeAssetWithID - return eye illustration with given ID
+func GetEyeAssetWithID(id int) Asset {
+	for _, ba := range GetAssets().GetEyeAssets(Neutral, 100) {
+		baid, err := strconv.Atoi(strings.Split(ba.FileName, "_")[0])
+		if err != nil {
+			continue
+		} else if baid == id {
+			return ba
+		}
+	}
+	return GetAssets().GetEyeAssets(Neutral, 100)[0]
+}
+
 // GetEyeAsset - return hair illustration to use with given entropy
 func GetMouthAsset(entropy string, sex Sex, luminosity float64) (Asset, error) {
 	// Get detemrinistic RNG
@@ -198,6 +274,19 @@ func GetMouthAsset(entropy string, sex Sex, luminosity float64) (Asset, error) {
 	mouthIndex := r.Int31n(int32(len(mouthAssetOptions)))
 
 	return mouthAssetOptions[mouthIndex], nil
+}
+
+// GetMouthAssetWithID - return mouth illustration with given ID
+func GetMouthAssetWithID(id int) Asset {
+	for _, ba := range GetAssets().GetMouthAssets(Neutral, 100) {
+		baid, err := strconv.Atoi(strings.Split(ba.FileName, "_")[0])
+		if err != nil {
+			continue
+		} else if baid == id {
+			return ba
+		}
+	}
+	return GetAssets().GetMouthAssets(Neutral, 100)[0]
 }
 
 // GetMouthOutlineAsset - return mouth outline illustration for a given mouth asset

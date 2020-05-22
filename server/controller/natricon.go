@@ -23,14 +23,34 @@ type NatriconController struct {
 
 // Special addresses
 type Vanity struct {
-	hash  string
-	check bool
+	// Optional fields
+	hash  string // Will generate the natricon with specific hash
+	check bool   // Will generate natricon with vip/donation mark
+	// If using any of the below then ALL of them are required
+	bodyColor    *color.RGB
+	hairColor    *color.RGB
+	bodyAssetID  int
+	hairAssetID  int
+	mouthAssetID int
+	eyeAssetID   int
 }
 
+// func GetSpecificNatricon(withBadge bool, outline bool, outlineColor *color.RGB, bodyColor *color.RGB, hairColor *color.RGB, bodyAsset int, hairAsset int, mouthAsset int, eyeAsset int)
+
 var vanities = map[string]*Vanity{
+	/* Example to base off of a hash
 	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": {
 		hash:  "2f2f45946be8ee4f4a9fdc328f2ebb2ba6a163fbf4c8a5c8f5e23d43790ef7d8",
 		check: true,
+	},*/
+	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": {
+		bodyColor:    color.HTMLToRGBAlt("#bababa"),
+		hairColor:    color.HTMLToRGBAlt("#1378f2"),
+		bodyAssetID:  18,
+		hairAssetID:  14,
+		mouthAssetID: 15,
+		eyeAssetID:   12,
+		check:        true,
 	},
 }
 
@@ -46,13 +66,16 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 
 	var sha256 string
 	hasBadge := false
+	specialNatricon := false
 	pubKey := utils.AddressToPub(address)
 	vanity := vanities[pubKey]
 	if vanity == nil {
 		sha256 = utils.PKSha256(pubKey, nc.Seed)
 	} else {
 		hasBadge = vanity.check
-		if vanity.hash == "" {
+		if vanity.bodyAssetID > 0 && vanity.hairAssetID > 0 && vanity.eyeAssetID > 0 && vanity.bodyColor != nil && vanity.hairColor != nil {
+			specialNatricon = true
+		} else if vanity.hash == "" {
 			sha256 = utils.PKSha256(pubKey, nc.Seed)
 		} else {
 			sha256 = vanity.hash
@@ -60,11 +83,15 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 	}
 
 	// See if badge eligible
-	if !hasBadge {
+	if !hasBadge && !specialNatricon {
 		hasBadge = db.GetDB().HasDonorStatus(address)
 	}
 
-	generateIcon(&sha256, hasBadge, c)
+	if specialNatricon {
+		generateSpecialIcon(vanity, hasBadge, c)
+	} else {
+		generateIcon(&sha256, hasBadge, c)
+	}
 }
 
 // TODO - remove us: Testing APIs
@@ -233,6 +260,61 @@ func generateIcon(hash *string, withBadge bool, c *gin.Context) {
 	deltaHsv.H = hairHsv.H - bodyHsv.H
 	deltaHsv.S = hairHsv.S - bodyHsv.S
 	deltaHsv.B = hairHsv.B - bodyHsv.B
+	svg, err := image.CombineSVG(accessories)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Error occured")
+		return
+	}
+	if format != "svg" {
+		// Convert
+		var converted []byte
+		converted, err = magickwand.ConvertSvgToBinary(svg, magickwand.ImageFormat(format), uint(size))
+		if err != nil {
+			c.String(http.StatusInternalServerError, "Error occured")
+			return
+		}
+		c.Data(200, fmt.Sprintf("image/%s", format), converted)
+		return
+	}
+	c.Data(200, "image/svg+xml; charset=utf-8", svg)
+}
+
+// Generate icon for special accounts
+func generateSpecialIcon(vanity *Vanity, withBadge bool, c *gin.Context) {
+	var err error
+
+	format := strings.ToLower(c.Query("format"))
+	size := 0
+	if format == "" || format == "svg" {
+		format = "svg"
+	} else if format != "png" && format != "webp" {
+		c.String(http.StatusBadRequest, "%s", "Valid formats are 'svg', 'png', or 'webp'")
+		return
+	} else {
+		sizeStr := c.Query("size")
+		if sizeStr == "" {
+			c.String(http.StatusBadRequest, "%s", "Size is required when format is not svg")
+			return
+		}
+		size, err = strconv.Atoi(c.Query("size"))
+		if err != nil || size < minConvertedSize || size > maxConvertedSize {
+			c.String(http.StatusBadRequest, "%s", fmt.Sprintf("size must be an integer between %d and %d", minConvertedSize, maxConvertedSize))
+			return
+		}
+	}
+
+	outline := strings.ToLower(c.Query("outline")) == "true"
+	// Get outline and outline color info, black is default
+	var outlineColor *color.RGB
+	if outline {
+		if strings.ToLower(c.Query("outlineColor")) == "white" {
+			outlineColor = &color.RGB{R: 255.0, G: 255.0, B: 255.0}
+		} else {
+			outlineColor = &color.RGB{R: 0.0, G: 0.0, B: 0.0}
+		}
+	}
+
+	accessories := image.GetSpecificNatricon(withBadge, outline, outlineColor, vanity.bodyColor, vanity.hairColor, vanity.bodyAssetID, vanity.hairAssetID, vanity.mouthAssetID, vanity.eyeAssetID)
 	svg, err := image.CombineSVG(accessories)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Error occured")
