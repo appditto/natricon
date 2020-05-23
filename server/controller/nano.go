@@ -110,8 +110,8 @@ func (nc NanoController) UpdatePrincipalWeight() {
 		glog.Errorf("Error occured converting weight to nano %s", err)
 		return
 	}
-	// 1% of online weight means principal rep
-	principalRepMinimum := onlineWeightMinimum * 0.01
+	// 0.1% of online weight means principal rep
+	principalRepMinimum := onlineWeightMinimum * 0.001
 	glog.Infof("Setting principal rep requirement to %f", principalRepMinimum)
 	db.GetDB().SetPrincipalRepRequirement(principalRepMinimum)
 }
