@@ -142,5 +142,5 @@ func (nc NanoController) UpdatePrincipalReps() {
 	// Update cache
 	db.GetDB().SetPrincipalReps(principalReps)
 	// Update badge service
-	image.GetBadgeSvc().PrincipalReps = principalReps
+	image.GetBadgeSvc().UpdatePrincipalReps(principalReps)
 }

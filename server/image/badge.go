@@ -60,7 +60,9 @@ var Services = []string{
 
 // BadgeService is a singleton providing badge/address data
 type badgeService struct {
-	PrincipalReps []string
+	PrincipalReps map[string]bool
+	Exchanges     map[string]bool
+	Services      map[string]bool
 }
 
 var bsingleton *badgeService
@@ -69,38 +71,54 @@ var bonce sync.Once
 func GetBadgeSvc() *badgeService {
 	bonce.Do(func() {
 		// Grab cached principal reps
-		// TODO
 		principalReps := db.GetDB().GetPrincipalReps()
-		// Create object
+		// Translate everything into a map since
+		// Translate all data into maps since lookup is O(1) instead of O(n)
+		prMap := map[string]bool{}
+		for i := 0; i < len(principalReps); i++ {
+			prMap[principalReps[i]] = true
+		}
+		// Exchanges
+		exchMap := map[string]bool{}
+		for i := 0; i < len(Exchanges); i++ {
+			exchMap[Exchanges[i]] = true
+		}
+		// Services
+		svcMap := map[string]bool{}
+		for i := 0; i < len(Services); i++ {
+			svcMap[Services[i]] = true
+		}
 		bsingleton = &badgeService{
-			PrincipalReps: principalReps,
+			PrincipalReps: prMap,
+			Exchanges:     exchMap,
+			Services:      svcMap,
 		}
 	})
 	return bsingleton
 }
 
+// UpdatePrincipalReps - Update principal rep map
+func (sm *badgeService) UpdatePrincipalReps(reps []string) {
+	prMap := map[string]bool{}
+	for i := 0; i < len(reps); i++ {
+		prMap[reps[i]] = true
+	}
+	sm.PrincipalReps = prMap
+}
+
 // GetBadgeType - Return badge type for a given PK
 func (sm *badgeService) GetBadgeType(pk string) BadgeType {
-	// Service
-	for _, a := range Services {
-		if a == pk {
-			return BTService
-		}
-	}
-	// Exchange
-	for _, a := range Exchanges {
-		if a == pk {
-			return BTExchange
-		}
-	}
-	// Principal rep
-	for _, a := range sm.PrincipalReps {
-		if a == pk {
-			return BTNode
-		}
-	}
-	// Donor
-	if db.GetDB().HasDonorStatus(pk) {
+	if sm.Services[pk] {
+		// Service
+		return BTService
+	} else if sm.Exchanges[pk] {
+		// Exchange
+		return BTExchange
+	} else if sm.PrincipalReps[pk] {
+		// Principal Rep
+		return BTNode
+	} else if db.GetDB().HasDonorStatus(pk) {
+		// Donor
 		return BTDonor
 	}
 	return BTNone
