@@ -3,7 +3,6 @@ package db
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"strconv"
 	"sync"
 	"time"
@@ -81,7 +80,7 @@ func (r *redisManager) hset(key string, field string, value string) error {
 }
 
 // UpdateDonorStatus - Update donor status with given duration in days
-func (r *redisManager) UpdateDonorStatus(hash string, acct string, durationDays uint, maxDays uint) {
+func (r *redisManager) UpdateDonorStatus(hash string, acct string, durationDays uint) {
 	pubkey := utils.AddressToPub(acct)
 	hashKey := fmt.Sprintf("%s:processedHashes", keyPrefix)
 	key := fmt.Sprintf("%s:donor:%s", keyPrefix, pubkey)
@@ -107,7 +106,7 @@ func (r *redisManager) UpdateDonorStatus(hash string, acct string, durationDays 
 		}
 	}
 	// Calculate newExpiry
-	newExpiryHours := time.Duration(math.Min(float64(maxDays*24), existingHours+float64(durationDays*24)))
+	newExpiryHours := time.Duration(existingHours + float64(durationDays*24))
 	newExpiry := curDate.Add(newExpiryHours * time.Hour)
 	// Set new donor
 	newDonor := Donor{
