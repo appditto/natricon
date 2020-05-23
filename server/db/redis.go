@@ -172,7 +172,7 @@ func (r *redisManager) GetPrincipalRepRequirement() float64 {
 func (r *redisManager) SetPrincipalReps(reps []string) {
 	key := fmt.Sprintf("%s:principal_reps", keyPrefix)
 	marshalled, err := json.Marshal(reps)
-	if err != nil {
+	if err == nil {
 		r.set(key, string(marshalled))
 	} else {
 		glog.Errorf("Encountered error saving principal rep cache %s", err)
