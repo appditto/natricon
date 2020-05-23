@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -82,9 +81,10 @@ func (r *redisManager) hset(key string, field string, value string) error {
 }
 
 // UpdateDonorStatus - Update donor status with given duration in days
-func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDays uint, maxDays uint) {
+func (r *redisManager) UpdateDonorStatus(hash string, acct string, durationDays uint, maxDays uint) {
+	pubkey := utils.AddressToPub(acct)
 	hashKey := fmt.Sprintf("%s:processedHashes", keyPrefix)
-	key := fmt.Sprintf("%s:donor:%s", keyPrefix, account)
+	key := fmt.Sprintf("%s:donor:%s", keyPrefix, pubkey)
 	// See if this hash was already processed
 	_, err := r.hget(hashKey, hash)
 	if err == nil {
@@ -111,7 +111,7 @@ func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDa
 	newExpiry := curDate.Add(newExpiryHours * time.Hour)
 	// Set new donor
 	newDonor := Donor{
-		Address:   account,
+		PubKey:    pubkey,
 		ExpiresAt: newExpiry,
 	}
 	// Marshal
@@ -125,10 +125,9 @@ func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDa
 	r.hset(hashKey, hash, "1")
 }
 
-// HasDonorStatus - check if an account has donor status
-func (r *redisManager) HasDonorStatus(account string) bool {
-	account = strings.ReplaceAll(account, "xrb_", "nano_")
-	key := fmt.Sprintf("%s:donor:%s", keyPrefix, account)
+// HasDonorStatus - check if a public key has donor status
+func (r *redisManager) HasDonorStatus(pubkey string) bool {
+	key := fmt.Sprintf("%s:donor:%s", keyPrefix, pubkey)
 	raw, err := r.get(key)
 	if err != nil {
 		return false

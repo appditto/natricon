@@ -1,6 +1,8 @@
 package utils
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestGenerateAddress(t *testing.T) {
 	generated := GenerateAddress()

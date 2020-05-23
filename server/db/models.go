@@ -3,6 +3,6 @@ package db
 import "time"
 
 type Donor struct {
-	Address   string    `json:"address"`
+	PubKey    string    `json:"pubkey"`
 	ExpiresAt time.Time `json:"expires_at"`
 }

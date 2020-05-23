@@ -19,7 +19,7 @@ func getNatriconStr(this js.Value, inputs []js.Value) interface{} {
 	}
 	sha256 := utils.AddressSha256(utils.AddressToPub(message), seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256, false, false, nil)
+	accessories, err := image.GetAccessoriesForHash(sha256, image.BTNone, false, nil)
 	if err != nil {
 		return js.Null()
 	}
