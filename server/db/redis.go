@@ -174,6 +174,8 @@ func (r *redisManager) SetPrincipalReps(reps []string) {
 	marshalled, err := json.Marshal(reps)
 	if err != nil {
 		r.set(key, string(marshalled))
+	} else {
+		glog.Errorf("Encountered error saving principal rep cache %s", err)
 	}
 }
 

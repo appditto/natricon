@@ -118,6 +118,7 @@ func (nc NanoController) UpdatePrincipalReps() {
 	if nc.RPCClient == nil {
 		return
 	}
+	glog.Infof("Updating principal rep list")
 	// Get weight requirement
 	repWeightRequirement := db.GetDB().GetPrincipalRepRequirement()
 	// Get reps
@@ -130,6 +131,7 @@ func (nc NanoController) UpdatePrincipalReps() {
 	for rep, weight := range repsResponse.Representatives {
 		weightNano, err := utils.RawToNano(weight)
 		if err != nil {
+			glog.Errorf("Error occured checking weight for rep %s %s", rep, err)
 			continue
 		}
 		if weightNano >= repWeightRequirement {
