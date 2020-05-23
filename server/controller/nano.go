@@ -76,7 +76,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 		return
 	}
 	for i := 0; i < len(historyResponse.History); i++ {
-		if historyResponse.History[i].Account != donationAccount {
+		if historyResponse.History[i].Type == "receive" && historyResponse.History[i].Account != donationAccount {
 			durationDays := nc.calcDonorDurationDays(historyResponse.History[i].Amount)
 			if durationDays > 0 {
 				glog.Infof("Checking donor status to %s for %d days", historyResponse.History[i].Account, durationDays)

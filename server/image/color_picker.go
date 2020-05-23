@@ -74,7 +74,7 @@ func GetBodyColor(entropy string) (color.RGB, error) {
 	lowerBound := math.Max(
 		math.Sqrt(
 			math.Max(
-				(MinPerceivedBrightness255*MinPerceivedBrightness255-color.RedPBMultiplier*outRGB.R*outRGB.R-color.GreenPBMultiplier*outRGB.G*outRGB.G)/color.GreenPBMultiplier,
+				(MinPerceivedBrightness255*MinPerceivedBrightness255-color.RedPBMultiplier*outRGB.R*outRGB.R-color.GreenPBMultiplier*outRGB.G*outRGB.G)/color.BluePBMultiplier,
 				0.0,
 			),
 		),
@@ -83,7 +83,7 @@ func GetBodyColor(entropy string) (color.RGB, error) {
 	upperBound := math.Min(
 		math.Sqrt(
 			math.Max(
-				(MaxPerceivedBrightness255*MaxPerceivedBrightness255-color.RedPBMultiplier*outRGB.R*outRGB.R-color.GreenPBMultiplier*outRGB.G*outRGB.G)/color.GreenPBMultiplier,
+				(MaxPerceivedBrightness255*MaxPerceivedBrightness255-color.RedPBMultiplier*outRGB.R*outRGB.R-color.GreenPBMultiplier*outRGB.G*outRGB.G)/color.BluePBMultiplier,
 				0.0,
 			),
 		),
