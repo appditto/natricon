@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/appditto/natricon/server/db"
+	"github.com/appditto/natricon/server/image"
 	"github.com/appditto/natricon/server/model"
 	"github.com/appditto/natricon/server/net"
 	"github.com/appditto/natricon/server/utils"
@@ -91,4 +92,55 @@ func (nc NanoController) calcDonorDurationDays(amountRaw string) uint {
 	amountNano, _ := utils.RawToNano(amountRaw)
 	chunks := uint(amountNano / donationThresholdNano)
 	return uint(math.Min(float64(chunks*30), maxVIPDays))
+}
+
+// Cron job for updating principal rep weight requirement
+func (nc NanoController) UpdatePrincipalWeight() {
+	if nc.RPCClient == nil {
+		return
+	}
+	// Check history
+	quorumResponse, err := nc.RPCClient.MakeConfirmationQuorumRequest()
+	if err != nil {
+		glog.Errorf("Error occured checking confirmation quorum %s", err)
+		return
+	}
+	onlineWeightMinimum, err := utils.RawToNano(quorumResponse.OnlineWeightTotal)
+	if err != nil {
+		glog.Errorf("Error occured converting weight to nano %s", err)
+		return
+	}
+	// 1% of online weight means principal rep
+	principalRepMinimum := onlineWeightMinimum * 0.01
+	glog.Infof("Setting principal rep requirement to %f", principalRepMinimum)
+	db.GetDB().SetPrincipalRepRequirement(principalRepMinimum)
+}
+
+// Cron job for updating principal reps
+func (nc NanoController) UpdatePrincipalReps() {
+	if nc.RPCClient == nil {
+		return
+	}
+	// Get weight requirement
+	repWeightRequirement := db.GetDB().GetPrincipalRepRequirement()
+	// Get reps
+	repsResponse, err := nc.RPCClient.MakeRepresentativesRequest()
+	if err != nil {
+		glog.Errorf("Error occured checking confirmation quorum %s", err)
+		return
+	}
+	principalReps := []string{}
+	for rep, weight := range repsResponse.Representatives {
+		weightNano, err := utils.RawToNano(weight)
+		if err != nil {
+			continue
+		}
+		if weightNano >= repWeightRequirement {
+			principalReps = append(principalReps, utils.AddressToPub(rep))
+		}
+	}
+	// Update cache
+	db.GetDB().SetPrincipalReps(principalReps)
+	// Update badge service
+	image.GetBadgeSvc().PrincipalReps = principalReps
 }

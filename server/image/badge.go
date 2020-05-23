@@ -60,7 +60,7 @@ var Services = []string{
 
 // BadgeService is a singleton providing badge/address data
 type badgeService struct {
-	principalReps []string
+	PrincipalReps []string
 }
 
 var bsingleton *badgeService
@@ -70,10 +70,10 @@ func GetBadgeSvc() *badgeService {
 	bonce.Do(func() {
 		// Grab cached principal reps
 		// TODO
-		principalReps := []string{}
+		principalReps := db.GetDB().GetPrincipalReps()
 		// Create object
 		bsingleton = &badgeService{
-			principalReps: principalReps,
+			PrincipalReps: principalReps,
 		}
 	})
 	return bsingleton
@@ -81,22 +81,27 @@ func GetBadgeSvc() *badgeService {
 
 // GetBadgeType - Return badge type for a given PK
 func (sm *badgeService) GetBadgeType(pk string) BadgeType {
-	// Exchange
-	for _, a := range Exchanges {
-		if a == pk {
-			return BTExchange
-		}
-	}
 	// Service
 	for _, a := range Services {
 		if a == pk {
 			return BTService
 		}
 	}
+	// Exchange
+	for _, a := range Exchanges {
+		if a == pk {
+			return BTExchange
+		}
+	}
+	// Principal rep
+	for _, a := range sm.PrincipalReps {
+		if a == pk {
+			return BTNode
+		}
+	}
 	// Donor
 	if db.GetDB().HasDonorStatus(pk) {
 		return BTDonor
 	}
-	// TODO - implement Node type
 	return BTNone
 }

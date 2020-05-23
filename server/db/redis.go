@@ -146,3 +146,50 @@ func (r *redisManager) HasDonorStatus(pubkey string) bool {
 	}
 	return true
 }
+
+// SetPrincipalRepRequirement - set voting weight requirement to be principal rep
+func (r *redisManager) SetPrincipalRepRequirement(amount float64) {
+	key := fmt.Sprintf("%s:principal_rep_requirement", keyPrefix)
+	r.set(key, fmt.Sprintf("%f", amount))
+}
+
+// GetPrincipalRepRequirement - get voting weight requirement to be principal rep
+func (r *redisManager) GetPrincipalRepRequirement() float64 {
+	key := fmt.Sprintf("%s:principal_rep_requirement", keyPrefix)
+	amount, err := r.get(key)
+	if err != nil {
+		// Return approximation
+		return 94737.0
+	}
+	converted, err := strconv.ParseFloat(amount, 64)
+	if err != nil {
+		// Return approximation
+		return 94737.0
+	}
+	return converted
+}
+
+// SetPrincipalReps - Cache principal reps
+func (r *redisManager) SetPrincipalReps(reps []string) {
+	key := fmt.Sprintf("%s:principal_reps", keyPrefix)
+	marshalled, err := json.Marshal(reps)
+	if err != nil {
+		r.set(key, string(marshalled))
+	}
+}
+
+// GetPrincipalReps - Get cached principal reps
+func (r *redisManager) GetPrincipalReps() []string {
+	key := fmt.Sprintf("%s:principal_reps", keyPrefix)
+	reps, err := r.get(key)
+	if err != nil {
+		// Return empty set
+		return []string{}
+	}
+	var repsU []string
+	err = json.Unmarshal([]byte(reps), &repsU)
+	if err != nil {
+		return []string{}
+	}
+	return repsU
+}

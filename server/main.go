@@ -156,10 +156,15 @@ func main() {
 	router.GET("/api/random", natriconController.GetRandom)
 	router.GET("/api/randomsvg", natriconController.GetRandomSvg)
 
-	// Setup cron job to check for missed donations
+	// Setup cron jobs
 	if !gin.IsDebugging() {
 		go func() {
+			// Checking missed donations
 			gocron.Every(10).Minutes().Do(nanoController.CheckMissedCallbacks)
+			// Updating principal rep requirement
+			gocron.Every(30).Minutes().Do(nanoController.UpdatePrincipalWeight)
+			// Update principal reps, this is heavier so dont do it so often
+			gocron.Every(30).Minutes().Do(nanoController.UpdatePrincipalReps)
 			<-gocron.Start()
 		}()
 	}
