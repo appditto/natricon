@@ -1,6 +1,10 @@
 package image
 
-import "github.com/appditto/natricon/server/db"
+import (
+	"sync"
+
+	"github.com/appditto/natricon/server/db"
+)
 
 type BadgeType string
 
@@ -60,9 +64,10 @@ type badgeService struct {
 }
 
 var bsingleton *badgeService
+var bonce sync.Once
 
 func GetBadgeSvc() *badgeService {
-	once.Do(func() {
+	bonce.Do(func() {
 		// Grab cached principal reps
 		// TODO
 		principalReps := []string{}
