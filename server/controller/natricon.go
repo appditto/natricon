@@ -13,8 +13,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const minConvertedSize = 100  // Minimum size of PNG/WEBP/JPG converted output
-const maxConvertedSize = 1000 // Maximum size of PNG/WEBP/JPG converted output
+const defaultRasterSize = 128 // Default size of PNG/WEBP images
+const minConvertedSize = 100  // Minimum size of PNG/WEBP converted output
+const maxConvertedSize = 1000 // Maximum size of PNG/WEBP converted output
 
 type NatriconController struct {
 	Seed string
@@ -224,13 +225,13 @@ func generateIcon(hash *string, badgeType image.BadgeType, c *gin.Context) {
 	} else {
 		sizeStr := c.Query("size")
 		if sizeStr == "" {
-			c.String(http.StatusBadRequest, "%s", "Size is required when format is not svg")
-			return
-		}
-		size, err = strconv.Atoi(c.Query("size"))
-		if err != nil || size < minConvertedSize || size > maxConvertedSize {
-			c.String(http.StatusBadRequest, "%s", fmt.Sprintf("size must be an integer between %d and %d", minConvertedSize, maxConvertedSize))
-			return
+			size = defaultRasterSize
+		} else {
+			size, err = strconv.Atoi(c.Query("size"))
+			if err != nil || size < minConvertedSize || size > maxConvertedSize {
+				c.String(http.StatusBadRequest, "%s", fmt.Sprintf("size must be an integer between %d and %d", minConvertedSize, maxConvertedSize))
+				return
+			}
 		}
 	}
 
@@ -289,13 +290,13 @@ func generateSpecialIcon(vanity *Vanity, badgeType image.BadgeType, c *gin.Conte
 	} else {
 		sizeStr := c.Query("size")
 		if sizeStr == "" {
-			c.String(http.StatusBadRequest, "%s", "Size is required when format is not svg")
-			return
-		}
-		size, err = strconv.Atoi(c.Query("size"))
-		if err != nil || size < minConvertedSize || size > maxConvertedSize {
-			c.String(http.StatusBadRequest, "%s", fmt.Sprintf("size must be an integer between %d and %d", minConvertedSize, maxConvertedSize))
-			return
+			size = defaultRasterSize
+		} else {
+			size, err = strconv.Atoi(c.Query("size"))
+			if err != nil || size < minConvertedSize || size > maxConvertedSize {
+				c.String(http.StatusBadRequest, "%s", fmt.Sprintf("size must be an integer between %d and %d", minConvertedSize, maxConvertedSize))
+				return
+			}
 		}
 	}
 
