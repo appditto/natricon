@@ -201,10 +201,31 @@ func (r *redisManager) GetPrincipalReps() []string {
 	return repsU
 }
 
+// Stats
+type StatsService string
+
+const (
+	StatsNatrium     StatsService = "natrium"
+	StatsNanoCrawler StatsService = "nanocrawler"
+)
+
+var svcList = []StatsService{
+	StatsNatrium,
+	StatsNanoCrawler,
+}
+
 // UpdateStatsAddress - Update stats for an address that has requested natricon
 func (r *redisManager) UpdateStatsAddress(address string) {
 	key := fmt.Sprintf("%s:stats_unique_addresses", keyPrefix)
-	err := r.hset(key, address, "1")
+	count := 1
+	existing, err := r.hget(key, address)
+	if err != nil {
+		existingInt, err := strconv.Atoi(existing)
+		if err != nil {
+			count = existingInt + 1
+		}
+	}
+	err = r.hset(key, address, string(count))
 	if err != nil {
 		glog.Errorf("Error updating StatesAddresses %s", err)
 	}
@@ -218,4 +239,44 @@ func (r *redisManager) StatsUniqueAddresses() int64 {
 		return 0
 	}
 	return len
+}
+
+// UpdateStatsByService - Update stats for a service
+func (r *redisManager) UpdateStatsByService(svc string, address string) {
+	// See if valid service
+	valid := false
+	for _, rSvc := range svcList {
+		if string(rSvc) == svc {
+			valid = true
+		}
+	}
+	if valid {
+		key := fmt.Sprintf("%s:stats:%s", keyPrefix, svc)
+		count := 1
+		existing, err := r.hget(key, address)
+		if err != nil {
+			existingInt, err := strconv.Atoi(existing)
+			if err != nil {
+				count = existingInt + 1
+			}
+		}
+		err = r.hset(key, address, string(count))
+		if err != nil {
+			glog.Errorf("Error updating StatsByService %s %s", svc, err)
+		}
+	}
+}
+
+// ServiceStats - Service Stats
+func (r *redisManager) ServiceStats() map[StatsService]int64 {
+	ret := map[StatsService]int64{}
+	for _, svc := range svcList {
+		key := fmt.Sprintf("%s:stats:%s", keyPrefix, svc)
+		len, err := r.hlen(key)
+		if err != nil {
+			ret[svc] = 0
+		}
+		ret[svc] = len
+	}
+	return ret
 }
