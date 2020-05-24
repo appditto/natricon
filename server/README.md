@@ -9,7 +9,7 @@ natricon is built in [GOLang](http://golang.org/)
 
 The natricon backend requires ImageMagick development libraries to be installed. ImageMagick should be compiled with librsvg, libxml2, libpng, and libwebp.
 
-## Build Setup
+## Natricon server build setup
 
 ```bash
 # install dependencies
@@ -26,7 +26,7 @@ $ GIN_MODE=release ./natricon
 $ ./natricon -help
 ```
 
-## WebAssembly (wasm)
+## WebAssembly (wasm) build setup
 
 There is a WebAssembly reference implementation in the [wasm folder](https://github.com/appditto/natricon/tree/master/server/wasm)
 
