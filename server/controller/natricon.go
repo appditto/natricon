@@ -42,7 +42,7 @@ var vanities = map[string]*Vanity{
 		hash:  "2f2f45946be8ee4f4a9fdc328f2ebb2ba6a163fbf4c8a5c8f5e23d43790ef7d8",
 		check: true,
 	},*/
-	"7992d2015963ef13fc1b45735b9f6b071b18cbdef1b1D07a81572718230395e7": {
+	"7992d2015963ef13fc1b45735b9f6b071b18cbdef1b1d07a81572718230395e7": {
 		bodyColor:    color.HTMLToRGBAlt("#6666ff"),
 		hairColor:    color.HTMLToRGBAlt("#19ffc6"),
 		bodyAssetID:  1,
