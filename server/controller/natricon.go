@@ -238,7 +238,7 @@ func generateIcon(hash *string, badgeType image.BadgeType, c *gin.Context) {
 	// Get outline and outline color info, black is default
 	var outlineColor *color.RGB
 	if outline {
-		if strings.ToLower(c.Query("outlineColor")) == "white" {
+		if strings.ToLower(c.Query("outline_color")) == "white" {
 			outlineColor = &color.RGB{R: 255.0, G: 255.0, B: 255.0}
 		} else {
 			outlineColor = &color.RGB{R: 0.0, G: 0.0, B: 0.0}
@@ -303,7 +303,7 @@ func generateSpecialIcon(vanity *Vanity, badgeType image.BadgeType, c *gin.Conte
 	// Get outline and outline color info, black is default
 	var outlineColor *color.RGB
 	if outline {
-		if strings.ToLower(c.Query("outlineColor")) == "white" {
+		if strings.ToLower(c.Query("outline_color")) == "white" {
 			outlineColor = &color.RGB{R: 255.0, G: 255.0, B: 255.0}
 		} else {
 			outlineColor = &color.RGB{R: 0.0, G: 0.0, B: 0.0}
