@@ -3,7 +3,7 @@ name: Request Special Badge
 about: Request a Special Badge for a Nano Service or Exchange
 title: '[badge request] [SERVICE NAME]'
 labels: badgerequest
-assignees: [bbedward, yekta]
+assignees: bbedward, yekta
 
 ---
 
