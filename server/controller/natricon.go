@@ -64,7 +64,7 @@ var vanities = map[string]*Vanity{
 	// natrium
 	"511ac43730543f18c07836bb2f61032b16eda46f10779ca0f330c9b663881060": {
 		bodyColor:    color.HTMLToRGBAlt("#a3cdff"),
-		hairColor:    color.HTMLToRGBAlt("#2a3a4d"),
+		hairColor:    color.HTMLToRGBAlt("#002a65"),
 		bodyAssetID:  30,
 		hairAssetID:  33,
 		mouthAssetID: 8,
