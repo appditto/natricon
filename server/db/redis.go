@@ -67,6 +67,12 @@ func (r *redisManager) set(key string, value string) error {
 	return err
 }
 
+// hlen - Redis HLEN
+func (r *redisManager) hlen(key string) (int64, error) {
+	val, err := r.Client.HLen(key).Result()
+	return val, err
+}
+
 // hget - Redis HGET
 func (r *redisManager) hget(key string, field string) (string, error) {
 	val, err := r.Client.HGet(key, field).Result()
@@ -75,7 +81,7 @@ func (r *redisManager) hget(key string, field string) (string, error) {
 
 // hset - Redis HSET
 func (r *redisManager) hset(key string, field string, value string) error {
-	err := r.Client.HSet(key, field, value, 0).Err()
+	err := r.Client.HSet(key, field, value).Err()
 	return err
 }
 
@@ -193,4 +199,23 @@ func (r *redisManager) GetPrincipalReps() []string {
 		return []string{}
 	}
 	return repsU
+}
+
+// UpdateStatsAddress - Update stats for an address that has requested natricon
+func (r *redisManager) UpdateStatsAddress(address string) {
+	key := fmt.Sprintf("%s:stats_unique_addresses", keyPrefix)
+	err := r.hset(key, address, "1")
+	if err != nil {
+		glog.Errorf("Error updating StatesAddresses %s", err)
+	}
+}
+
+// StatsUniqueAddresses - Return # of unique natricons served
+func (r *redisManager) StatsUniqueAddresses() int64 {
+	key := fmt.Sprintf("%s:stats_unique_addresses", keyPrefix)
+	len, err := r.hlen(key)
+	if err != nil {
+		return 0
+	}
+	return len
 }
