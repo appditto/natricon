@@ -115,10 +115,88 @@ func LoadAssetsToArray() {
 	ret += "}\n"
 
 	var badgeAssets image.Asset
-	ret += "\nvar BadgeIllustrations = [][]byte{\n"
+	ret += "\nvar DonorBadgeIllustrations = [][]byte{\n"
 	fPath = path.Join(wd, "assets", "illustrations", string(image.Badge))
 	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
-		if strings.Contains(info.Name(), ".svg") {
+		if strings.Contains(info.Name(), ".svg") && strings.Contains(info.Name(), "donor") {
+			badgeAssets = image.Asset{}
+			badgeAssets.FileName = info.Name()
+			badgeAssets.IllustrationPath = path
+			badgeAssets.SVGContents, err = ioutil.ReadFile(badgeAssets.IllustrationPath)
+			if err != nil {
+				glog.Fatalf("Couldn't load file %s", badgeAssets.IllustrationPath)
+				panic(err.Error())
+			}
+			badgeAssets.HairColored = false
+			badgeAssets.BodyColored = false
+			badgeAssets.Sex = image.Neutral
+			badgeAssets.LightOnly = false
+			badgeAssets.DarkColored = false
+			badgeAssets.DarkBWColored = false
+			badgeAssets.BLK299 = false
+			encoded, _ := json.Marshal(badgeAssets)
+			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
+		}
+		return nil
+	})
+	ret += "}\n"
+
+	ret += "\nvar ExchangeBadgeIllustrations = [][]byte{\n"
+	fPath = path.Join(wd, "assets", "illustrations", string(image.Badge))
+	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
+		if strings.Contains(info.Name(), ".svg") && strings.Contains(info.Name(), "exchange") {
+			badgeAssets = image.Asset{}
+			badgeAssets.FileName = info.Name()
+			badgeAssets.IllustrationPath = path
+			badgeAssets.SVGContents, err = ioutil.ReadFile(badgeAssets.IllustrationPath)
+			if err != nil {
+				glog.Fatalf("Couldn't load file %s", badgeAssets.IllustrationPath)
+				panic(err.Error())
+			}
+			badgeAssets.HairColored = false
+			badgeAssets.BodyColored = false
+			badgeAssets.Sex = image.Neutral
+			badgeAssets.LightOnly = false
+			badgeAssets.DarkColored = false
+			badgeAssets.DarkBWColored = false
+			badgeAssets.BLK299 = false
+			encoded, _ := json.Marshal(badgeAssets)
+			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
+		}
+		return nil
+	})
+	ret += "}\n"
+
+	ret += "\nvar NodeBadgeIllustrations = [][]byte{\n"
+	fPath = path.Join(wd, "assets", "illustrations", string(image.Badge))
+	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
+		if strings.Contains(info.Name(), ".svg") && strings.Contains(info.Name(), "node") {
+			badgeAssets = image.Asset{}
+			badgeAssets.FileName = info.Name()
+			badgeAssets.IllustrationPath = path
+			badgeAssets.SVGContents, err = ioutil.ReadFile(badgeAssets.IllustrationPath)
+			if err != nil {
+				glog.Fatalf("Couldn't load file %s", badgeAssets.IllustrationPath)
+				panic(err.Error())
+			}
+			badgeAssets.HairColored = false
+			badgeAssets.BodyColored = false
+			badgeAssets.Sex = image.Neutral
+			badgeAssets.LightOnly = false
+			badgeAssets.DarkColored = false
+			badgeAssets.DarkBWColored = false
+			badgeAssets.BLK299 = false
+			encoded, _ := json.Marshal(badgeAssets)
+			ret += strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(fmt.Sprint(encoded), "[", "{"), "]", "}"), " ", ", ") + ","
+		}
+		return nil
+	})
+	ret += "}\n"
+
+	ret += "\nvar ServiceBadgeIllustrations = [][]byte{\n"
+	fPath = path.Join(wd, "assets", "illustrations", string(image.Badge))
+	err = filepath.Walk(fPath, func(path string, info os.FileInfo, err error) error {
+		if strings.Contains(info.Name(), ".svg") && strings.Contains(info.Name(), "service") {
 			badgeAssets = image.Asset{}
 			badgeAssets.FileName = info.Name()
 			badgeAssets.IllustrationPath = path

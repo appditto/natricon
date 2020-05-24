@@ -3,9 +3,7 @@ package db
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -82,9 +80,10 @@ func (r *redisManager) hset(key string, field string, value string) error {
 }
 
 // UpdateDonorStatus - Update donor status with given duration in days
-func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDays uint, maxDays uint) {
+func (r *redisManager) UpdateDonorStatus(hash string, acct string, durationDays uint) {
+	pubkey := utils.AddressToPub(acct)
 	hashKey := fmt.Sprintf("%s:processedHashes", keyPrefix)
-	key := fmt.Sprintf("%s:donor:%s", keyPrefix, account)
+	key := fmt.Sprintf("%s:donor:%s", keyPrefix, pubkey)
 	// See if this hash was already processed
 	_, err := r.hget(hashKey, hash)
 	if err == nil {
@@ -107,11 +106,11 @@ func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDa
 		}
 	}
 	// Calculate newExpiry
-	newExpiryHours := time.Duration(math.Min(float64(maxDays*24), existingHours+float64(durationDays*24)))
+	newExpiryHours := time.Duration(existingHours + float64(durationDays*24))
 	newExpiry := curDate.Add(newExpiryHours * time.Hour)
 	// Set new donor
 	newDonor := Donor{
-		Address:   account,
+		PubKey:    pubkey,
 		ExpiresAt: newExpiry,
 	}
 	// Marshal
@@ -125,10 +124,9 @@ func (r *redisManager) UpdateDonorStatus(hash string, account string, durationDa
 	r.hset(hashKey, hash, "1")
 }
 
-// HasDonorStatus - check if an account has donor status
-func (r *redisManager) HasDonorStatus(account string) bool {
-	account = strings.ReplaceAll(account, "xrb_", "nano_")
-	key := fmt.Sprintf("%s:donor:%s", keyPrefix, account)
+// HasDonorStatus - check if a public key has donor status
+func (r *redisManager) HasDonorStatus(pubkey string) bool {
+	key := fmt.Sprintf("%s:donor:%s", keyPrefix, pubkey)
 	raw, err := r.get(key)
 	if err != nil {
 		return false
@@ -146,4 +144,53 @@ func (r *redisManager) HasDonorStatus(account string) bool {
 		return false
 	}
 	return true
+}
+
+// SetPrincipalRepRequirement - set voting weight requirement to be principal rep
+func (r *redisManager) SetPrincipalRepRequirement(amount float64) {
+	key := fmt.Sprintf("%s:principal_rep_requirement", keyPrefix)
+	r.set(key, fmt.Sprintf("%f", amount))
+}
+
+// GetPrincipalRepRequirement - get voting weight requirement to be principal rep
+func (r *redisManager) GetPrincipalRepRequirement() float64 {
+	key := fmt.Sprintf("%s:principal_rep_requirement", keyPrefix)
+	amount, err := r.get(key)
+	if err != nil {
+		// Return approximation
+		return 94737.0
+	}
+	converted, err := strconv.ParseFloat(amount, 64)
+	if err != nil {
+		// Return approximation
+		return 94737.0
+	}
+	return converted
+}
+
+// SetPrincipalReps - Cache principal reps
+func (r *redisManager) SetPrincipalReps(reps []string) {
+	key := fmt.Sprintf("%s:principal_reps", keyPrefix)
+	marshalled, err := json.Marshal(reps)
+	if err == nil {
+		r.set(key, string(marshalled))
+	} else {
+		glog.Errorf("Encountered error saving principal rep cache %s", err)
+	}
+}
+
+// GetPrincipalReps - Get cached principal reps
+func (r *redisManager) GetPrincipalReps() []string {
+	key := fmt.Sprintf("%s:principal_reps", keyPrefix)
+	reps, err := r.get(key)
+	if err != nil {
+		// Return empty set
+		return []string{}
+	}
+	var repsU []string
+	err = json.Unmarshal([]byte(reps), &repsU)
+	if err != nil {
+		return []string{}
+	}
+	return repsU
 }

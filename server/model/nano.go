@@ -26,6 +26,20 @@ type AccountHistoryRequest struct {
 	Count   uint   `json:"count"`
 }
 
+// confirmation_quorum
+var ConfirmationQuorumAction BaseRequest = BaseRequest{Action: "confirmation_quorum"}
+
+type ConfirmationQuorumRequest struct {
+	BaseRequest
+}
+
+// representatives
+var RepresentativesAction BaseRequest = BaseRequest{Action: "representatives"}
+
+type RepresentativesRequest struct {
+	BaseRequest
+}
+
 // RPC responses
 type HistoryItem struct {
 	Type           string `json:"type"`
@@ -38,4 +52,15 @@ type HistoryItem struct {
 type AccountHistoryResponse struct {
 	Account string        `json:"account"`
 	History []HistoryItem `json:"history"`
+}
+
+// Confirmation_quorum
+
+type ConfirmationQuorumResponse struct {
+	OnlineWeightTotal string `json:"online_stake_total"`
+}
+
+// Representatives
+type RepresentativeResponse struct {
+	Representatives map[string]string `json:"representatives"`
 }

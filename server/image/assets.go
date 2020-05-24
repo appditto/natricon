@@ -70,7 +70,10 @@ func getSex(name string) Sex {
 type assetManager struct {
 	bodyAssets         []Asset
 	bodyOutlineAssets  []Asset
-	badgeAssets        []Asset
+	donorBadgeAssets   []Asset
+	exchBadgeAssets    []Asset
+	nodeBadgeAssets    []Asset
+	svcBadgeAssets     []Asset
 	hairAssets         []Asset
 	hairBackAssets     []Asset
 	hairOutlineAssets  []Asset
@@ -100,11 +103,29 @@ func GetAssets() *assetManager {
 			bodyOutlineAssets = append(bodyOutlineAssets, a)
 		}
 		// Load badges
-		var badgeAssets []Asset
-		for _, ba := range BadgeIllustrations {
+		var donorBadgeAssets []Asset
+		for _, ba := range DonorBadgeIllustrations {
 			var a Asset
 			err = json.Unmarshal(ba, &a)
-			badgeAssets = append(badgeAssets, a)
+			donorBadgeAssets = append(donorBadgeAssets, a)
+		}
+		var exchBadgeAssets []Asset
+		for _, ba := range ExchangeBadgeIllustrations {
+			var a Asset
+			err = json.Unmarshal(ba, &a)
+			exchBadgeAssets = append(exchBadgeAssets, a)
+		}
+		var nodeBadgeAssets []Asset
+		for _, ba := range NodeBadgeIllustrations {
+			var a Asset
+			err = json.Unmarshal(ba, &a)
+			nodeBadgeAssets = append(nodeBadgeAssets, a)
+		}
+		var svcBadgeAssets []Asset
+		for _, ba := range ServiceBadgeIllustrations {
+			var a Asset
+			err = json.Unmarshal(ba, &a)
+			svcBadgeAssets = append(svcBadgeAssets, a)
 		}
 		// Load hair assets
 		var hairAssets []Asset
@@ -155,7 +176,10 @@ func GetAssets() *assetManager {
 		singleton = &assetManager{
 			bodyAssets:         bodyAssets,
 			bodyOutlineAssets:  bodyOutlineAssets,
-			badgeAssets:        badgeAssets,
+			donorBadgeAssets:   donorBadgeAssets,
+			exchBadgeAssets:    exchBadgeAssets,
+			nodeBadgeAssets:    nodeBadgeAssets,
+			svcBadgeAssets:     svcBadgeAssets,
 			hairAssets:         hairAssets,
 			hairBackAssets:     hairBackAssets,
 			hairOutlineAssets:  hairOutlineAssets,
@@ -188,8 +212,19 @@ func (sm *assetManager) GetNHairAssets() int {
 }
 
 // GetBadges - get badge assets
-func (sm *assetManager) GetBadgeAssets() []Asset {
-	return sm.badgeAssets
+func (sm *assetManager) GetBadgeAssets(btype BadgeType) []Asset {
+	switch btype {
+	case BTDonor:
+		return sm.donorBadgeAssets
+	case BTExchange:
+		return sm.exchBadgeAssets
+	case BTNode:
+		return sm.nodeBadgeAssets
+	case BTService:
+		return sm.svcBadgeAssets
+	default:
+		return sm.donorBadgeAssets
+	}
 }
 
 // GetHairAssets - get complete list of hair assets

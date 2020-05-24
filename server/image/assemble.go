@@ -167,6 +167,10 @@ func CombineSVG(accessories Accessories) ([]byte, error) {
 	// Badge group
 	if accessories.BadgeAsset != nil {
 		canvas.Gid("badge")
+		// Change color based on outline
+		if accessories.BodyOutlineAsset != nil {
+			badgeAsset.Doc = strings.ReplaceAll(badgeAsset.Doc, "white", accessories.OutlineColor.ToHTML(true))
+		}
 		io.WriteString(canvas.Writer, badgeAsset.Doc)
 		canvas.Gend()
 	}
