@@ -18,7 +18,8 @@ const minConvertedSize = 100  // Minimum size of PNG/WEBP converted output
 const maxConvertedSize = 1000 // Maximum size of PNG/WEBP converted output
 
 type NatriconController struct {
-	Seed string
+	Seed         string
+	StatsChannel *chan *gin.Context
 }
 
 // Special addresses
@@ -61,6 +62,9 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 		c.String(http.StatusBadRequest, "Invalid address")
 		return
 	}
+
+	// Parse stats
+	*nc.StatsChannel <- c
 
 	var sha256 string
 	var badgeType image.BadgeType

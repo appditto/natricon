@@ -138,9 +138,13 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 
+	// Setup channel for stats processing job
+	statsChan := make(chan *gin.Context, 100)
+
 	// Setup natricon controller
 	natriconController := controller.NatriconController{
-		Seed: seed,
+		Seed:         seed,
+		StatsChannel: &statsChan,
 	}
 	// Setup nano controller
 	nanoController := controller.NanoController{
@@ -168,6 +172,9 @@ func main() {
 			<-gocron.Start()
 		}()
 	}
+
+	// Start stats worker
+	go controller.StatsWorker(statsChan)
 
 	// Run on 8080
 	router.Run(fmt.Sprintf("%s:%d", *serverHost, *serverPort))
