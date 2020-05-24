@@ -149,8 +149,12 @@ func GetBodyAssetWithID(id int) Asset {
 	for _, ba := range GetAssets().GetBodyAssets() {
 		baid, err := strconv.Atoi(strings.Split(ba.FileName, "_")[0])
 		if err != nil {
-			continue
-		} else if baid == id {
+			baid, err = strconv.Atoi(strings.Split(ba.FileName, ".")[0])
+			if err != nil {
+				continue
+			}
+		}
+		if baid == id {
 			return ba
 		}
 	}
@@ -201,8 +205,12 @@ func GetHairAssetWithID(id int) Asset {
 	for _, ha := range GetAssets().GetHairAssets(Neutral) {
 		haid, err := strconv.Atoi(strings.Split(ha.FileName, "_")[0])
 		if err != nil {
-			continue
-		} else if haid == id {
+			haid, err = strconv.Atoi(strings.Split(ha.FileName, ".")[0])
+			if err != nil {
+				continue
+			}
+		}
+		if haid == id {
 			return ha
 		}
 	}
@@ -251,8 +259,12 @@ func GetEyeAssetWithID(id int) Asset {
 	for _, ba := range GetAssets().GetEyeAssets(Neutral, 100) {
 		baid, err := strconv.Atoi(strings.Split(ba.FileName, "_")[0])
 		if err != nil {
-			continue
-		} else if baid == id {
+			baid, err = strconv.Atoi(strings.Split(ba.FileName, ".")[0])
+			if err != nil {
+				continue
+			}
+		}
+		if baid == id {
 			return ba
 		}
 	}
@@ -281,8 +293,12 @@ func GetMouthAssetWithID(id int) Asset {
 	for _, ba := range GetAssets().GetMouthAssets(Neutral, 100) {
 		baid, err := strconv.Atoi(strings.Split(ba.FileName, "_")[0])
 		if err != nil {
-			continue
-		} else if baid == id {
+			baid, err = strconv.Atoi(strings.Split(ba.FileName, ".")[0])
+			if err != nil {
+				continue
+			}
+		}
+		if baid == id {
 			return ba
 		}
 	}
