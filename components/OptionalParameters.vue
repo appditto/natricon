@@ -1,0 +1,138 @@
+<template>
+  <div class="w-full flex flex-col items-center pt-12 pb-16">
+    <div class="n-container flex flex-col items-center px-5">
+      <h1 class="text-4xl md:text-5xl text-center leading-none">
+        <span class="relative inline-block">
+          <span class="font-bold line-lime">optional</span>
+        </span> parameters
+      </h1>
+      <!-- Format -->
+      <div class="w-full flex flex-row justify-center items-center mt-10">
+        <div class="flex flex-row w-1/3 justify-end">
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg">format</code>
+          <span class="text-2xl font-bold mx-3">:</span>
+        </div>
+        <div class="flex flex-row w-1/2">
+          <span class="text-lg">
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">svg</code> (default).
+            <br />supported parameters are
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">png</code>,
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">webp</code> &
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">svg</code>.
+          </span>
+        </div>
+      </div>
+      <!-- Size -->
+      <div class="w-full flex flex-row justify-center items-center mt-8">
+        <div class="flex flex-row w-1/3 justify-end">
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg">size</code>
+          <span class="text-2xl font-bold mx-3">:</span>
+        </div>
+        <div class="flex flex-row w-1/2">
+          <span class="text-lg leading-loose">
+            in pixels. ignored when format is
+            <code
+              class="font-bold bg-lime px-2 py-1 rounded-md"
+            >svg</code>.
+            <br />defaults to
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">128</code> when format is
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">webp</code> or
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">png</code>.
+            <br />minimum is
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">100</code>, maximum is
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">1000</code>.
+          </span>
+        </div>
+      </div>
+      <!-- Outline -->
+      <div class="w-full flex flex-row justify-center items-center mt-8">
+        <div class="flex flex-row w-1/3 justify-end">
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg">outline</code>
+          <span class="text-2xl font-bold mx-3">:</span>
+        </div>
+        <div class="flex flex-row w-1/2">
+          <span class="text-lg leading-loose">
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">false</code>
+            (default).
+            <br />when
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">true</code>, a
+            <span class="font-bold">white</span> outline will be added to the natricon.
+          </span>
+        </div>
+      </div>
+      <!-- Outline Color -->
+      <div class="w-full flex flex-row justify-center items-center mt-8">
+        <div class="flex flex-row w-1/3 justify-end">
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg">outline_color</code>
+          <span class="text-2xl font-bold mx-3">:</span>
+        </div>
+        <div class="flex flex-row w-1/2">
+          <span class="text-lg leading-loose">
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">white</code> (default).
+            <br />supported parameters are
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">white</code> &
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">black</code>.
+            <br />Used when
+            <code class="font-bold bg-lime px-2 py-1 rounded-md">outline=true</code>.
+          </span>
+        </div>
+      </div>
+      <!-- Arrow Down -->
+      <div class="w-full flex flex-row justify-center items-center mt-4">
+        <img
+          class="w-12 h-12"
+          :src="require('~/assets/images/icons/arrow-down.svg')"
+          alt="Arrow Down"
+        />
+      </div>
+      <!-- Example Call -->
+      <h2 class="text-3xl md:text-4xl text-center leading-none mt-2">
+        <b>example</b> call
+      </h2>
+      <div class="w-full flex flex-row justify-center items-center mt-6">
+        <code class="bg-aquaGreen px-3 py-1 text-xl font-bold rounded-lg m-2">get</code>
+        <pre
+          class="w-128 text-xl bg-black text-lime px-4 py-2 font-bold rounded-lg mt-1 break-all mx-2"
+        ><span class="text-aquaGreen">https://natricon.com/api/v1/nano</span><span class="text-white">?</span><span
+  class="text-brightPink"
+>address=nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd</span><span
+  class="text-white"
+>&</span>format=png<span class="text-white">&</span>size=512<span class="text-white">&</span>outline=true<span class="text-white">&</span>outline_color=black</pre>
+      </div>
+      <!-- Arrow Down -->
+      <div class="w-full flex flex-row justify-center items-center mt-4">
+        <img
+          class="w-12 h-12"
+          :src="require('~/assets/images/icons/arrow-down.svg')"
+          alt="Arrow Down"
+        />
+      </div>
+      <!-- Example Result -->
+      <!-- Illustration -->
+      <div class="w-full flex flex-row justify-center items-center mt-6 mb-4 md:px-16 lg:px-48">
+        <img
+          class="w-full h-auto"
+          :src="require('~/assets/images/illustrations/call-result-png-desktop.svg')"
+          alt="Natrium Natricon Png"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+<style scoped>
+.line-lime::before {
+  display: block;
+  position: absolute;
+  width: calc(100% + 0.3rem);
+  left: -0.15rem;
+  content: "";
+  height: 0.75rem;
+  border-radius: 0.15rem;
+  top: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: -0.6rem;
+  background-color: #d4ff00;
+  z-index: -1;
+}
+</style>

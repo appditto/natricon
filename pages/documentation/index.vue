@@ -1,28 +1,45 @@
 <template>
   <div class="w-full flex flex-col items-center">
-    <hero />
-    <how />
-    <badges />
-    <available-on />
-    <opensource-and-free />
-    <integrate />
+    <documentation-hero />
+    <div class="n-container px-6 md:px-12">
+      <divider />
+    </div>
+    <endpoint />
+    <div class="n-container px-6 md:px-12">
+      <divider />
+    </div>
+    <required-parameters />
+    <div class="n-container px-6 md:px-12">
+      <divider />
+    </div>
+    <optional-parameters />
+    <div class="n-container px-6 md:px-12">
+      <divider />
+    </div>
   </div>
 </template>
+<style>
+pre {
+  white-space: pre-wrap !important; /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+  white-space: -pre-wrap !important; /* Opera 4-6 */
+  white-space: -o-pre-wrap !important; /* Opera 7 */
+  word-wrap: break-word !important; /* Internet Explorer 5.5+ */
+}
+</style>
 <script>
-import Hero from "~/components/Hero.vue";
-import How from "~/components/How.vue";
-import Badges from "~/components/Badges.vue";
-import AvailableOn from "~/components/AvailableOn.vue";
-import OpensourceAndFree from "~/components/OpensourceAndFree.vue";
-import Integrate from "~/components/Integrate.vue";
+import DocumentationHero from "~/components/DocumentationHero.vue";
+import Divider from "~/components/Divider.vue";
+import Endpoint from "~/components/Endpoint.vue";
+import RequiredParameters from "~/components/RequiredParameters.vue";
+import OptionalParameters from "~/components/OptionalParameters.vue";
 export default {
   components: {
-    Hero,
-    How,
-    Badges,
-    AvailableOn,
-    OpensourceAndFree,
-    Integrate
+    DocumentationHero,
+    Divider,
+    Endpoint,
+    RequiredParameters,
+    OptionalParameters
   },
   data() {
     return {
