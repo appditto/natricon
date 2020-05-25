@@ -26,12 +26,12 @@ export default {
   },
   data() {
     return {
-      pageDescription:
-        "nano address visualisation with a twist. available on natrium & nanocrawler.",
-      pageTitle: "natricon | meet your nano address",
-      pagePreview: "https://natricon.com/images/previews/preview-home.png",
+      pageDescription: "learn how to integrate natricon into nano services.",
+      pageTitle: "natricon | api documentation",
+      pagePreview:
+        "https://natricon.com/images/previews/preview-documentation.png",
       pageThemeColor: "#FFFFFF",
-      canonicalURL: "https://natricon.com"
+      canonicalURL: "https://natricon.com/documentation"
     };
   },
   head() {
@@ -107,11 +107,6 @@ export default {
         {
           name: "msapplication-TileColor",
           content: this.pageThemeColor
-        },
-        // Windows 8.1 + IE11 and above
-        {
-          name: "apple-mobile-web-app-status-bar-style",
-          content: this.pageThemeColor
         }
       ],
       link: [
@@ -126,16 +121,8 @@ export default {
           sizes: "180x180",
           href: "/apple-touch-icon.png"
         },
-        {
-          rel: "icon",
-          sizes: "32x32",
-          href: "/favicon-32x32.png"
-        },
-        {
-          rel: "icon",
-          sizes: "16x16",
-          href: "/favicon-16x16.png"
-        },
+        { rel: "icon", sizes: "32x32", href: "/favicon-32x32.png" },
+        { rel: "icon", sizes: "16x16", href: "/favicon-16x16.png" },
         { rel: "manifest", href: "/site.manifest" }
       ]
     };
