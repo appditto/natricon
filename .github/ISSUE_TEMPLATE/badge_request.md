@@ -1,6 +1,6 @@
 ---
-name: Request Special Badge
-about: Request a Special Badge for a Nano Service or Exchange
+name: Register an Exchange or Service
+about: Request Exchange or Service Status for a Nano Address
 title: "[badge request] [SERVICE NAME]"
 labels: badgerequest
 assignees: bbedward, yekta
