@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full flex flex-col items-center py-8">
-    <div class="n-container flex flex-col items-center px-6">
+  <div class="w-full flex flex-col items-center pt-4 pb-8 md:pt-12">
+    <div class="n-container flex flex-col items-center px-5">
       <h1 class="text-4xl md:text-5xl text-center leading-none">
         meet your
         <br class="md:hidden" />
@@ -10,7 +10,7 @@
       </h1>
       <h2 class="text-xl md:text-2xl text-center mt-3">like you've never seen before.</h2>
       <button
-        class="bg-black text-white btn-shadow-cyan font-bold text-xl rounded-full px-12 pt-1 pb-2 mt-6"
+        class="bg-black text-white btn-shadow-cyan font-medium text-2xl rounded-full px-16 pt-1 pb-3 mt-5"
       >let's meet</button>
     </div>
     <img

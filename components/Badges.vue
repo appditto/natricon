@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex flex-col items-center py-8">
-    <div class="n-container flex flex-col items-center px-6">
+    <div class="n-container flex flex-col items-center px-5">
       <h1 class="text-4xl md:text-5xl text-center leading-none">
         exchanges? services? nodes?
         <br />we have a
@@ -12,7 +12,7 @@
         so, you can identify the category
         <br class="hidden md:block" />of an address at a glance.
       </h2>
-      <div class="w-full flex flex-row flex-wrap mt-4 md:mt-8 md:px-20">
+      <div class="w-full max-w-md md:max-w-full flex flex-row flex-wrap mt-4 md:mt-8 md:px-20">
         <div class="w-1/2 md:w-1/4 p-3">
           <img
             class="w-full h-auto"
@@ -58,7 +58,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: -0.6rem;
-  background-color: #8bff97;
+  background-color: #66ffb2;
   z-index: -1;
 }
 </style>

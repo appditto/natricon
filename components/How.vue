@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex flex-col items-center py-8 md:py-24">
-    <div class="n-container flex flex-col items-center px-6">
+    <div class="n-container flex flex-col items-center px-5">
       <h1 class="text-4xl md:text-5xl text-center leading-none">
         how does it
         <br class="md:hidden" />
@@ -13,7 +13,7 @@
         <br class="hidden md:block" />and it magically turns into
         <span class="font-bold">natricon</span>.
       </h2>
-      <div class="w-full px-16 md:px-24 md:hidden mt-8">
+      <div class="w-full max-w-md md:max-w-full px-16 md:px-24 md:hidden mt-8">
         <img
           class="w-full h-auto"
           :src="require('~/assets/images/illustrations/natricon-formula-mobile.svg')"
