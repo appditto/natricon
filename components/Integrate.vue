@@ -19,7 +19,7 @@
           alt="Integrate Mobile"
         />
       </div>
-      <div class="w-full px-16 mt-16 hidden md:block">
+      <div class="w-full md:px-8 lg:px-16 mt-16 hidden md:block">
         <img
           class="w-full h-auto"
           :src="require('~/assets/images/illustrations/integrate-desktop.svg')"

@@ -19,7 +19,12 @@
       alt="Hero Mobile"
     />
     <img
-      class="w-full h-auto mt-12 hidden md:block"
+      class="w-full h-auto mt-12 hidden md:block lg:hidden"
+      :src="require('~/assets/images/illustrations/hero-tablet.svg')"
+      alt="Hero Tablet"
+    />
+    <img
+      class="w-full h-auto mt-12 hidden lg:block"
       :src="require('~/assets/images/illustrations/hero-desktop.svg')"
       alt="Hero Desktop"
     />

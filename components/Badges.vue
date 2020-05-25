@@ -12,7 +12,9 @@
         so, you can identify the category
         <br class="hidden md:block" />of an address at a glance.
       </h4>
-      <div class="w-full max-w-md md:max-w-full flex flex-row flex-wrap mt-4 md:mt-8 md:px-20">
+      <div
+        class="w-full max-w-md md:max-w-full flex flex-row flex-wrap mt-4 md:mt-8 md:px-8 lg:px-20"
+      >
         <div class="w-1/2 md:w-1/4 p-3">
           <img
             class="w-full h-auto"

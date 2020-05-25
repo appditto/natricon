@@ -33,7 +33,7 @@
           alt="Open-source and Free Mobile"
         />
       </div>
-      <div class="w-full px-24 mt-20 hidden md:block">
+      <div class="w-full md:px-16 lg:px-24 mt-20 hidden md:block">
         <img
           class="w-full h-auto"
           :src="require('~/assets/images/illustrations/opensource-and-free-desktop.svg')"
