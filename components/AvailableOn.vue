@@ -12,15 +12,15 @@
         </span>
       </h1>
       <h2 class="text-xl md:text-2xl text-center mt-3">coming soon to more nano services.</h2>
-      <div class="flex flex-row flex-wrap justify-center">
+      <div class="flex flex-row flex-wrap justify-center mt-2">
         <button
-          class="w-full md:w-auto bg-black text-white btn-shadow-lightBlue font-medium text-xl rounded-full px-6 md:px-12 pt-1 pb-3 mt-5 mx-3"
+          class="w-full md:w-72 bg-black text-white btn-shadow-lightBlue font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
         >download natrium</button>
         <button
-          class="w-full md:w-auto bg-black text-white btn-shadow-green font-medium text-xl rounded-full px-6 md:px-12 pt-1 pb-3 mt-5 mx-3"
+          class="w-full md:w-72 bg-black text-white btn-shadow-green font-medium text-xl rounded-full pt-1 pb-3 mt-5 mx-3"
         >visit nanocrawler</button>
       </div>
-      <div class="w-full flex flex-col items-center mt-12">
+      <div class="w-full flex flex-col items-center mt-12 md:mt-0">
         <div class="w-full max-w-md md:max-w-full px-16 md:hidden">
           <img
             class="w-full h-auto"
