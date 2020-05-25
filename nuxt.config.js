@@ -22,8 +22,7 @@ export default {
   /*
   ** Global CSS
   */
-  css: [
-  ],
+  css: ["@/assets/css/main.scss"],
   /*
   ** Plugins to load before mounting the App
   */
@@ -48,7 +47,7 @@ export default {
    */
   axios: {
     baseURL:
-      process.env.NODE_ENV === 'production' && (process.env.PLATFORM_TYPE === 'netlify' || process.env.PLATFORM_TYPE === 'docker') ? 'https://natricon.com' : 'http://localhost:8080'
+      process.env.NODE_ENV === 'production' && process.env.PLATFORM_TYPE === 'docker' ? 'https://natricon.com' : 'http://localhost:8080'
   },
   /*
   ** Build configuration
