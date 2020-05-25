@@ -1,14 +1,14 @@
 <template>
   <div class="w-full flex flex-col items-center py-8 md:py-24">
-    <div class="n-container flex flex-col items-center px-4">
-      <h1 class="text-5xl text-center leading-none">
+    <div class="n-container flex flex-col items-center px-6">
+      <h1 class="text-4xl md:text-5xl text-center leading-none">
         how does it
         <br class="md:hidden" />
         <span class="relative inline-block">
           <span class="font-bold line-redPink">work?</span>
         </span>
       </h1>
-      <h2 class="text-2xl text-center mt-3">
+      <h2 class="text-xl md:text-2xl text-center mt-3">
         we take your nano address, apply some math,
         <br class="hidden md:block" />and it magically turns into
         <span class="font-bold">natricon</span>.

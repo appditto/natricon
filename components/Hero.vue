@@ -1,14 +1,14 @@
 <template>
   <div class="w-full flex flex-col items-center py-8">
-    <div class="n-container flex flex-col items-center px-4">
-      <h1 class="text-5xl text-center leading-none">
+    <div class="n-container flex flex-col items-center px-6">
+      <h1 class="text-4xl md:text-5xl text-center leading-none">
         meet your
         <br class="md:hidden" />
         <span class="relative inline-block">
           <span class="font-bold line-cyan">nano address</span>
         </span>
       </h1>
-      <h2 class="text-2xl text-center mt-3">like you've never seen before.</h2>
+      <h2 class="text-xl md:text-2xl text-center mt-3">like you've never seen before.</h2>
       <button
         class="bg-black text-white btn-shadow-cyan font-bold text-xl rounded-full px-12 pt-1 pb-2 mt-6"
       >let's meet</button>

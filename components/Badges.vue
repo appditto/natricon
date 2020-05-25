@@ -1,18 +1,18 @@
 <template>
   <div class="w-full flex flex-col items-center py-8">
-    <div class="n-container flex flex-col items-center px-4">
-      <h1 class="text-4xl text-center leading-none">
+    <div class="n-container flex flex-col items-center px-6">
+      <h1 class="text-4xl md:text-5xl text-center leading-none">
         exchanges? services? nodes?
         <br />we have a
         <span class="relative inline-block">
           <span class="font-bold line-green">badge</span>
         </span> for it.
       </h1>
-      <h2 class="text-2xl text-center mt-3">
+      <h2 class="text-xl md:text-2xl text-center mt-3">
         so, you can identify the category
         <br class="hidden md:block" />of an address at a glance.
       </h2>
-      <div class="w-full flex flex-row flex-wrap mt-4 px-md px-4 md:px-24">
+      <div class="w-full flex flex-row flex-wrap mt-4 md:mt-8 md:px-20">
         <div class="w-1/2 md:w-1/4 p-3">
           <img
             class="w-full h-auto"
