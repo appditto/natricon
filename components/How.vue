@@ -1,18 +1,18 @@
 <template>
   <div class="w-full flex flex-col items-center py-8 md:py-24">
     <div class="n-container flex flex-col items-center px-5">
-      <h1 class="text-4xl md:text-5xl text-center leading-none">
+      <h3 class="text-4xl md:text-5xl text-center leading-none">
         how does it
         <br class="md:hidden" />
         <span class="relative inline-block">
           <span class="font-bold line-redPink">work?</span>
         </span>
-      </h1>
-      <h2 class="text-xl md:text-2xl text-center mt-3">
+      </h3>
+      <h4 class="text-xl md:text-2xl text-center mt-3">
         we take your nano address, apply some math,
         <br class="hidden md:block" />and it magically turns into
         <span class="font-bold">natricon</span>.
-      </h2>
+      </h4>
       <div class="w-full max-w-md md:max-w-full px-16 md:px-24 md:hidden mt-8">
         <img
           class="w-full h-auto"
@@ -34,8 +34,8 @@
 .line-redPink::before {
   display: block;
   position: absolute;
-  width: calc(100% + 0.5rem);
-  left: -0.25rem;
+  width: calc(100% + 0.3rem);
+  left: -0.15rem;
   content: "";
   height: 0.75rem;
   border-radius: 0.15rem;

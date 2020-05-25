@@ -32,8 +32,8 @@
 .line-cyan::before {
   display: block;
   position: absolute;
-  width: calc(100% + 0.5rem);
-  left: -0.25rem;
+  width: calc(100% + 0.3rem);
+  left: -0.15rem;
   content: "";
   height: 0.75rem;
   border-radius: 0.15rem;

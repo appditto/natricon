@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col items-center py-8 md:py-24">
     <div class="n-container flex flex-col items-center px-5">
-      <h1 class="text-4xl md:text-5xl text-center leading-tight">
+      <h3 class="text-4xl md:text-5xl text-center leading-tight">
         <span class="relative inline-block">
           <span class="font-bold line-cyan">open-source</span>
         </span>
@@ -9,15 +9,15 @@
         <span class="relative inline-block">
           <span class="font-bold line-lightPink">free</span>
         </span>
-      </h1>
-      <h2 class="text-xl md:text-2xl text-center mt-3">
+      </h3>
+      <h4 class="text-xl md:text-2xl text-center mt-3">
         check out our code, see if you like it. contribute to it.
         it’s free.
         <br class="hidden md:block" />if you like it, you can donate to keep us going.
         <br class="hidden md:block" />donations of
         <b>2 nano</b> will get a
         <b>donor badge for 1 month</b>.
-      </h2>
+      </h4>
       <div class="flex flex-row flex-wrap justify-center mt-2">
         <button
           class="w-full md:w-56 bg-black text-white btn-shadow-cyan font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
@@ -53,8 +53,8 @@
 .line-cyan::before {
   display: block;
   position: absolute;
-  width: calc(100% + 0.5rem);
-  left: -0.25rem;
+  width: calc(100% + 0.3rem);
+  left: -0.15rem;
   content: "";
   height: 0.75rem;
   border-radius: 0.15rem;
@@ -68,8 +68,8 @@
 .line-lightPink::before {
   display: block;
   position: absolute;
-  width: calc(100% + 0.5rem);
-  left: -0.25rem;
+  width: calc(100% + 0.3rem);
+  left: -0.15rem;
   content: "";
   height: 0.75rem;
   border-radius: 0.15rem;
