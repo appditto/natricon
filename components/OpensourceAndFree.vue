@@ -18,13 +18,23 @@
         <b>2 nano</b> will get a
         <b>donor badge for 1 month</b>.
       </h4>
-      <div class="flex flex-row flex-wrap justify-center mt-2">
+      <div class="w-full flex flex-row flex-wrap justify-center mt-2 relative">
         <button
-          class="w-full md:w-56 bg-black text-white hover:text-cyan btn-shadow-cyan font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
+          class="btn btn-shadow-cyan hover:text-cyan w-full md:w-56 bg-black text-white font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
         >visit the repo</button>
         <button
-          class="w-full md:w-56 bg-black text-white hover:text-lightPink btn-shadow-lightPink font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
-        >donate</button>
+          @click="isDropdownOpen?closeDonateDropdown():openDonateDropdown()"
+          :class="isDropdownOpen?'bg-lightPink text-black btn-shadow-black':'bg-black text-white hover:text-lightPink btn-shadow-lightPink'"
+          class="btn w-full md:w-56 font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
+        >{{isDropdownOpen?'close':'donate'}}</button>
+      </div>
+      <!-- Donate Dropdow Container-->
+      <div class="flex flex-row justify-center bg-white relative">
+        <!-- Donate Dropdown -->
+        <div
+          :class="isDropdownOpen?'h-72 border-black shadow-lightPink':'h-0 border-transparent'"
+          class="absolute md:w-128 bg-white border-4 transition-all duration-300 ease-out overflow-hidden mt-5 rounded-lg"
+        ></div>
       </div>
       <div class="w-full max-w-lg md:max-w-full px-4 md:px-24 md:hidden mt-12">
         <img
@@ -43,24 +53,51 @@
     </div>
   </div>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      isDropdownOpen: false
+    };
+  },
+  methods: {
+    openDonateDropdown() {
+      this.isDropdownOpen = true;
+    },
+    closeDonateDropdown() {
+      this.isDropdownOpen = false;
+    }
+  }
+};
+</script>
 <style scoped>
-.btn-shadow-cyan {
-  box-shadow: -0.3rem 0.4rem 0rem 0rem#66FFFF;
+.btn {
   transition: all 0.2s ease-out;
   transform: scale(1);
+}
+.btn:hover {
+  transform: scale(0.95);
+}
+.btn-shadow-cyan {
+  box-shadow: -0.3rem 0.4rem 0rem 0rem#66FFFF;
 }
 .btn-shadow-lightPink {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#F199FF;
-  transition: all 0.2s ease-out;
-  transform: scale(1);
+}
+.shadow-lightPink {
+  box-shadow: -0.5rem 0.6rem 0rem 0rem#F199FF;
+}
+.btn-shadow-black {
+  box-shadow: -0.3rem 0.4rem 0rem 0rem#000000;
 }
 .btn-shadow-cyan:hover {
   box-shadow: 0rem 0rem 0rem 0rem#66FFFF;
-  transform: scale(0.95);
 }
 .btn-shadow-lightPink:hover {
   box-shadow: 0rem 0rem 0rem 0rem#F199FF;
-  transform: scale(0.95);
+}
+.btn-shadow-black:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#000000;
 }
 .line-cyan::after {
   display: block;
@@ -89,5 +126,8 @@
   margin-top: -0.9rem;
   background-color: #f199ff;
   z-index: -1;
+}
+.border-transparent {
+  border-color: rgba(0, 0, 0, 0);
 }
 </style>
