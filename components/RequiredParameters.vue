@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center py-12">
+  <div class="w-full flex flex-col items-center pt-16 pb-8 md:pb-16">
     <div class="n-container flex flex-col items-center px-5">
       <h1 class="text-4xl md:text-5xl text-center leading-none">
         <span class="relative inline-block">
@@ -12,12 +12,12 @@
         <div class="flex flex-col">
           <h6 class="text-lg">nano address. example:</h6>
           <pre
-            class="md:w-96 bg-black text-brightPink px-3 py-2 font-bold rounded-lg mt-2 break-all overflow-x-scroll"
+            class="max-w-xs md:w-96 bg-black text-brightPink px-3 py-2 font-bold rounded-lg mt-2 break-all overflow-x-scroll"
           >nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd</pre>
         </div>
       </div>
       <!-- Arrow Down -->
-      <div class="w-full flex flex-row justify-center items-center mt-4">
+      <div class="w-full flex flex-row justify-center items-center mt-6 mb-2">
         <img
           class="w-12 h-12"
           :src="require('~/assets/images/icons/arrow-down.svg')"
@@ -29,15 +29,15 @@
         <b>example</b> call
       </h2>
       <div class="w-full flex flex-row flex-wrap justify-center items-center mt-6">
-        <code class="bg-aquaGreen px-3 py-1 text-xl font-bold rounded-lg m-2">get</code>
+        <code class="bg-aquaGreen px-3 py-2 text-xl font-bold rounded-lg m-4">get</code>
         <pre
-          class="md:w-108 text-xl bg-black text-aquaGreen px-4 py-2 font-bold rounded-lg mt-1 break-all"
+          class="max-w-md md:w-108 text-xl bg-black text-aquaGreen px-4 py-2 font-bold rounded-lg mt-1 break-all"
         >https://natricon.com/api/v1/nano<span class="text-white">?</span><span
   class="text-brightPink"
 >address=nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd</span></pre>
       </div>
       <!-- Arrow Down -->
-      <div class="w-full flex flex-row justify-center items-center mt-4">
+      <div class="w-full flex flex-row justify-center items-center mt-6 mb-2">
         <img
           class="w-12 h-12"
           :src="require('~/assets/images/icons/arrow-down.svg')"
@@ -49,21 +49,23 @@
         <b>example</b> result
       </h2>
       <!-- Result Code & Illustration -->
-      <div class="flex flex-row flex-wrap justify-center items-center mt-6 mb-4">
+      <div class="w-full flex flex-row flex-wrap justify-center items-center mt-6 mb-4">
         <pre
-          class="md:w-120 h-56 text-sm bg-black text-aquaGreen px-4 py-2 rounded-lg mt-1 break-all overflow-y-scroll"
+          class="max-w-lg w-full h-56 text-sm bg-black text-aquaGreen px-4 py-2 rounded-lg mt-1 break-all overflow-y-scroll"
         >{{natriconSvgCode}}</pre>
-        <img
-          class="w-64 h-auto m-8"
-          :src="require('~/assets/images/illustrations/call-result-svg-desktop.svg')"
-          alt="Natrium Natricon Svg"
-        />
+        <div class="w-72 h-auto mx-4 my-8 md:m-8">
+          <img
+            class="w-full h-auto"
+            :src="require('~/assets/images/illustrations/call-result-svg-desktop.svg')"
+            alt="Natrium Natricon Svg"
+          />
+        </div>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
-.line-brightPink::before {
+.line-brightPink::after {
   display: block;
   position: absolute;
   width: calc(100% + 0.3rem);
@@ -71,7 +73,6 @@
   content: "";
   height: 0.75rem;
   border-radius: 0.15rem;
-  top: 100%;
   margin-left: auto;
   margin-right: auto;
   margin-top: -0.6rem;

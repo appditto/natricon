@@ -2,7 +2,7 @@
   <div>
     <navbar />
     <nuxt />
-    <n-footer class="mt-5 md:mt-8" />
+    <n-footer />
   </div>
 </template>
 <script>

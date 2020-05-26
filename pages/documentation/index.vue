@@ -13,7 +13,7 @@
       <divider />
     </div>
     <optional-parameters />
-    <div class="n-container px-6 md:px-12">
+    <div class="n-container px-6 md:px-12 mb-10">
       <divider />
     </div>
   </div>

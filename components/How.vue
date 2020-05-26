@@ -31,7 +31,7 @@
   </div>
 </template>
 <style scoped>
-.line-redPink::before {
+.line-redPink::after {
   display: block;
   position: absolute;
   width: calc(100% + 0.3rem);
@@ -39,7 +39,6 @@
   content: "";
   height: 0.75rem;
   border-radius: 0.15rem;
-  top: 100%;
   margin-left: auto;
   margin-right: auto;
   margin-top: -0.6rem;

@@ -50,7 +50,7 @@
 .btn-shadow-lightPink {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#F199FF;
 }
-.line-cyan::before {
+.line-cyan::after {
   display: block;
   position: absolute;
   width: calc(100% + 0.3rem);
@@ -58,14 +58,13 @@
   content: "";
   height: 0.75rem;
   border-radius: 0.15rem;
-  top: 100%;
   margin-left: auto;
   margin-right: auto;
   margin-top: -0.9rem;
   background-color: #66ffff;
   z-index: -1;
 }
-.line-lightPink::before {
+.line-lightPink::after {
   display: block;
   position: absolute;
   width: calc(100% + 0.3rem);
@@ -73,7 +72,6 @@
   content: "";
   height: 0.75rem;
   border-radius: 0.15rem;
-  top: 100%;
   margin-left: auto;
   margin-right: auto;
   margin-top: -0.9rem;
