@@ -114,9 +114,12 @@
         />
       </div>
       <!-- Example Result -->
+      <h2 class="text-3xl md:text-4xl text-center leading-none mt-2">
+        <b>example</b> result
+      </h2>
       <!-- Illustration -->
       <div
-        class="w-full flex flex-row flex-wrap justify-center items-center my-4 md:px-16 lg:px-48"
+        class="w-full flex flex-row flex-wrap justify-center items-center mt-8 mb-4 md:px-16 lg:px-48"
       >
         <img
           class="max-w-xs w-full h-auto lg:hidden"
