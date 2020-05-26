@@ -1,4 +1,4 @@
-FROM node:11.3-alpine
+FROM node:12.16.3-alpine
 
 ENV APP_ROOT /src
 
