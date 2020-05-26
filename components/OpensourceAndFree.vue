@@ -20,10 +20,10 @@
       </h4>
       <div class="flex flex-row flex-wrap justify-center mt-2">
         <button
-          class="w-full md:w-56 bg-black text-white btn-shadow-cyan font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
+          class="w-full md:w-56 bg-black text-white hover:text-cyan btn-shadow-cyan font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
         >visit the repo</button>
         <button
-          class="w-full md:w-56 bg-black text-white btn-shadow-lightPink font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
+          class="w-full md:w-56 bg-black text-white hover:text-lightPink btn-shadow-lightPink font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
         >donate</button>
       </div>
       <div class="w-full max-w-lg md:max-w-full px-4 md:px-24 md:hidden mt-12">
@@ -46,9 +46,21 @@
 <style scoped>
 .btn-shadow-cyan {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#66FFFF;
+  transition: all 0.2s ease-out;
+  transform: scale(1);
 }
 .btn-shadow-lightPink {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#F199FF;
+  transition: all 0.2s ease-out;
+  transform: scale(1);
+}
+.btn-shadow-cyan:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#66FFFF;
+  transform: scale(0.95);
+}
+.btn-shadow-lightPink:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#F199FF;
+  transform: scale(0.95);
 }
 .line-cyan::after {
   display: block;

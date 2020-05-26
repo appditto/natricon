@@ -10,7 +10,7 @@
       </h1>
       <h2 class="text-xl md:text-2xl text-center mt-3">like you've never seen before.</h2>
       <button
-        class="bg-black text-white btn-shadow-cyan font-medium text-2xl rounded-full px-16 pt-1 pb-3 mt-5"
+        class="bg-black text-white hover:text-cyan btn-shadow-cyan font-medium text-2xl rounded-full px-16 pt-1 pb-3 mt-5"
       >let's meet</button>
     </div>
     <img
@@ -33,6 +33,12 @@
 <style scoped>
 .btn-shadow-cyan {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#66ffff;
+  transition: all 0.2s ease-out;
+  transform: scale(1);
+}
+.btn-shadow-cyan:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#66ffff;
+  transform: scale(0.95);
 }
 .line-cyan::after {
   display: block;

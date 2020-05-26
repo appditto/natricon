@@ -10,7 +10,7 @@
       </h3>
       <h4 class="text-xl md:text-2xl text-center mt-3">let’s get you started. it’ll be a breeze.</h4>
       <button
-        class="md:w-56 bg-black text-white btn-shadow-yellow font-medium text-xl rounded-full px-12 md:px-6 pt-1 pb-3 mx-3 mt-5"
+        class="md:w-56 bg-black text-white hover:text-yellow btn-shadow-yellow font-medium text-xl rounded-full px-12 md:px-6 pt-1 pb-3 mx-3 mt-5"
       >let's start</button>
       <div class="w-full max-w-md md:max-w-full px-8 md:px-24 md:hidden mt-8">
         <img
@@ -32,6 +32,12 @@
 <style scoped>
 .btn-shadow-yellow {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#FFEE52;
+  transition: all 0.2s ease-out;
+  transform: scale(1);
+}
+.btn-shadow-yellow:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#FFEE52;
+  transform: scale(0.95);
 }
 .line-yellow::after {
   display: block;

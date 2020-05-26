@@ -3,7 +3,7 @@
     <div class="n-container flex flex-col justify-center items-center">
       <div class="flex flex-row flex-wrap justify-center">
         <a class="relative m-3" href="https://twitter.com/appditto" target="_blank">
-          <div class="line-cyan scaleY w-12 h-12">
+          <div class="line bga-yellow scaleY w-12 h-12">
             <img
               class="w-full h-full"
               :src="require('~/assets/images/icons/twitter.svg')"
@@ -12,7 +12,7 @@
           </div>
         </a>
         <a class="relative m-3" href="https://medium.com/appditto" target="_blank">
-          <div class="w-12 h-12 line-cyan scaleY">
+          <div class="w-12 h-12 line bga-yellow scaleY">
             <img
               class="w-full h-full"
               :src="require('~/assets/images/icons/medium.svg')"
@@ -21,7 +21,7 @@
           </div>
         </a>
         <a class="relative m-3" href="https://instagram.com/appditto" target="_blank">
-          <div class="w-12 h-12 line-cyan scaleY">
+          <div class="w-12 h-12 line bga-yellow scaleY">
             <img
               class="w-full h-full"
               :src="require('~/assets/images/icons/instagram.svg')"
@@ -30,7 +30,7 @@
           </div>
         </a>
         <a class="relative m-3" href="https://github.com/appditto" target="_blank">
-          <div class="w-12 h-12 line-cyan scaleY">
+          <div class="w-12 h-12 line bga-yellow scaleY">
             <img
               class="w-full h-full"
               :src="require('~/assets/images/icons/github.svg')"
@@ -43,7 +43,7 @@
       <div class="flex flex-row justify-center my-2 md:my-3">
         <span class="font-medium mx-1 mt-1">made by</span>
         <a class="relative mx-1" href="https://appditto.com" target="_blank">
-          <div class="w-32 h-auto line-cyan-2 scaleY">
+          <div class="w-32 h-auto line-2 bga-green scaleY">
             <img
               class="w-full h-full"
               :src="require('~/assets/images/logos/appditto-logo.svg')"
@@ -56,7 +56,13 @@
   </div>
 </template>
 <style scoped>
-.line-cyan::after {
+.bga-green::after {
+  background-color: #66ffb2;
+}
+.bga-yellow::after {
+  background-color: #ffee52;
+}
+.line::after {
   display: block;
   position: absolute;
   width: calc(100% + 0.4rem);
@@ -67,13 +73,12 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: -1.6rem;
-  background-color: #66ffff;
   z-index: -1;
   transition: all 0.2s ease-out;
   transform-origin: center bottom;
   transform: scaleY(0);
 }
-.line-cyan-2::after {
+.line-2::after {
   display: block;
   position: absolute;
   width: calc(100% + 0.4rem);
@@ -84,7 +89,6 @@
   margin-left: auto;
   margin-right: auto;
   margin-top: -0.7rem;
-  background-color: #66ffff;
   z-index: -1;
   transition: all 0.2s ease-out;
   transform-origin: center bottom;

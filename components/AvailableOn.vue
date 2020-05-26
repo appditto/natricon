@@ -14,10 +14,10 @@
       <h4 class="text-xl md:text-2xl text-center mt-3">coming soon to more nano services.</h4>
       <div class="flex flex-row flex-wrap justify-center mt-2">
         <button
-          class="w-full md:w-72 bg-black text-white btn-shadow-lightBlue font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
+          class="w-full md:w-72 bg-black text-white hover:text-lightBlue btn-shadow-lightBlue font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
         >download natrium</button>
         <button
-          class="w-full md:w-72 bg-black text-white btn-shadow-green font-medium text-xl rounded-full pt-1 pb-3 mt-5 mx-3"
+          class="w-full md:w-72 bg-black text-white hover:text-green btn-shadow-green font-medium text-xl rounded-full pt-1 pb-3 mt-5 mx-3"
         >visit nanocrawler</button>
       </div>
       <div class="w-full flex flex-col items-center mt-12 md:mt-0">
@@ -56,9 +56,21 @@
 <style scoped>
 .btn-shadow-lightBlue {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#a3cdff;
+  transition: all 0.2s ease-out;
+  transform: scale(1);
 }
 .btn-shadow-green {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#66ffb2;
+  transition: all 0.2s ease-out;
+  transform: scale(1);
+}
+.btn-shadow-lightBlue:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#a3cdff;
+  transform: scale(0.95);
+}
+.btn-shadow-green:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#66ffb2;
+  transform: scale(0.95);
 }
 .line-lightBlue::before {
   display: block;

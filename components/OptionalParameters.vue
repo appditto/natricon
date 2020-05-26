@@ -9,7 +9,7 @@
       <!-- Format -->
       <div class="w-full flex flex-row flex-wrap justify-center items-center my-6 px-2">
         <div class="flex flex-row w-full md:w-1/3 md:justify-end items-center">
-          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-2">format</code>
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-3">format</code>
           <span class="text-2xl font-bold mx-3">:</span>
         </div>
         <div class="flex flex-row w-full md:w-1/2">
@@ -27,7 +27,7 @@
       <!-- Size -->
       <div class="w-full flex flex-row flex-wrap justify-center items-center my-6 px-2">
         <div class="flex flex-row w-full md:w-1/3 md:justify-end items-center">
-          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-2">size</code>
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-3">size</code>
           <span class="text-2xl font-bold mx-3">:</span>
         </div>
         <div class="flex flex-row w-full md:w-1/2">
@@ -49,7 +49,7 @@
       <!-- Outline -->
       <div class="w-full flex flex-row flex-wrap justify-center items-center my-6 px-2">
         <div class="flex flex-row w-full md:w-1/3 md:justify-end items-center">
-          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-2">outline</code>
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-3">outline</code>
           <span class="text-2xl font-bold mx-3">:</span>
         </div>
         <div class="flex flex-row w-full md:w-1/2">
@@ -65,7 +65,7 @@
       <!-- Outline Color -->
       <div class="w-full flex flex-row flex-wrap justify-center items-center my-6 px-2">
         <div class="flex flex-row w-full md:w-1/3 md:justify-end items-center">
-          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-2">outline_color</code>
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-3">outline_color</code>
           <span class="text-2xl font-bold mx-3">:</span>
         </div>
         <div class="flex flex-row w-full md:w-1/2">
@@ -96,7 +96,7 @@
         <b>example</b> call
       </h2>
       <div class="w-full flex flex-row flex-wrap flex-wrap justify-center items-center mt-6">
-        <code class="bg-aquaGreen px-3 py-2 text-xl font-bold rounded-lg my-2 mx-4">get</code>
+        <code class="bg-aquaGreen px-3 py-2 text-xl font-bold rounded-lg my-3 mx-4">get</code>
         <pre
           class="w-128 text-xl bg-black text-lime px-4 py-2 font-bold rounded-lg mt-1 break-all my-2"
         ><span class="text-aquaGreen">https://natricon.com/api/v1/nano</span><span class="text-white">?</span><span
