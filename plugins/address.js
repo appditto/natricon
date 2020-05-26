@@ -1,12 +1,14 @@
-import { blake2b, blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
+import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 
 import { nacl } from "~/plugins/nacl.js"
 
 function getAddressFromPublic(accountPublicKeyBytes, prefix = "nano") {
     const accountHex = uint8ToHex(accountPublicKeyBytes)
     const keyBytes = uint4ToUint8(hexToUint4(accountHex)) // For some reason here we go from u, to hex, to 4, to 8??
+    const context = blake2bInit(5)
+    blake2bUpdate(context, keyBytes)
     const checksum = uint5ToString(
-        uint4ToUint5(uint8ToUint4(blake2b(keyBytes, null, 5).reverse()))
+        uint4ToUint5(uint8ToUint4(blake2bFinal(context).reverse()))
     )
     const account = uint5ToString(uint4ToUint5(hexToUint4(`0${accountHex}`)))
 

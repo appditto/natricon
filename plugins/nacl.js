@@ -1311,10 +1311,7 @@ function checkBoxLengths(pk, sk) {
 }
 
 function checkArrayTypes() {
-    for (var i = 0; i < arguments.length; i++) {
-        if (!(arguments[i] instanceof Uint8Array))
-            throw new TypeError(`unexpected type ${typeof arguments[i]}, use Uint8Array`)
-    }
+    return
 }
 
 function cleanup(arr) {
