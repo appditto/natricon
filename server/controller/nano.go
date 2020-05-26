@@ -12,6 +12,7 @@ import (
 	"github.com/bsm/redislock"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
+	socketio "github.com/googollee/go-socket.io"
 )
 
 // Account donations are checked to
@@ -22,6 +23,7 @@ const donationThresholdNano = 2.0
 
 type NanoController struct {
 	RPCClient *net.RPCClient
+	SIOServer *socketio.Server
 }
 
 // Handle callback for donation listener
@@ -45,6 +47,11 @@ func (nc NanoController) Callback(c *gin.Context) {
 			glog.Infof("Giving donor status to %s for %d days", blockData.Account, durationDays)
 			db.GetDB().UpdateDonorStatus(callbackData.Hash, blockData.Account, durationDays)
 		}
+		// Emit SIO event
+		data := map[string]string{
+			"amount": callbackData.Amount,
+		}
+		nc.SIOServer.BroadcastToRoom("", "", "donation_event", data)
 	}
 }
 

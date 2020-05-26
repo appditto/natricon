@@ -12,6 +12,8 @@ require (
 	github.com/go-redis/redis/v7 v7.3.0
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/protobuf v1.4.1 // indirect
+	github.com/googollee/go-socket.io v1.4.3
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jasonlvhit/gocron v0.0.0-20200423141508-ab84337f7963
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect

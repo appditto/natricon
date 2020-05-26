@@ -10,8 +10,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
+	socketio "github.com/googollee/go-socket.io"
 	"github.com/jasonlvhit/gocron"
-
 	_ "go.uber.org/automaxprocs"
 )
 
@@ -51,6 +51,12 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 
+	// Setup socket IO server
+	sio, _ := socketio.NewServer(nil)
+	go sio.Serve()
+	defer sio.Close()
+	router.GET("/socket.io/", gin.WrapH(sio))
+
 	// Setup channel for stats processing job
 	statsChan := make(chan *gin.Context, 100)
 
@@ -62,6 +68,7 @@ func main() {
 	// Setup nano controller
 	nanoController := controller.NanoController{
 		RPCClient: rpcClient,
+		SIOServer: sio,
 	}
 
 	// V1 API
