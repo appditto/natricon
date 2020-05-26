@@ -27,6 +27,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    { src: '~/plugins/nacl.js', mode: 'client' },
+    { src: '~/plugins/address.js', mode: 'client' },
   ],
   /*
   ** Nuxt.js dev-modules
