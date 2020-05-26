@@ -7,13 +7,30 @@ import (
 	"github.com/appditto/natricon/server/controller"
 	"github.com/appditto/natricon/server/net"
 	"github.com/appditto/natricon/server/utils"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/jasonlvhit/gocron"
 	_ "go.uber.org/automaxprocs"
 )
+
+func CorsMiddleware(allowOrigin string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, Content-Length, X-CSRF-Token, Token, session, Origin, Host, Connection, Accept-Encoding, Accept-Language, X-Requested-With")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Request.Header.Del("Origin")
+
+		c.Next()
+	}
+}
 
 func main() {
 	// Get seed from env
@@ -49,7 +66,7 @@ func main() {
 
 	// Setup router
 	router := gin.Default()
-	router.Use(cors.Default())
+	router.Use(CorsMiddleware("http://localhost:3000,http://localhost:5000"))
 
 	// Setup socket IO server
 	sio, _ := socketio.NewServer(nil)
