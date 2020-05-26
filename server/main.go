@@ -55,7 +55,8 @@ func main() {
 	sio, _ := socketio.NewServer(nil)
 	go sio.Serve()
 	defer sio.Close()
-	router.GET("/socket.io/", gin.WrapH(sio))
+	router.GET("/socket.io/*any", gin.WrapH(sio))
+	router.POST("/socket.io/*any", gin.WrapH(sio))
 
 	// Setup channel for stats processing job
 	statsChan := make(chan *gin.Context, 100)
