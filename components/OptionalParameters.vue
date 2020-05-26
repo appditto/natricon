@@ -1,18 +1,18 @@
 <template>
   <div class="w-full flex flex-col items-center pt-12 pb-16">
     <div class="n-container flex flex-col items-center px-5">
-      <h1 class="text-4xl md:text-5xl text-center leading-none">
+      <h1 class="text-4xl md:text-5xl text-center leading-none mb-6">
         <span class="relative inline-block">
           <span class="font-bold line-lime">optional</span>
         </span> parameters
       </h1>
       <!-- Format -->
-      <div class="w-full flex flex-row justify-center items-center mt-10">
-        <div class="flex flex-row w-1/3 justify-end">
-          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg">format</code>
+      <div class="w-full flex flex-row flex-wrap justify-center items-center my-6">
+        <div class="flex flex-row w-full md:w-1/3 md:justify-end items-center">
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-2">format</code>
           <span class="text-2xl font-bold mx-3">:</span>
         </div>
-        <div class="flex flex-row w-1/2">
+        <div class="flex flex-row w-full md:w-1/2">
           <span class="text-lg">
             <code class="font-bold bg-lime px-2 py-1 rounded-md">svg</code> (default).
             <br />supported parameters are
@@ -23,12 +23,12 @@
         </div>
       </div>
       <!-- Size -->
-      <div class="w-full flex flex-row justify-center items-center mt-8">
-        <div class="flex flex-row w-1/3 justify-end">
-          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg">size</code>
+      <div class="w-full flex flex-row flex-wrap justify-center items-center my-6">
+        <div class="flex flex-row w-full md:w-1/3 md:justify-end items-center">
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-2">size</code>
           <span class="text-2xl font-bold mx-3">:</span>
         </div>
-        <div class="flex flex-row w-1/2">
+        <div class="flex flex-row w-full md:w-1/2">
           <span class="text-lg leading-loose">
             in pixels. ignored when format is
             <code
@@ -45,12 +45,12 @@
         </div>
       </div>
       <!-- Outline -->
-      <div class="w-full flex flex-row justify-center items-center mt-8">
-        <div class="flex flex-row w-1/3 justify-end">
-          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg">outline</code>
+      <div class="w-full flex flex-row flex-wrap justify-center items-center my-6">
+        <div class="flex flex-row w-full md:w-1/3 md:justify-end items-center">
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-2">outline</code>
           <span class="text-2xl font-bold mx-3">:</span>
         </div>
-        <div class="flex flex-row w-1/2">
+        <div class="flex flex-row w-full md:w-1/2">
           <span class="text-lg leading-loose">
             <code class="font-bold bg-lime px-2 py-1 rounded-md">false</code>
             (default).
@@ -61,12 +61,12 @@
         </div>
       </div>
       <!-- Outline Color -->
-      <div class="w-full flex flex-row justify-center items-center mt-8">
-        <div class="flex flex-row w-1/3 justify-end">
-          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg">outline_color</code>
+      <div class="w-full flex flex-row flex-wrap justify-center items-center my-6">
+        <div class="flex flex-row w-full md:w-1/3 md:justify-end items-center">
+          <code class="bg-lime px-3 py-1 text-xl font-bold rounded-lg my-2">outline_color</code>
           <span class="text-2xl font-bold mx-3">:</span>
         </div>
-        <div class="flex flex-row w-1/2">
+        <div class="flex flex-row w-full md:w-1/2">
           <span class="text-lg leading-loose">
             <code class="font-bold bg-lime px-2 py-1 rounded-md">white</code> (default).
             <br />supported parameters are
@@ -78,7 +78,7 @@
         </div>
       </div>
       <!-- Arrow Down -->
-      <div class="w-full flex flex-row justify-center items-center mt-4">
+      <div class="w-full flex flex-row flex-wrap justify-center items-center">
         <img
           class="w-12 h-12"
           :src="require('~/assets/images/icons/arrow-down.svg')"
@@ -89,10 +89,10 @@
       <h2 class="text-3xl md:text-4xl text-center leading-none mt-2">
         <b>example</b> call
       </h2>
-      <div class="w-full flex flex-row justify-center items-center mt-6">
+      <div class="w-full flex flex-row flex-wrap flex-wrap justify-center items-center mt-6">
         <code class="bg-aquaGreen px-3 py-1 text-xl font-bold rounded-lg m-2">get</code>
         <pre
-          class="w-128 text-xl bg-black text-lime px-4 py-2 font-bold rounded-lg mt-1 break-all mx-2"
+          class="w-128 text-xl bg-black text-lime px-4 py-2 font-bold rounded-lg mt-1 break-all my-2"
         ><span class="text-aquaGreen">https://natricon.com/api/v1/nano</span><span class="text-white">?</span><span
   class="text-brightPink"
 >address=nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd</span><span
@@ -100,7 +100,7 @@
 >&</span>format=png<span class="text-white">&</span>size=512<span class="text-white">&</span>outline=true<span class="text-white">&</span>outline_color=black</pre>
       </div>
       <!-- Arrow Down -->
-      <div class="w-full flex flex-row justify-center items-center mt-4">
+      <div class="w-full flex flex-row flex-wrap justify-center items-center mt-4">
         <img
           class="w-12 h-12"
           :src="require('~/assets/images/icons/arrow-down.svg')"
@@ -109,7 +109,9 @@
       </div>
       <!-- Example Result -->
       <!-- Illustration -->
-      <div class="w-full flex flex-row justify-center items-center mt-6 mb-4 md:px-16 lg:px-48">
+      <div
+        class="w-full flex flex-row flex-wrap justify-center items-center mt-6 mb-4 md:px-16 lg:px-48"
+      >
         <img
           class="w-full h-auto"
           :src="require('~/assets/images/illustrations/call-result-png-desktop.svg')"

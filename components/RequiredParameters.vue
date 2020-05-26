@@ -1,17 +1,19 @@
 <template>
-  <div class="w-full flex flex-col items-center pt-12 pb-16">
+  <div class="w-full flex flex-col items-center py-12">
     <div class="n-container flex flex-col items-center px-5">
       <h1 class="text-4xl md:text-5xl text-center leading-none">
         <span class="relative inline-block">
           <span class="font-bold line-brightPink">required</span>
         </span> parameters
       </h1>
-      <div class="w-full flex flex-row justify-center items-center mt-10">
+      <div class="w-full flex flex-row flex-wrap justify-center items-center mt-10">
         <code class="bg-brightPink px-3 py-1 text-xl font-bold rounded-lg">address</code>
-        <span class="text-2xl font-bold mx-3">:</span>
+        <span class="text-2xl font-bold m-3">:</span>
         <div class="flex flex-col">
           <h6 class="text-lg">nano address. example:</h6>
-          <pre class="w-96 bg-black text-brightPink px-3 py-2 font-bold rounded-lg mt-1 break-all">nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd</pre>
+          <pre
+            class="md:w-96 bg-black text-brightPink px-3 py-2 font-bold rounded-lg mt-2 break-all overflow-x-scroll"
+          >nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd</pre>
         </div>
       </div>
       <!-- Arrow Down -->
@@ -26,10 +28,10 @@
       <h2 class="text-3xl md:text-4xl text-center leading-none mt-2">
         <b>example</b> call
       </h2>
-      <div class="w-full flex flex-row justify-center items-center mt-6">
+      <div class="w-full flex flex-row flex-wrap justify-center items-center mt-6">
         <code class="bg-aquaGreen px-3 py-1 text-xl font-bold rounded-lg m-2">get</code>
         <pre
-          class="w-108 text-xl bg-black text-aquaGreen px-4 py-2 font-bold rounded-lg mt-1 break-all mx-2"
+          class="md:w-108 text-xl bg-black text-aquaGreen px-4 py-2 font-bold rounded-lg mt-1 break-all"
         >https://natricon.com/api/v1/nano<span class="text-white">?</span><span
   class="text-brightPink"
 >address=nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd</span></pre>
@@ -47,17 +49,12 @@
         <b>example</b> result
       </h2>
       <!-- Result Code & Illustration -->
-      <div class="flex flex-row justify-center items-center mt-6 mb-4">
+      <div class="flex flex-row flex-wrap justify-center items-center mt-6 mb-4">
         <pre
-          class="w-120 h-56 text-sm bg-black text-aquaGreen px-4 py-2 rounded-lg mt-1 break-all overflow-y-scroll"
+          class="md:w-120 h-56 text-sm bg-black text-aquaGreen px-4 py-2 rounded-lg mt-1 break-all overflow-y-scroll"
         >{{natriconSvgCode}}</pre>
         <img
-          class="w-12 h-12 mx-4"
-          :src="require('~/assets/images/icons/arrow-right.svg')"
-          alt="Arrow Right"
-        />
-        <img
-          class="w-64 h-auto"
+          class="w-64 h-auto m-8"
           :src="require('~/assets/images/illustrations/call-result-svg-desktop.svg')"
           alt="Natrium Natricon Svg"
         />
