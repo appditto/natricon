@@ -67,7 +67,7 @@ func main() {
 	// V1 API
 	router.GET("/api/v1/nano", natriconController.GetNano)
 	// Stats
-	router.GET("/api/v1/stats", controller.Stats)
+	router.GET("/api/v1/nano/stats", controller.Stats)
 	// Donation callback
 	router.POST("/api/nanocallback", nanoController.Callback)
 	// For testing
