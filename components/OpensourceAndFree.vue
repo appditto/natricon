@@ -44,12 +44,22 @@
           <!-- Go Back Button -->
           <button
             v-if="isDonationInitiated"
-            class="absolute left-0 top-0 mx-3 my-2 px-3 pt-1 pb-2 font-bold"
+            class="absolute left-0 top-0 mx-3 my-2 font-bold z-50"
             @click="resetDonation()"
-          >go back</button>
+          >
+            <div class="relative">
+              <div class="w-8 h-8 line bga-lightPink scaleY">
+                <img
+                  class="w-full h-full"
+                  :src="require('~/assets/images/icons/back.svg')"
+                  alt="Back Icon"
+                />
+              </div>
+            </div>
+          </button>
           <div
-            :class="isDropdownOpen?'opacity-100 duration-1000':'opacity-0 duration-150' "
-            class="w-full flex flex-col justify-center items-center ease-out pt-8 pb-6"
+            :class="isDropdownOpen?'opacity-100 duration-700':'opacity-0 duration-150' "
+            class="w-full flex flex-col justify-center items-center ease-out pt-8 pb-4"
           >
             <img
               v-if="donationAmount>2 && donationAmount<=10"
@@ -123,11 +133,23 @@
                 >donate</button>
               </form>
               <!-- QR Code for the Donation -->
-              <div v-if="isDonationInitiated" class="flex flex-row justify-center items-center m-4">
-                <qrcode-vue class="m-4" :value="qrValue" :size="qrSize" level="Q"></qrcode-vue>
+              <div
+                v-if="isDonationInitiated"
+                class="flex flex-row flex-wrap justify-center items-center m-4"
+              >
+                <div class="mx-4 my-4 border-4 rounded-lg p-1 border-lightPink bg-white qr-shadow">
+                  <qrcode-vue :value="qrValue" :size="qrSize" level="Q"></qrcode-vue>
+                </div>
                 <div class="flex flex-col m-4">
-                  <h5 class="text-lg">scan to donate</h5>
-                  <h4 class="text-2xl font-bold break-all">{{donationAmount}} nano</h4>
+                  <h5 class="text-lg px-2">scan to donate</h5>
+                  <h4 class="text-2xl font-bold break-all px-2">{{donationAmount}} nano</h4>
+                  <button
+                    @click="doCopy()"
+                    ref="copyButton"
+                    :class="isAddressCopied?'bg-lightPink':'bg-white'"
+                    class="text-xs font-mono hover:bg-lightPink text-left mt-3 rounded-lg transition-colors duration-300 ease-out p-2"
+                    v-html="isAddressCopied?copiedHtml:addressHtml"
+                  ></button>
                 </div>
               </div>
             </div>
@@ -154,6 +176,11 @@
 <script>
 import QrcodeVue from "qrcode.vue";
 import Big from "big.js";
+import Vue from "vue";
+import VueClipboard from "vue-clipboard2";
+
+VueClipboard.config.autoSetContainer = true; // add this line
+Vue.use(VueClipboard);
 export default {
   data() {
     return {
@@ -165,7 +192,13 @@ export default {
         "nano:nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd?amount=2000000000000000000000000000000",
       qrSize: 150,
       donationAmount: 2,
-      inputError: false
+      inputError: false,
+      customNanoAmountModel: null,
+      address:
+        "nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd",
+      isAddressCopied: false,
+      addressHtml: `nano_1natrium1o3z5519i<br/>fou7xii8crpxpk8y65qmki<br/>h8e8bpsjri651oza8imdd`,
+      copiedHtml: `&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbspaddress copied&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp`
     };
   },
   components: {
@@ -196,7 +229,7 @@ export default {
     },
     customAmountAction() {
       if (this.donationAmount >= 0.000001 && this.donationAmount <= 10000000) {
-        this.initiateDonationFor(this.donationAmount);
+        this.initiateDonationFor(Number(this.donationAmount));
       } else {
         this.inputError = true;
       }
@@ -206,6 +239,20 @@ export default {
         this.inputError = false;
       }
       this.donationAmount = this.$refs.customNanoAmount.value;
+    },
+    doCopy() {
+      let ref = this;
+      this.$copyText(this.address).then(
+        function(e) {
+          ref.isAddressCopied = true;
+        },
+        function(e) {
+          alert("Can not copy");
+        }
+      );
+      setTimeout(function() {
+        ref.isAddressCopied = false;
+      }, 2000);
     }
   }
 };
@@ -224,6 +271,7 @@ export default {
 .btn-sm-shadow-lightPink {
   box-shadow: -0.25rem 0.3rem 0rem 0rem#F199FF;
 }
+
 .btn-shadow-lightPink {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#F199FF;
 }
@@ -242,6 +290,9 @@ export default {
 }
 .btn-shadow-black:hover {
   box-shadow: 0rem 0rem 0rem 0rem#000000;
+}
+.qr-shadow {
+  box-shadow: -0.3rem 0.3rem 0rem 0rem#000000;
 }
 .line-cyan::after {
   display: block;
@@ -273,5 +324,27 @@ export default {
 }
 .border-transparent {
   border-color: rgba(0, 0, 0, 0);
+}
+.bga-lightPink::after {
+  background-color: #f199ff;
+}
+.line::after {
+  display: block;
+  position: absolute;
+  width: calc(100% + 0.4rem);
+  left: -0.2rem;
+  content: "";
+  height: 1rem;
+  border-radius: 0.15rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: -1rem;
+  z-index: -1;
+  transition: all 0.2s ease-out;
+  transform-origin: center bottom;
+  transform: scaleY(0);
+}
+.scaleY:hover::after {
+  transform: scaleY(1);
 }
 </style>
