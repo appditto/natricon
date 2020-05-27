@@ -1,57 +1,78 @@
 package controller
 
 import (
-	"encoding/json"
+	"fmt"
+	"math"
 	"time"
 
 	"github.com/appditto/natricon/server/db"
 	"github.com/appditto/natricon/server/image"
-	"github.com/appditto/natricon/server/model"
 	"github.com/appditto/natricon/server/net"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/bsm/redislock"
-	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
 	socketio "github.com/googollee/go-socket.io"
 )
-
-// Account donations are checked to
-const donationAccount = "nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd"
 
 // Donations at or above this threshold will award "vip" status for 30 days
 const donationThresholdNano = 2.0
 
 type NanoController struct {
-	RPCClient *net.RPCClient
-	SIOServer *socketio.Server
+	RPCClient       *net.RPCClient
+	SIOServer       *socketio.Server
+	DonationAccount string
 }
 
 // Handle callback for donation listener
-func (nc NanoController) Callback(c *gin.Context) {
-	var callbackData model.Callback
-	err := c.BindJSON(&callbackData)
-	if err != nil {
-		glog.Errorf("Error processing callback")
-		return
-	}
-	var blockData model.Block
-	err = json.Unmarshal([]byte(callbackData.Block), &blockData)
-	if err != nil {
-		glog.Errorf("Error parsing callback block json")
-		return
-	}
-	// Check if send to doantion account
-	if blockData.LinkAsAccount == donationAccount && blockData.LinkAsAccount != blockData.Account {
-		durationDays := nc.calcDonorDurationDays(callbackData.Amount)
-		if durationDays > 0 {
-			glog.Infof("Giving donor status to %s for %d days", blockData.Account, durationDays)
-			db.GetDB().UpdateDonorStatus(callbackData.Hash, blockData.Account, durationDays)
-		}
+func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse) {
+	block := confirmationResponse.Message["block"].(map[string]interface{})
+	amount := confirmationResponse.Message["amount"].(string)
+	hash := confirmationResponse.Message["hash"].(string)
+	// Check if send to donation account
+	if block["link_as_account"] == nc.DonationAccount && block["link_as_account"] != block["account"] {
 		// Emit SIO event
 		data := map[string]string{
-			"amount": callbackData.Amount,
+			"amount": amount,
 		}
 		nc.SIOServer.BroadcastToRoom("", "bcast", "donation_event", data)
+		// Calc donor duration with lock
+		lock, err := db.GetDB().Locker.Obtain(fmt.Sprintf("natricon:callback_lock:%s", hash), 100*time.Second, nil)
+		if err == redislock.ErrNotObtained {
+			return
+		} else if err != nil {
+			glog.Error(err)
+			return
+		}
+		defer lock.Release()
+		durationDays := nc.calcDonorDurationDays(amount)
+		if durationDays > 0 {
+			glog.Infof("Giving donor status to %s for %d days", block["account"], durationDays)
+			db.GetDB().UpdateDonorStatus(hash, block["account"].(string), durationDays)
+		}
+		// Issue refund for odd raw amounts
+		asNano, err := utils.RawToNano(amount, false)
+		if err != nil {
+			return
+		}
+		asNanoTrunc := math.Trunc(asNano)
+		asNano -= asNanoTrunc
+		if len(amount) >= 28 && asNano > 0.001 {
+			// Refund
+			refundRaw := amount[len(amount)-28:]
+			refundNano, err := utils.RawToNano(refundRaw, false)
+			if err != nil {
+				return
+			}
+			// If refund is 0, don't do it
+			if refundNano == 0 {
+				return
+			} else if refundRaw == amount {
+				// If refund is equal to the total amount don't send refund
+				return
+			}
+			glog.Infof("Going to refund %s raw to %s", refundRaw, block["account"])
+			// TODO - implement refund
+		}
 	}
 }
 
@@ -72,7 +93,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 	defer lock.Release()
 	// Check history
 	historyResponse, err := nc.RPCClient.MakeAccountHistoryRequest(
-		donationAccount,
+		nc.DonationAccount,
 		10,
 	)
 	if err != nil {
@@ -80,7 +101,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 		return
 	}
 	for i := 0; i < len(historyResponse.History); i++ {
-		if historyResponse.History[i].Type == "receive" && historyResponse.History[i].Account != donationAccount {
+		if historyResponse.History[i].Type == "receive" && historyResponse.History[i].Account != nc.DonationAccount {
 			durationDays := nc.calcDonorDurationDays(historyResponse.History[i].Amount)
 			if durationDays > 0 {
 				glog.Infof("Checking donor status to %s for %d days", historyResponse.History[i].Account, durationDays)
@@ -92,7 +113,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 
 // calcDonorDurationDays - calculate how long badge will persist with given donation amount
 func (nc NanoController) calcDonorDurationDays(amountRaw string) uint {
-	amountNano, _ := utils.RawToNano(amountRaw)
+	amountNano, _ := utils.RawToNano(amountRaw, true)
 	// TODO - allow partial chunks?
 	chunks := uint(amountNano / donationThresholdNano)
 	return chunks * 30
@@ -109,7 +130,7 @@ func (nc NanoController) UpdatePrincipalWeight() {
 		glog.Errorf("Error occured checking confirmation quorum %s", err)
 		return
 	}
-	onlineWeightMinimum, err := utils.RawToNano(quorumResponse.OnlineWeightTotal)
+	onlineWeightMinimum, err := utils.RawToNano(quorumResponse.OnlineWeightTotal, true)
 	if err != nil {
 		glog.Errorf("Error occured converting weight to nano %s", err)
 		return
@@ -136,7 +157,7 @@ func (nc NanoController) UpdatePrincipalReps() {
 	}
 	principalReps := []string{}
 	for rep, weight := range repsResponse.Representatives {
-		weightNano, err := utils.RawToNano(weight)
+		weightNano, err := utils.RawToNano(weight, true)
 		if err != nil {
 			glog.Errorf("Error occured checking weight for rep %s %s", rep, err)
 			continue

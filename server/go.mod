@@ -15,8 +15,10 @@ require (
 	github.com/googollee/go-socket.io v1.4.3
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jasonlvhit/gocron v0.0.0-20200423141508-ab84337f7963
+	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/recws-org/recws v1.2.1
 	github.com/tdewolff/minify/v2 v2.7.4
 	go.uber.org/automaxprocs v1.3.0
 	golang.org/x/crypto v0.0.0-20200429183012-4b2356b1ed79 // indirect

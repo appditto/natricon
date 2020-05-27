@@ -41,8 +41,21 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
-    "@nuxtjs/axios"
+    "@nuxtjs/axios",
+    "nuxt-socket-io"
   ],
+  /*
+  ** Socket.io
+  */
+ io: {
+  sockets: [
+      {
+        name: 'natricon',
+        url: 'wss://natricon.com',
+        default: true
+      }
+    ], 
+  },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options

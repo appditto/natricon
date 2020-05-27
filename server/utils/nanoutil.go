@@ -63,13 +63,17 @@ func AddressSha256(account string, seed string) string {
 }
 
 // RawToNano - Converts Raw amount to usable Nano amount
-func RawToNano(raw string) (float64, error) {
+func RawToNano(raw string, truncate bool) (float64, error) {
 	rawBig, ok := new(big.Float).SetString(raw)
 	if !ok {
 		err := errors.New(fmt.Sprintf("Unable to convert %s to int", raw))
 		return -1, err
 	}
 	asNano := rawBig.Quo(rawBig, rawPerNano)
+	if !truncate {
+		f, _ := asNano.Float64()
+		return f, nil
+	}
 	// Truncate precision beyond 0.000001
 	bf := big.NewFloat(0).SetPrec(1000000).Set(asNano)
 	bu := big.NewFloat(0).SetPrec(1000000).SetFloat64(0.000001)

@@ -16,7 +16,8 @@
     "blakejs": "^1.1.0",
     "nuxt": "^2.0.0",
     "qrcode.vue": "^1.7.0",
-    "vue-clipboard2": "^0.3.1"
+    "vue-clipboard2": "^0.3.1",
+    "nuxt-socket-io": "^1.0.25"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^1.0.0",

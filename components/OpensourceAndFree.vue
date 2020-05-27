@@ -174,6 +174,7 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import QrcodeVue from "qrcode.vue";
 import Big from "big.js";
 import Vue from "vue";
@@ -253,7 +254,23 @@ export default {
       setTimeout(function() {
         ref.isAddressCopied = false;
       }, 2000);
+    },
+    handleAmountCallback(rawAmount) {
+      console.log(rawAmount);
     }
+  },
+  computed: mapState(["clientID"]),
+  mounted() {
+    this.socket = this.$nuxtSocket({
+      name: "natricon"
+    });
+    let inst = this;
+    this.socket.on("connected", function(data) {
+      inst.$store.commit("SET_ID", data);
+    });
+    this.socket.on("donation_event", function(data) {
+      inst.handleAmountCallback(data.amount);
+    });
   }
 };
 </script>

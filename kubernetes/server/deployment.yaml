@@ -19,11 +19,13 @@ spec:
       - name: go-natricon
         image: replaceme
         command: ["/bin/bash", "-c"]
-        args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://nano-node.nano:7076"]
+        args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://nano-node.nano:7076 -nano-ws-url ws://nano-node.nano:7078"]
         ports:
           - containerPort: 5555
         imagePullPolicy: "Always"
         env:
+          - name: DONATION_ACCOUNT
+            value: nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd
           - name: REDIS_HOST
             value: redis-0.redis
           - name: REDIS_DB

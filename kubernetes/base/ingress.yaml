@@ -18,11 +18,6 @@ metadata:
     nginx.ingress.kubernetes.io/session-cookie-name: "natricon_socket"
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
-    nginx.ingress.kubernetes.io/server-snippet: |-
-      location /api/nanocallback {
-          deny all;
-          return 404;
-      }
 spec:
   tls:
   - hosts:
