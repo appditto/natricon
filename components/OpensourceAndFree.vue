@@ -62,7 +62,13 @@
             class="w-full flex flex-col justify-center items-center ease-out pt-8 pb-4"
           >
             <img
-              v-if="donationAmount>2 && donationAmount<=10"
+              v-if="donationSuccess"
+              class="w-32 h-32"
+              :src="require('~/assets/images/gifs/NatriconDonatePhase2.gif')"
+              alt="Natricon Donate 5"
+            />              
+            <img
+              v-else-if="donationAmount>2 && donationAmount<=10"
               class="w-32 h-32"
               :src="require('~/assets/images/gifs/NatriconDonatePhase2.gif')"
               alt="Natricon Donate 2"
@@ -180,25 +186,27 @@ import Big from "big.js";
 import Vue from "vue";
 import VueClipboard from "vue-clipboard2";
 
+const donationAddress = "nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd"
+
 VueClipboard.config.autoSetContainer = true; // add this line
 Vue.use(VueClipboard);
 export default {
   data() {
     return {
+      address: donationAddress,
       isDropdownOpen: false,
       isDonationInitiated: false,
-      qrValueBase:
-        "nano:nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd?amount=",
-      qrValue:
-        "nano:nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd?amount=2000000000000000000000000000000",
+      donationAmountModifierBase: 0.001,
+      donationAmountModifierID: 0,
+      qrValueAmountRaw: "",
+      qrValue: "",
       qrSize: 150,
       donationAmount: 2,
       inputError: false,
+      donationSuccess: false,
       customNanoAmountModel: null,
-      address:
-        "nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd",
       isAddressCopied: false,
-      addressHtml: `nano_1natrium1o3z5519i<br/>fou7xii8crpxpk8y65qmki<br/>h8e8bpsjri651oza8imdd`,
+      addressHtml: `${donationAddress.substring(0,22)}<br/>${donationAddress.substring(22, 44)}<br/>${donationAddress.substring(44,65)}`,
       copiedHtml: `&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbspaddress copied&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp`
     };
   },
@@ -209,7 +217,12 @@ export default {
     nanoToRaw(inAmount) {
       let nanoRaw = Big(10).pow(30);
       let nanoAmount = Big(inAmount);
-      return nanoRaw.times(nanoAmount).toFixed();
+      return nanoRaw.times(nanoAmount)
+    },
+    appendIdToRaw(inAmount) {
+      let idModifier = Big(this.clientID)
+      let amountModifier = Big(10).pow(27) // 0.001 NANO
+      return inAmount.add(idModifier).add(amountModifier).toFixed()
     },
     openDonateDropdown() {
       this.isDropdownOpen = true;
@@ -220,12 +233,13 @@ export default {
     initiateDonationFor(nanoAmount) {
       this.isDonationInitiated = true;
       this.donationAmount = nanoAmount;
-      this.qrValue = this.qrValueBase + this.nanoToRaw(this.donationAmount);
+      this.qrValueAmountRaw = this.appendIdToRaw(this.nanoToRaw(this.donationAmount))
+      this.qrValue = `nano:${donationAddress}?amount=${this.qrValueAmountRaw}`
     },
     resetDonation() {
       this.isDonationInitiated = false;
-      this.qrValue =
-        "nano:nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd?amount=2000000000000000000000000000000";
+      this.qrValue = ""
+      this.qrValueAmountRaw = ""
       this.donationAmount = 2;
     },
     customAmountAction() {
@@ -256,7 +270,9 @@ export default {
       }, 2000);
     },
     handleAmountCallback(rawAmount) {
-      console.log(rawAmount);
+      if (rawAmount == this.qrValueAmountRaw) {
+        this.donationSuccess = true
+      }
     }
   },
   computed: mapState(["clientID"]),
@@ -266,6 +282,7 @@ export default {
     });
     let inst = this;
     this.socket.on("connected", function(data) {
+      // Use ID sent from server as a donation modifier
       inst.$store.commit("SET_ID", data);
     });
     this.socket.on("donation_event", function(data) {
