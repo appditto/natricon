@@ -36,7 +36,12 @@ export default {
   buildModules: [
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/google-analytics'
   ],
+  // Google Analytics
+  googleAnalytics: {
+    id: 'UA-145357881-5'
+  },
   /*
   ** Nuxt.js modules
   */
@@ -47,14 +52,14 @@ export default {
   /*
   ** Socket.io
   */
- io: {
-  sockets: [
+  io: {
+    sockets: [
       {
         name: 'natricon',
         url: 'wss://natricon.com',
         default: true
       }
-    ], 
+    ],
   },
   /*
    ** Axios module configuration

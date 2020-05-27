@@ -38,8 +38,8 @@
       <div class="w-full flex flex-row justify-center bg-white relative">
         <!-- Donate Dropdown -->
         <div
-          :class="isDropdownOpen?'scale-y-100 border-black shadow-lightPink':'scale-y-0 border-transparent'"
-          class="w-full md:w-144 absolute flex flex-col items-center max-w-128 bg-white border-4 transition-all transform origin-top duration-300 ease-out overflow-hidden mt-5 rounded-lg px-2 md:px-12 z-50"
+          :class="[isDropdownOpen ?'scale-y-100 border-black':'scale-y-0 border-transparent', donationSuccess && isDonationInitiated?'bg-lightGreen':'bg-white', isDropdownOpen && donationSuccess ? 'shadow-black':'', isDropdownOpen && !donationSuccess ?'shadow-lightPink':'']"
+          class="w-full md:w-144 absolute flex flex-col items-center max-w-128 border-4 transition-all transform origin-top duration-300 ease-out overflow-hidden mt-5 rounded-lg px-2 md:px-12 z-50"
         >
           <!-- Go Back Button -->
           <button
@@ -59,88 +59,85 @@
           </button>
           <div
             :class="isDropdownOpen?'opacity-100 duration-700':'opacity-0 duration-150' "
-            class="w-full flex flex-col justify-center items-center ease-out pt-8 pb-4"
+            class="w-full flex flex-col justify-center items-center ease-out py-4"
           >
             <img
               v-if="donationSuccess"
-              class="w-32 h-32"
-              :src="require('~/assets/images/gifs/NatriconDonatePhase2.gif')"
+              class="w-32 h-32 my-4"
+              :src="require('~/assets/images/gifs/NatriconDonatePhase5.gif')"
               alt="Natricon Donate 5"
-            />              
+            />
             <img
               v-else-if="donationAmount>2 && donationAmount<=10"
-              class="w-32 h-32"
+              class="w-32 h-32 my-4"
               :src="require('~/assets/images/gifs/NatriconDonatePhase2.gif')"
               alt="Natricon Donate 2"
             />
             <img
               v-else-if="donationAmount>10 && donationAmount<100"
-              class="w-32 h-32"
+              class="w-32 h-32 my-4"
               :src="require('~/assets/images/gifs/NatriconDonatePhase3.gif')"
               alt="Natricon Donate 3"
             />
             <img
               v-else-if="donationAmount>=100"
-              class="w-32 h-32"
+              class="w-32 h-32 my-4"
               :src="require('~/assets/images/gifs/NatriconDonatePhase4.gif')"
               alt="Natricon Donate 4"
             />
             <img
               v-else
-              class="w-32 h-32"
+              class="w-32 h-32 my-4"
               :src="require('~/assets/images/gifs/NatriconDonatePhase1.gif')"
               alt="Natricon Donate 1"
             />
-            <div class="flex flex-col items-center">
-              <!-- Donate Amount Buttons -->
-              <div
-                v-if="!isDonationInitiated"
-                class="flex flex-row flex-wrap justify-center items-center my-4"
-              >
-                <button
-                  @mouseover="donationAmount=2"
-                  @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
-                  @click="initiateDonationFor(2)"
-                  class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
-                >2 nano</button>
-                <button
-                  @mouseover="donationAmount=10"
-                  @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
-                  @click="initiateDonationFor(10)"
-                  class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
-                >10 nano</button>
-                <button
-                  @mouseover="donationAmount=20"
-                  @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
-                  @click="initiateDonationFor(20)"
-                  class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
-                >20 nano</button>
+            <div class="flex flex-row justify-center">
+              <!-- Donation Initated -->
+              <div v-if="!isDonationInitiated" class="flex flex-col items-center">
+                <!-- Donate Amount Buttons -->
+                <div class="flex flex-row flex-wrap justify-center items-center my-4">
+                  <button
+                    @mouseover="donationAmount=2"
+                    @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
+                    @click="initiateDonationFor(2)"
+                    class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
+                  >2 nano</button>
+                  <button
+                    @mouseover="donationAmount=10"
+                    @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
+                    @click="initiateDonationFor(10)"
+                    class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
+                  >10 nano</button>
+                  <button
+                    @mouseover="donationAmount=20"
+                    @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
+                    @click="initiateDonationFor(20)"
+                    class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
+                  >20 nano</button>
+                </div>
+                <!-- Custom Amount Input Group -->
+                <form class="w-full md:w-64 flex flex-col justify-center px-3 my-5">
+                  <label class="w-full text-xl font-bold" for="customNanoAmount">custom amount</label>
+                  <input
+                    :class="inputError?'border-red text-red':'border-black'"
+                    class="w-full text-lg font-medium border-2 px-4 pt-1 pb-2 rounded-lg my-1 transition-colors duration-200 ease-out"
+                    type="number"
+                    ref="customNanoAmount"
+                    id="customNanoAmount"
+                    name="customNanoAmount"
+                    placeholder="enter amount"
+                    v-model="customNanoAmountModel"
+                    @input="inputChange()"
+                  />
+                  <button
+                    @click.prevent="customAmountAction()"
+                    class="w-full btn text-lg font-medium border-black hover:text-lightPink hover:border-lightPink border-2 bg-black text-white pt-1 pb-2 px-6 rounded-lg my-1"
+                  >donate</button>
+                </form>
               </div>
-              <!-- Custom Amount Input Group -->
-              <form
-                v-if="!isDonationInitiated"
-                class="w-full md:w-64 flex flex-col justify-center px-3 my-5"
-              >
-                <label class="w-full text-xl font-bold" for="customNanoAmount">custom amount</label>
-                <input
-                  :class="inputError?'border-red text-red':'border-black'"
-                  class="w-full text-lg font-medium border-2 px-4 pt-1 pb-2 rounded-lg my-1 transition-colors duration-200 ease-out"
-                  type="number"
-                  ref="customNanoAmount"
-                  id="customNanoAmount"
-                  name="customNanoAmount"
-                  placeholder="enter amount"
-                  v-model="customNanoAmountModel"
-                  @input="inputChange()"
-                />
-                <button
-                  @click.prevent="customAmountAction()"
-                  class="w-full btn text-lg font-medium border-black hover:text-lightPink hover:border-lightPink border-2 bg-black text-white pt-1 pb-2 px-6 rounded-lg my-1"
-                >donate</button>
-              </form>
               <!-- QR Code for the Donation -->
               <div
-                v-if="isDonationInitiated"
+                v-else-if="isDonationInitiated  && !donationSuccess"
                 class="flex flex-row flex-wrap justify-center items-center m-4"
               >
                 <div class="mx-4 my-4 border-4 rounded-lg p-1 border-lightPink bg-white qr-shadow">
@@ -157,6 +154,14 @@
                     v-html="isAddressCopied?copiedHtml:addressHtml"
                   ></button>
                 </div>
+              </div>
+              <!-- Success Screen Text -->
+              <div
+                class="flex flex-col items-center my-4"
+                v-else-if="isDonationInitiated && donationSuccess"
+              >
+                <h4 class="text-4xl text-center font-bold">thank you!</h4>
+                <h5 v-if="donationAmount>=2" class="text-lg text-center">your badge is on its way...</h5>
               </div>
             </div>
           </div>
@@ -186,7 +191,8 @@ import Big from "big.js";
 import Vue from "vue";
 import VueClipboard from "vue-clipboard2";
 
-const donationAddress = "nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd"
+const donationAddress =
+  "nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd";
 
 VueClipboard.config.autoSetContainer = true; // add this line
 Vue.use(VueClipboard);
@@ -205,7 +211,13 @@ export default {
       donationSuccess: false,
       customNanoAmountModel: null,
       isAddressCopied: false,
-      addressHtml: `${donationAddress.substring(0,22)}<br/>${donationAddress.substring(22, 44)}<br/>${donationAddress.substring(44,65)}`,
+      addressHtml: `${donationAddress.substring(
+        0,
+        22
+      )}<br/>${donationAddress.substring(
+        22,
+        44
+      )}<br/>${donationAddress.substring(44, 65)}`,
       copiedHtml: `&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbspaddress copied&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp`
     };
   },
@@ -216,14 +228,17 @@ export default {
     nanoToRaw(inAmount) {
       let nanoRaw = Big(10).pow(30);
       let nanoAmount = Big(inAmount);
-      return nanoRaw.times(nanoAmount)
+      return nanoRaw.times(nanoAmount);
     },
     appendIdToRaw(inAmount) {
       // Modifify donation amount with 0.001 + socketio client ID
       // Will let us recognize this donation
-      let idModifier = Big(this.clientID)
-      let amountModifier = Big(10).pow(27) // 0.001 NANO
-      return inAmount.add(idModifier).add(amountModifier).toFixed()
+      let idModifier = Big(this.clientID);
+      let amountModifier = Big(10).pow(27); // 0.001 NANO
+      return inAmount
+        .add(idModifier)
+        .add(amountModifier)
+        .toFixed();
     },
     openDonateDropdown() {
       this.isDropdownOpen = true;
@@ -234,16 +249,20 @@ export default {
     initiateDonationFor(nanoAmount) {
       this.isDonationInitiated = true;
       this.donationAmount = nanoAmount;
-      this.qrValueAmountRaw = this.appendIdToRaw(this.nanoToRaw(this.donationAmount))
-      this.qrValue = `nano:${donationAddress}?amount=${this.qrValueAmountRaw}`
+      this.qrValueAmountRaw = this.appendIdToRaw(
+        this.nanoToRaw(this.donationAmount)
+      );
+      this.qrValue = `nano:${donationAddress}?amount=${this.qrValueAmountRaw}`;
     },
     resetDonation() {
       this.isDonationInitiated = false;
-      this.qrValue = ""
-      this.qrValueAmountRaw = ""
+      this.qrValue = "";
+      this.qrValueAmountRaw = "";
       this.donationAmount = 2;
+      this.donationSuccess = false;
     },
     customAmountAction() {
+      this.donationAmount = this.$refs.customNanoAmount.value;
       if (this.donationAmount >= 0.000001 && this.donationAmount <= 10000000) {
         this.initiateDonationFor(Number(this.donationAmount));
       } else {
@@ -272,7 +291,7 @@ export default {
     },
     handleAmountCallback(rawAmount) {
       if (rawAmount == this.qrValueAmountRaw) {
-        this.donationSuccess = true
+        this.donationSuccess = true;
       }
     }
   },
@@ -312,6 +331,9 @@ export default {
 }
 .shadow-lightPink {
   box-shadow: -0.5rem 0.6rem 0rem 0rem#F199FF;
+}
+.shadow-black {
+  box-shadow: -0.5rem 0.6rem 0rem 0rem#000000;
 }
 .btn-shadow-black {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#000000;
