@@ -103,3 +103,37 @@ func (client RPCClient) MakeRepresentativesRequest() (*model.RepresentativeRespo
 	}
 	return &repResponse, nil
 }
+
+// send
+func (client RPCClient) MakeSendRequest(source string, destination string, amountRaw string, id string, wallet string) (*model.SendResponse, error) {
+	// Build request
+	request := model.SendRequest{
+		BaseRequest: model.SendAction,
+		Source:      source,
+		Destination: destination,
+		AmountRaw:   amountRaw,
+		ID:          id,
+		Wallet:      wallet,
+	}
+	requestBody, _ := json.Marshal(request)
+	// HTTP post
+	resp, err := http.Post(client.Url, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		glog.Errorf("Error making RPC request %s", err)
+		return nil, errors.New("Error")
+	}
+	defer resp.Body.Close()
+	// Try to decode+deserialize
+	var sendResponse model.SendResponse
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		glog.Errorf("Error decoding request body %s", err)
+		return nil, errors.New("Error")
+	}
+	err = json.Unmarshal(body, &sendResponse)
+	if err != nil {
+		glog.Errorf("Error unmarshaling response %s", err)
+		return nil, errors.New("Error")
+	}
+	return &sendResponse, nil
+}

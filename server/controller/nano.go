@@ -69,9 +69,30 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 			} else if refundRaw == amount {
 				// If refund is equal to the total amount don't send refund
 				return
+			} else if len(refundRaw) > 28 {
+				// In case something goes wrong with previous code
+				glog.Errorf("Attempted to refund an amount that was larger than expected %s", refundRaw)
+				return
 			}
 			glog.Infof("Going to refund %s raw to %s", refundRaw, block["account"])
-			// TODO - implement refund
+			// Send refund
+			wallet := utils.GetEnv("WALLET_ID", "")
+			if wallet == "" {
+				glog.Warningf("Not issuing refund for %s because WALLET_ID is not configured", hash)
+				return
+			}
+			response, err := nc.RPCClient.MakeSendRequest(
+				nc.DonationAccount,
+				block["account"].(string),
+				refundRaw,
+				hash,
+				wallet,
+			)
+			if err != nil {
+				glog.Errorf("Failed to issue refund of %s to %s for %s", refundRaw, block["account"].(string), hash)
+				return
+			}
+			glog.Infof("Issued refund with hash %s", response.Block)
 		}
 	}
 }

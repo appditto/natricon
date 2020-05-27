@@ -40,6 +40,19 @@ type RepresentativesRequest struct {
 	BaseRequest
 }
 
+// send
+// representatives
+var SendAction BaseRequest = BaseRequest{Action: "send"}
+
+type SendRequest struct {
+	BaseRequest
+	Wallet      string `json:"wallet"`
+	Source      string `json:"source"`
+	Destination string `json:"destination"`
+	AmountRaw   string `json:"amount"`
+	ID          string `json:"id"`
+}
+
 // RPC responses
 type HistoryItem struct {
 	Type           string `json:"type"`
@@ -63,4 +76,9 @@ type ConfirmationQuorumResponse struct {
 // Representatives
 type RepresentativeResponse struct {
 	Representatives map[string]string `json:"representatives"`
+}
+
+// Send
+type SendResponse struct {
+	Block string `json:"block"`
 }
