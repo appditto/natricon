@@ -59,6 +59,7 @@ func StartNanoWSClient(wsUrl string, account string, callback func(data Confirma
 		select {
 		case <-sigc:
 			cancel()
+			return
 		case <-ctx.Done():
 			go ws.Close()
 			glog.Infof("Websocket closed %s", ws.GetURL())
