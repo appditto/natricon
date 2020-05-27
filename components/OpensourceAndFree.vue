@@ -159,8 +159,8 @@
                   <button
                     @click="doCopy()"
                     ref="copyButton"
-                    :class="isAddressCopied?'bg-lightPink':'bg-white'"
-                    class="text-xs font-mono hover:bg-lightPink text-left mt-3 rounded-lg transition-colors duration-300 ease-out p-2"
+                    :class="isAddressCopied?'bg-green hover:bg-green':'bg-white hover:bg-lightPink'"
+                    class="text-xs space-mono text-left mt-3 rounded-lg transition-colors duration-300 ease-out px-2 py-0_5"
                     v-html="isAddressCopied?copiedHtml:addressHtml"
                   ></button>
                 </div>

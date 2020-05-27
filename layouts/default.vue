@@ -18,6 +18,12 @@ export default {
       {
         rel: "stylesheet",
         href: "https://use.typekit.net/ypc1kli.css"
+      },
+      // Mono Font
+      {
+        rel: "stylesheet",
+        href:
+          "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap"
       }
     ]
   }
@@ -26,5 +32,10 @@ export default {
 <style>
 html {
   font-family: "arboria", sans-serif;
+}
+pre,
+code,
+.space-mono {
+  font-family: "Space Mono", monospace;
 }
 </style>
