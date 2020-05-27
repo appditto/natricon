@@ -77,8 +77,6 @@ func main() {
 	sio.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
 		s.Join("bcast")
-		fmt.Println("connected:", s.ID())
-		sio.BroadcastToRoom("", "bcast", "donation_event", "AHHHHHH")
 		return nil
 	})
 	go sio.Serve()
