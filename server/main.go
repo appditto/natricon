@@ -47,6 +47,7 @@ func main() {
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
 	rpcUrl := flag.String("rpc-url", "", "Optional URL to use for nano RPC Client")
+	wsUrl := flag.String("nano-ws-url", "", "Nano WS Url to use for tracking donation account")
 	flag.Parse()
 
 	if *loadFiles {
@@ -77,6 +78,7 @@ func main() {
 	sio.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
 		s.Join("bcast")
+		s.Emit("connected", s.ID())
 		return nil
 	})
 	go sio.Serve()
@@ -94,8 +96,9 @@ func main() {
 	}
 	// Setup nano controller
 	nanoController := controller.NanoController{
-		RPCClient: rpcClient,
-		SIOServer: sio,
+		RPCClient:       rpcClient,
+		SIOServer:       sio,
+		DonationAccount: utils.GetEnv("DONATION_ACCOUNT", ""),
 	}
 
 	// V1 API
@@ -120,6 +123,11 @@ func main() {
 			gocron.Every(30).Minutes().Do(nanoController.UpdatePrincipalReps)
 			<-gocron.Start()
 		}()
+	}
+
+	// Start Nano WS client
+	if *wsUrl != "" {
+		go net.StartNanoWSClient(*wsUrl, utils.GetEnv("DONATION_ACCOUNT", ""))
 	}
 
 	// Start stats worker

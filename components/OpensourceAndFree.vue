@@ -150,6 +150,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import QrcodeVue from "qrcode.vue";
 import Big from "big.js";
 export default {
@@ -190,8 +191,24 @@ export default {
       this.qrValue =
         "nano:nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd?amount=2000000000000000000000000000000";
       this.donationAmount = 2;
+    },
+    handleAmountCallback(rawAmount) {
+      console.log(rawAmount)
     }
-  }
+  },
+  computed: mapState(['clientID']),
+  mounted() {
+    this.socket = this.$nuxtSocket({
+      name: 'natricon'
+    })
+    let inst = this
+    this.socket.on('connected', function(data) {
+      inst.$store.commit("SET_ID", data);
+    });
+    this.socket.on('donation_event', function(data) {
+      inst.handleAmountCallback(data.amount)
+    })
+  }  
 };
 </script>
 <style scoped>

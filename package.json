@@ -15,6 +15,7 @@
     "big.js": "^5.2.2",
     "blakejs": "^1.1.0",
     "nuxt": "^2.0.0",
+    "nuxt-socket-io": "^1.0.25",
     "qrcode.vue": "^1.7.0"
   },
   "devDependencies": {

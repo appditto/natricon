@@ -15,15 +15,13 @@ import (
 	socketio "github.com/googollee/go-socket.io"
 )
 
-// Account donations are checked to
-const donationAccount = "nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd"
-
 // Donations at or above this threshold will award "vip" status for 30 days
 const donationThresholdNano = 2.0
 
 type NanoController struct {
-	RPCClient *net.RPCClient
-	SIOServer *socketio.Server
+	RPCClient       *net.RPCClient
+	SIOServer       *socketio.Server
+	DonationAccount string
 }
 
 // Handle callback for donation listener
@@ -41,7 +39,7 @@ func (nc NanoController) Callback(c *gin.Context) {
 		return
 	}
 	// Check if send to doantion account
-	if blockData.LinkAsAccount == donationAccount && blockData.LinkAsAccount != blockData.Account {
+	if blockData.LinkAsAccount == nc.DonationAccount && blockData.LinkAsAccount != blockData.Account {
 		durationDays := nc.calcDonorDurationDays(callbackData.Amount)
 		if durationDays > 0 {
 			glog.Infof("Giving donor status to %s for %d days", blockData.Account, durationDays)
@@ -72,7 +70,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 	defer lock.Release()
 	// Check history
 	historyResponse, err := nc.RPCClient.MakeAccountHistoryRequest(
-		donationAccount,
+		nc.DonationAccount,
 		10,
 	)
 	if err != nil {
@@ -80,7 +78,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 		return
 	}
 	for i := 0; i < len(historyResponse.History); i++ {
-		if historyResponse.History[i].Type == "receive" && historyResponse.History[i].Account != donationAccount {
+		if historyResponse.History[i].Type == "receive" && historyResponse.History[i].Account != nc.DonationAccount {
 			durationDays := nc.calcDonorDurationDays(historyResponse.History[i].Amount)
 			if durationDays > 0 {
 				glog.Infof("Checking donor status to %s for %d days", historyResponse.History[i].Account, durationDays)

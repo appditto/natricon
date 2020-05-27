@@ -24,6 +24,8 @@ spec:
           - containerPort: 5555
         imagePullPolicy: "Always"
         env:
+          - name: DONATION_ACCOUNT
+            value: nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd
           - name: REDIS_HOST
             value: redis-0.redis
           - name: REDIS_DB
