@@ -58,35 +58,35 @@
             </div>
           </button>
           <div
-            :class="isDropdownOpen?'opacity-100 duration-700':'opacity-0 duration-150' "
+            :class="isDropdownOpen && isDropdownOpen?'opacity-100 duration-700':'opacity-0 duration-150' "
             class="w-full flex flex-col justify-center items-center ease-out py-4"
           >
             <img
-              v-if="donationSuccess"
+              v-if="donationSuccess && isDropdownOpen"
               class="w-32 h-32 my-4"
               :src="require('~/assets/images/gifs/NatriconDonatePhase5.gif')"
               alt="Natricon Donate 5"
             />
             <img
-              v-else-if="donationAmount>2 && donationAmount<=10"
+              v-else-if="donationAmount>2 && donationAmount<=10 && isDropdownOpen"
               class="w-32 h-32 my-4"
               :src="require('~/assets/images/gifs/NatriconDonatePhase2.gif')"
               alt="Natricon Donate 2"
             />
             <img
-              v-else-if="donationAmount>10 && donationAmount<100"
+              v-else-if="donationAmount>10 && donationAmount<100 && isDropdownOpen"
               class="w-32 h-32 my-4"
               :src="require('~/assets/images/gifs/NatriconDonatePhase3.gif')"
               alt="Natricon Donate 3"
             />
             <img
-              v-else-if="donationAmount>=100"
+              v-else-if="donationAmount>=100 && isDropdownOpen"
               class="w-32 h-32 my-4"
               :src="require('~/assets/images/gifs/NatriconDonatePhase4.gif')"
               alt="Natricon Donate 4"
             />
             <img
-              v-else
+              v-else-if="isDropdownOpen"
               class="w-32 h-32 my-4"
               :src="require('~/assets/images/gifs/NatriconDonatePhase1.gif')"
               alt="Natricon Donate 1"
