@@ -143,7 +143,7 @@
                 <div class="my-2" v-if="$device.isMobile">
                   <a :href="qrValue">
                     <button
-                      class="btn btn-shadow-lightPink hover:text-lightPink w-full bg-black text-white font-medium text-lg rounded-full px-6 pt-1 pb-3"
+                      class="btn btn-shadow-lightPink hover:text-lightPink w-full bg-black text-white font-medium text-xl rounded-full px-8 pt-1 pb-3"
                     >donate with natrium</button>
                   </a>
                 </div>
