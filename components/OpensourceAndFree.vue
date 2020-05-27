@@ -317,7 +317,8 @@ export default {
       if (inst.isDonationInitiated) {
         this.qrValueAmountRaw = this.appendIdToRaw(
           this.nanoToRaw(this.donationAmount)
-        );        
+        );
+        this.qrValue = `nano:${donationAddress}?amount=${this.qrValueAmountRaw}`;
       }
     });
     this.socket.on("donation_event", function(data) {
