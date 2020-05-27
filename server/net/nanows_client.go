@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/golang/glog"
 	guuid "github.com/google/uuid"
@@ -66,6 +67,7 @@ func StartNanoWSClient(wsUrl string, account string, callback func(data Confirma
 			if !ws.IsConnected() {
 				sentSubscribe = false
 				glog.Infof("Websocket disconnected %s", ws.GetURL())
+				time.Sleep(2 * time.Second)
 				continue
 			}
 
@@ -73,7 +75,10 @@ func StartNanoWSClient(wsUrl string, account string, callback func(data Confirma
 			if !sentSubscribe {
 				if err := ws.WriteJSON(subRequest); err != nil {
 					glog.Infof("Error sending subscribe request %s", ws.GetURL())
-					return
+					time.Sleep(2 * time.Second)
+					continue
+				} else {
+					sentSubscribe = true
 				}
 			}
 
@@ -82,7 +87,7 @@ func StartNanoWSClient(wsUrl string, account string, callback func(data Confirma
 			if err != nil {
 				glog.Infof("Error: ReadJSON %s", ws.GetURL())
 				sentSubscribe = false
-				return
+				continue
 			}
 
 			// Trigger callback
