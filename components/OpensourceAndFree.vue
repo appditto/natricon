@@ -135,16 +135,26 @@
                   >donate</button>
                 </form>
               </div>
-              <!-- QR Code for the Donation -->
+              <!-- QR Code or Button for the Donation -->
               <div
                 v-else-if="isDonationInitiated  && !donationSuccess"
                 class="flex flex-row flex-wrap justify-center items-center m-4"
               >
-                <div class="mx-4 my-4 border-4 rounded-lg p-1 border-lightPink bg-white qr-shadow">
+                <div class="my-2" v-if="$device.isMobile">
+                  <a :href="qrValue">
+                    <button
+                      class="btn btn-shadow-lightPink hover:text-lightPink w-full bg-black text-white font-medium text-lg rounded-full px-6 pt-1 pb-3"
+                    >donate with natrium</button>
+                  </a>
+                </div>
+                <div
+                  v-else
+                  class="mx-4 my-4 border-4 rounded-lg p-1 border-lightPink bg-white qr-shadow"
+                >
                   <qrcode-vue :value="qrValue" :size="qrSize" level="Q"></qrcode-vue>
                 </div>
                 <div class="flex flex-col m-4">
-                  <h5 class="text-lg px-2">scan to donate</h5>
+                  <h5 class="text-lg px-2">{{$device.isMobile?'tap the button':'scan'}} to donate</h5>
                   <h4 class="text-2xl font-bold break-all px-2">{{donationAmount}} nano</h4>
                   <button
                     @click="doCopy()"

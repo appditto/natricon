@@ -47,7 +47,8 @@ export default {
   */
   modules: [
     "@nuxtjs/axios",
-    "nuxt-socket-io"
+    "nuxt-socket-io",
+    '@nuxtjs/device',
   ],
   /*
   ** Socket.io
