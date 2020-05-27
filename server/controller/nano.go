@@ -51,7 +51,7 @@ func (nc NanoController) Callback(c *gin.Context) {
 		data := map[string]string{
 			"amount": callbackData.Amount,
 		}
-		nc.SIOServer.BroadcastToRoom("", "", "donation_event", data)
+		nc.SIOServer.BroadcastToRoom("", "bcast", "donation_event", data)
 	}
 }
 

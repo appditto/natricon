@@ -40,6 +40,10 @@ spec:
         backend:
           serviceName: go-natricon-service
           servicePort: 5555
+      - path: /socket.io
+        backend:
+          serviceName: go-natricon-service
+          servicePort: 5555
   - host: www.natricon.com
     http:
       paths:
@@ -48,6 +52,10 @@ spec:
           serviceName: nuxt-natricon-service
           servicePort: 3000
       - path: /api
+        backend:
+          serviceName: go-natricon-service
+          servicePort: 5555
+      - path: /socket.io
         backend:
           serviceName: go-natricon-service
           servicePort: 5555
