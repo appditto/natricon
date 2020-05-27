@@ -48,6 +48,17 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 			glog.Infof("Giving donor status to %s for %d days", block["account"], durationDays)
 			db.GetDB().UpdateDonorStatus(hash, block["account"].(string), durationDays)
 		}
+		// Issue refund for odd raw amounts
+		asNano, err := utils.RawToNano(amount)
+		if err != nil {
+			return
+		}
+		if len(amount) >= 28 && asNano >= 0.001 {
+			// Refund
+			refundRaw := amount[len(amount)-28:]
+			glog.Infof("Going to refund %s raw to %s", refundRaw, block["account"])
+			// TODO - implement refund
+		}
 	}
 }
 
