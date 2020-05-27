@@ -1,6 +1,19 @@
 <template>
-  <div class="w-full flex flex-col items-center py-8 md:py-20">
-    <div class="n-container flex flex-col items-center px-5">
+  <div class="w-full flex flex-col items-center py-8 md:py-20 relative">
+    <!-- Right Illustration -->
+    <img
+      class="hidden md:block bg-illustration h-auto absolute right-0"
+      :src="require('~/assets/images/illustrations/natrium-and-nanocrawler-right.svg')"
+      alt="Background Illustration Right"
+    />
+    <!-- Left Illustration -->
+    <img
+      class="hidden md:block bg-illustration h-auto absolute left-0 bottom-0"
+      :src="require('~/assets/images/illustrations/natrium-and-nanocrawler-left.svg')"
+      alt="Background Illustration Left"
+    />
+    <!-- Main Part -->
+    <div class="n-container flex flex-col items-center px-5 z-10">
       <h3 class="text-4xl md:text-5xl text-center leading-tight">
         available on
         <br />
@@ -13,12 +26,16 @@
       </h3>
       <h4 class="text-xl md:text-2xl text-center mt-3">coming soon to more nano services.</h4>
       <div class="flex flex-row flex-wrap justify-center mt-2">
-        <button
-          class="w-full md:w-72 bg-black text-white hover:text-lightBlue btn-shadow-lightBlue font-medium text-xl rounded-full px-6 pt-1 pb-3 mt-5 mx-3"
-        >download natrium</button>
-        <button
-          class="w-full md:w-72 bg-black text-white hover:text-green btn-shadow-green font-medium text-xl rounded-full pt-1 pb-3 mt-5 mx-3"
-        >visit nanocrawler</button>
+        <a class="w-full md:w-72 mt-5 mx-3" href="https://natrium.io" target="_blank">
+          <button
+            class="w-full bg-black text-white hover:text-lightBlue btn-shadow-lightBlue font-medium text-xl rounded-full px-6 pt-1 pb-3"
+          >download natrium</button>
+        </a>
+        <a class="w-full md:w-72 mt-5 mx-3" href="https://nanocrawler.cc" target="_blank">
+          <button
+            class="w-full bg-black text-white hover:text-green btn-shadow-green font-medium text-xl rounded-full pt-1 pb-3"
+          >visit nanocrawler</button>
+        </a>
       </div>
       <div class="w-full flex flex-col items-center mt-12 md:mt-0">
         <div class="w-full max-w-md md:max-w-full px-16 md:hidden">
@@ -101,5 +118,15 @@
   margin-top: -0.9rem;
   background-color: #66ffb2;
   z-index: -1;
+}
+.bg-illustration {
+  max-width: calc((100vw - 1280px) / 2.5);
+  min-width: 12rem;
+  width: 100%;
+}
+@media only screen and (min-width: 1024px) {
+  .bg-illustration {
+    min-width: 16rem;
+  }
 }
 </style>
