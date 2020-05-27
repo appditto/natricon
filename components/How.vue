@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center relative pt-4 pb-8">
+  <div class="w-full flex flex-col items-center relative pt-4 pb-4">
     <!-- Right Illustration -->
     <img
       class="hidden md:block bg-illustration h-auto absolute right-0 opacity-15 md:opacity-100"
@@ -13,7 +13,9 @@
       alt="Background Illustration Left"
     />
     <!-- Main Part -->
-    <div class="n-container flex flex-col items-center px-5 z-10 my-8 md:mt-24 mb-40 lg:my-32">
+    <div
+      class="n-container flex flex-col items-center px-5 z-10 my-8 md:mt-24 md:mb-40 lg:mt-32 lg:mb-56"
+    >
       <h3 class="text-4xl md:text-5xl text-center leading-none">
         how does it
         <br class="md:hidden" />
@@ -59,7 +61,7 @@
   z-index: -1;
 }
 .bg-illustration {
-  max-width: calc((100vw - 1280px) / 3);
+  max-width: calc((100vw - 1280px) / 2.75);
   min-width: 12rem;
   width: 100%;
 }
