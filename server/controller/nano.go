@@ -50,7 +50,7 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 			db.GetDB().UpdateDonorStatus(hash, block["account"].(string), durationDays)
 		}
 		// Issue refund for odd raw amounts
-		asNano, err := utils.RawToNano(amount)
+		asNano, err := utils.RawToNano(amount, false)
 		if err != nil {
 			return
 		}
@@ -58,12 +58,16 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 		asNano -= asNanoTrunc
 		if len(amount) >= 28 && asNano > 0.001 {
 			// Refund
-			refundRaw := amount[len(amount)-27:]
-			refundNano, err := utils.RawToNano(refundRaw)
+			refundRaw := amount[len(amount)-28:]
+			refundNano, err := utils.RawToNano(refundRaw, false)
 			if err != nil {
 				return
 			}
+			// If refund is 0, don't do it
 			if refundNano == 0 {
+				return
+			} else if refundRaw == amount {
+				// If refund is equal to the total amount don't send refund
 				return
 			}
 			glog.Infof("Going to refund %s raw to %s", refundRaw, block["account"])
@@ -109,7 +113,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 
 // calcDonorDurationDays - calculate how long badge will persist with given donation amount
 func (nc NanoController) calcDonorDurationDays(amountRaw string) uint {
-	amountNano, _ := utils.RawToNano(amountRaw)
+	amountNano, _ := utils.RawToNano(amountRaw, true)
 	// TODO - allow partial chunks?
 	chunks := uint(amountNano / donationThresholdNano)
 	return chunks * 30
@@ -126,7 +130,7 @@ func (nc NanoController) UpdatePrincipalWeight() {
 		glog.Errorf("Error occured checking confirmation quorum %s", err)
 		return
 	}
-	onlineWeightMinimum, err := utils.RawToNano(quorumResponse.OnlineWeightTotal)
+	onlineWeightMinimum, err := utils.RawToNano(quorumResponse.OnlineWeightTotal, true)
 	if err != nil {
 		glog.Errorf("Error occured converting weight to nano %s", err)
 		return
@@ -153,7 +157,7 @@ func (nc NanoController) UpdatePrincipalReps() {
 	}
 	principalReps := []string{}
 	for rep, weight := range repsResponse.Representatives {
-		weightNano, err := utils.RawToNano(weight)
+		weightNano, err := utils.RawToNano(weight, true)
 		if err != nil {
 			glog.Errorf("Error occured checking weight for rep %s %s", rep, err)
 			continue
