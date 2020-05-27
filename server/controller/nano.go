@@ -24,7 +24,7 @@ type NanoController struct {
 
 // Handle callback for donation listener
 func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse) {
-	block := confirmationResponse.Message["block"].(map[string]string)
+	block := confirmationResponse.Message["block"].(map[string]interface{})
 	amount := confirmationResponse.Message["amount"].(string)
 	hash := confirmationResponse.Message["hash"].(string)
 	// Check if send to donation account
@@ -46,7 +46,7 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 		durationDays := nc.calcDonorDurationDays(amount)
 		if durationDays > 0 {
 			glog.Infof("Giving donor status to %s for %d days", block["account"], durationDays)
-			db.GetDB().UpdateDonorStatus(hash, block["account"], durationDays)
+			db.GetDB().UpdateDonorStatus(hash, block["account"].(string), durationDays)
 		}
 	}
 }
