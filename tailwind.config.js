@@ -19,6 +19,7 @@ module.exports = {
       aquaGreen: "#7BFFC8",
       brightPink: "#FFA4F6",
       lime: "#D4FF00",
+      red: "#FF4646"
     },
     extend: {
       spacing: {
