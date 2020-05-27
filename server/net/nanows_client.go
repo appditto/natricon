@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/golang/glog"
+	guuid "github.com/google/uuid"
 	"github.com/recws-org/recws"
 )
 
@@ -14,6 +15,7 @@ type wsSubscribe struct {
 	Action  string              `json:"action"`
 	Topic   string              `json:"topic"`
 	Ack     bool                `json:"ack"`
+	Id      string              `json:"id"`
 	Options map[string][]string `json:"options"`
 }
 
@@ -32,6 +34,7 @@ func StartNanoWSClient(wsUrl string, account string, callback func(data Confirma
 		Action: "subscribe",
 		Topic:  "confirmation",
 		Ack:    false,
+		Id:     guuid.New().String(),
 		Options: map[string][]string{
 			"accounts": {
 				account,
@@ -78,6 +81,7 @@ func StartNanoWSClient(wsUrl string, account string, callback func(data Confirma
 			err := ws.ReadJSON(&confMessage)
 			if err != nil {
 				glog.Infof("Error: ReadJSON %s", ws.GetURL())
+				sentSubscribe = false
 				return
 			}
 
