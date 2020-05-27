@@ -98,14 +98,14 @@ func (r *redisManager) UpdateDonorStatus(hash string, acct string, durationDays 
 	}
 	// Get current donor if exists
 	cur, err := r.get(key)
-	var donor *Donor
+	var donor Donor
 	if err == nil {
-		json.Unmarshal([]byte(cur), donor)
+		err = json.Unmarshal([]byte(cur), &donor)
 	}
 	// Calculate new expiry
 	curDate := time.Now().UTC()
 	existingHours := 0.0
-	if donor != nil {
+	if donor.PubKey != "" {
 		existingHours = donor.ExpiresAt.Sub(curDate).Hours()
 		if existingHours < 0 {
 			existingHours = 0.0
