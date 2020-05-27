@@ -314,6 +314,11 @@ export default {
     this.socket.on("connected", function(data) {
       // Use ID sent from server as a donation modifier
       inst.$store.commit("SET_ID", data);
+      if (inst.isDonationInitiated) {
+        this.qrValueAmountRaw = this.appendIdToRaw(
+          this.nanoToRaw(this.donationAmount)
+        );        
+      }
     });
     this.socket.on("donation_event", function(data) {
       inst.handleAmountCallback(data.amount);
