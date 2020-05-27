@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.9.7",
+    "big.js": "^5.2.2",
     "blakejs": "^1.1.0",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "qrcode.vue": "^1.7.0"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^1.0.0",

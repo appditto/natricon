@@ -41,48 +41,94 @@
           :class="isDropdownOpen?'h-108 border-black shadow-lightPink':'h-0 border-transparent'"
           class="w-full md:w-144 absolute flex flex-col items-center max-w-128 bg-white border-4 transition-all duration-300 ease-out overflow-hidden mt-5 rounded-lg px-6 md:px-12"
         >
+          <!-- Go Back Button -->
+          <button
+            v-if="isDonationInitiated"
+            class="absolute left-0 top-0 mx-3 my-2 px-3 pt-1 pb-2 font-bold"
+            @click="resetDonation()"
+          >go back</button>
           <div
             :class="isDropdownOpen?'opacity-100':'opacity-0' "
             class="flex flex-col justify-center items-center duration-700 ease-out py-8"
           >
             <img
+              v-if="donationAmount<=2"
               class="w-40 h-40"
               :src="require('~/assets/images/gifs/NatriconDonatePhase1.gif')"
               alt="Natricon Donate 1"
             />
-            <!-- Donate Amount Buttons -->
-            <div class="flex flex-row flex-wrap justify-center items-center my-4">
-              <div>
+            <img
+              v-if="donationAmount>2 && donationAmount<=10"
+              class="w-40 h-40"
+              :src="require('~/assets/images/gifs/NatriconDonatePhase2.gif')"
+              alt="Natricon Donate 2"
+            />
+            <img
+              v-if="donationAmount>10 && donationAmount<100"
+              class="w-40 h-40"
+              :src="require('~/assets/images/gifs/NatriconDonatePhase3.gif')"
+              alt="Natricon Donate 3"
+            />
+            <img
+              v-if="donationAmount>100"
+              class="w-40 h-40"
+              :src="require('~/assets/images/gifs/NatriconDonatePhase4.gif')"
+              alt="Natricon Donate 4"
+            />
+            <div class="flex flex-col items-center">
+              <!-- Donate Amount Buttons -->
+              <div
+                v-if="!isDonationInitiated"
+                class="flex flex-row flex-wrap justify-center items-center my-4"
+              >
                 <button
                   @click="initiateDonationFor(2)"
-                  class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
+                  class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
                 >2 nano</button>
+                <button
+                  @mouseover="donationAmount=10"
+                  @mouseleave="donationAmount=2"
+                  @click="initiateDonationFor(10)"
+                  class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
+                >10 nano</button>
+                <button
+                  @mouseover="donationAmount=20"
+                  @mouseleave="donationAmount=2"
+                  @click="initiateDonationFor(20)"
+                  class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
+                >20 nano</button>
               </div>
-              <button
-                @click="initiateDonationFor(10)"
-                class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
-              >10 nano</button>
-              <button
-                @click="initiateDonationFor(20)"
-                class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
-              >20 nano</button>
+              <!-- Custom Amount Input Group -->
+              <form v-if="!isDonationInitiated" class="my-4">
+                <label class="text-xl font-bold mx-3" for="nanoAmount">custom amount</label>
+                <br />
+                <input
+                  class="w-64 text-lg font-medium border-black border-2 px-4 pt-1 pb-2 rounded-lg mt-2 mx-1"
+                  type="number"
+                  ref="nanoAmount"
+                  id="nanoAmount"
+                  name="nanoAmount"
+                  placeholder="enter amount"
+                />
+                <button
+                  class="btn text-lg font-medium border-black hover:text-lightPink hover:border-lightPink border-2 bg-black text-white pt-1 pb-2 px-6 rounded-lg mx-1"
+                >donate</button>
+              </form>
+              <!-- QR Code for the Donation -->
+              <div class="flex flex-row justify-center items-center m-4">
+                <qrcode-vue
+                  class="m-4"
+                  v-if="isDonationInitiated"
+                  :value="qrValue"
+                  :size="qrSize"
+                  level="Q"
+                ></qrcode-vue>
+                <div class="flex flex-col m-4">
+                  <h5 class="text-lg">scan to donate</h5>
+                  <h4 class="text-2xl font-bold break-all">{{donationAmount}} nano</h4>
+                </div>
+              </div>
             </div>
-            <!-- Custom Amount Input Group -->
-            <form class="my-4">
-              <label class="text-xl font-bold mx-3" for="nanoAmount">custom amount</label>
-              <br />
-              <input
-                class="w-64 text-lg font-medium border-black border-2 px-4 pt-1 pb-2 rounded-lg mt-2 mx-1"
-                type="number"
-                ref="nanoAmount"
-                id="nanoAmount"
-                name="nanoAmount"
-                placeholder="enter amount"
-              />
-              <button
-                class="btn text-lg font-medium border-black hover:text-lightPink hover:border-lightPink border-2 bg-black text-white pt-1 pb-2 px-6 rounded-lg mx-1"
-              >donate</button>
-            </form>
           </div>
         </div>
       </div>
@@ -104,14 +150,30 @@
   </div>
 </template>
 <script>
+import QrcodeVue from "qrcode.vue";
+import Big from "big.js";
 export default {
   data() {
     return {
       isDropdownOpen: false,
-      isDonationInitiated: false
+      isDonationInitiated: false,
+      qrValueBase:
+        "nano:nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd?amount=",
+      qrValue:
+        "nano:nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd?amount=2000000000000000000000000000000",
+      qrSize: 150,
+      donationAmount: 2
     };
   },
+  components: {
+    QrcodeVue
+  },
   methods: {
+    nanoToRaw(inAmount) {
+      let nanoRaw = Big(10).pow(30);
+      let nanoAmount = Big(inAmount);
+      return nanoRaw.times(nanoAmount).toFixed();
+    },
     openDonateDropdown() {
       this.isDropdownOpen = true;
     },
@@ -120,6 +182,14 @@ export default {
     },
     initiateDonationFor(nanoAmount) {
       this.isDonationInitiated = true;
+      this.donationAmount = nanoAmount;
+      this.qrValue = this.qrValueBase + this.nanoToRaw(this.donationAmount);
+    },
+    resetDonation() {
+      this.isDonationInitiated = false;
+      this.qrValue =
+        "nano:nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd?amount=2000000000000000000000000000000";
+      this.donationAmount = 2;
     }
   }
 };
@@ -135,6 +205,9 @@ export default {
 .btn-shadow-cyan {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#66FFFF;
 }
+.btn-sm-shadow-lightPink {
+  box-shadow: -0.25rem 0.3rem 0rem 0rem#F199FF;
+}
 .btn-shadow-lightPink {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#F199FF;
 }
@@ -147,7 +220,8 @@ export default {
 .btn-shadow-cyan:hover {
   box-shadow: 0rem 0rem 0rem 0rem#66FFFF;
 }
-.btn-shadow-lightPink:hover {
+.btn-shadow-lightPink:hover,
+.btn-sm-shadow-lightPink:hover {
   box-shadow: 0rem 0rem 0rem 0rem#F199FF;
 }
 .btn-shadow-black:hover {
