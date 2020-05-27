@@ -72,7 +72,7 @@ func StartNanoWSClient(wsUrl string, account string) {
 			// Sent subscribe with ack
 			if !sentSubscribe {
 				if err := ws.WriteJSON(subRequest); err != nil {
-					glog.Infof("Error sending subscribe request", ws.GetURL())
+					glog.Infof("Error sending subscribe request %s", ws.GetURL())
 					return
 				}
 			}
