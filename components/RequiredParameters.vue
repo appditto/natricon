@@ -12,7 +12,7 @@
         <div class="flex flex-col">
           <h6 class="text-lg">nano address. example:</h6>
           <pre
-            class="max-w-xs md:w-96 bg-black text-brightPink px-3 py-2 font-bold rounded-lg mt-2 break-all overflow-x-scroll"
+            class="max-w-sm bg-black text-brightPink px-3 py-2 font-bold rounded-lg mt-2 break-all"
           >nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd</pre>
         </div>
       </div>
@@ -31,7 +31,7 @@
       <div class="w-full flex flex-row flex-wrap justify-center items-center mt-6">
         <code class="bg-aquaGreen px-3 py-2 text-xl font-bold rounded-lg m-4">get</code>
         <pre
-          class="max-w-md md:w-108 text-xl bg-black text-aquaGreen px-4 py-2 font-bold rounded-lg mt-1 break-all"
+          class="max-w-md md:w-120 text-xl bg-black text-aquaGreen px-4 py-2 font-bold rounded-lg mt-1 break-all"
         >https://natricon.com/api/v1/nano<span class="text-white">?</span><span
   class="text-brightPink"
 >address=nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd</span></pre>

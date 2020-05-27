@@ -9,7 +9,7 @@
       <div class="w-full flex flex-row flex-wrap justify-center items-center mt-6">
         <code class="bg-aquaGreen px-3 py-2 text-xl font-bold rounded-lg my-2 mx-4">get</code>
         <code
-          class="bg-black text-aquaGreen px-3 py-2 text-lg md:text-xl font-bold rounded-lg overflow-x-scroll my-2"
+          class="max-w-md bg-black text-aquaGreen px-3 py-2 text-lg md:text-xl font-bold rounded-lg break-all my-2"
         >https://natricon.com/api/v1/nano</code>
       </div>
     </div>
