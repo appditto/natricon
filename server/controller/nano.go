@@ -59,10 +59,21 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 		if len(amount) >= 28 && asNano > 0.001 {
 			// Refund
 			refundRaw := amount[len(amount)-28:]
+			refundRawBeyondRai := amount[len(amount)-25:]
 			refundNano, err := utils.RawToNano(refundRaw, false)
 			if err != nil {
 				return
 			}
+			refundNanoBeyondRai, err := utils.RawToNano(refundRawBeyondRai, false)
+			if err != nil {
+				return
+			}
+			if refundNanoBeyondRai == 0 {
+				// Don't issue a refund since there's no extra raw includes
+				return
+			}
+			// Replace first char of refund with a 1
+			refundRaw = refundRaw[:0] + "1" + refundRaw[1:]
 			// If refund is 0, don't do it
 			if refundNano == 0 {
 				return
