@@ -56,9 +56,9 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 		}
 		asNanoTrunc := math.Trunc(asNano)
 		asNano -= asNanoTrunc
-		if len(amount) >= 28 && asNano >= 0.001 {
+		if len(amount) >= 28 && asNano > 0.001 {
 			// Refund
-			refundRaw := amount[len(amount)-28:]
+			refundRaw := amount[len(amount)-27:]
 			refundNano, err := utils.RawToNano(refundRaw)
 			if err != nil {
 				return
