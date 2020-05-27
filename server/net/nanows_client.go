@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/golang/glog"
 	"github.com/recws-org/recws"
@@ -18,18 +17,16 @@ type wsSubscribe struct {
 	Options map[string][]string `json:"options"`
 }
 
-type subscribeResponse struct {
+type ConfirmationResponse struct {
 	Topic   string                 `json:"topic"`
+	Time    string                 `json:"time"`
 	Message map[string]interface{} `json:"message"`
-	Block   map[string]interface{} `json:"block"`
 }
 
-func StartNanoWSClient(wsUrl string, account string) {
+func StartNanoWSClient(wsUrl string, account string, callback func(data ConfirmationResponse)) {
 	ctx, cancel := context.WithCancel(context.Background())
 	sentSubscribe := false
-	ws := recws.RecConn{
-		KeepAliveTimeout: 10 * time.Second,
-	}
+	ws := recws.RecConn{}
 	// Nano subscription request
 	subRequest := wsSubscribe{
 		Action: "subscribe",
@@ -77,13 +74,15 @@ func StartNanoWSClient(wsUrl string, account string) {
 				}
 			}
 
-			var confMessage subscribeResponse
+			var confMessage ConfirmationResponse
 			err := ws.ReadJSON(&confMessage)
 			if err != nil {
 				glog.Infof("Error: ReadJSON %s", ws.GetURL())
 				return
 			}
 
+			// Trigger callback
+			callback(confMessage)
 			glog.Infof("Received callback WS hash %s", confMessage.Message["hash"])
 		}
 	}

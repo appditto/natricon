@@ -105,8 +105,6 @@ func main() {
 	router.GET("/api/v1/nano", natriconController.GetNano)
 	// Stats
 	router.GET("/api/v1/nano/stats", controller.Stats)
-	// Donation callback
-	router.POST("/api/nanocallback", nanoController.Callback)
 	// For testing
 	router.GET("/api/natricon", natriconController.GetNatricon)
 	router.GET("/api/random", natriconController.GetRandom)
@@ -127,7 +125,7 @@ func main() {
 
 	// Start Nano WS client
 	if *wsUrl != "" {
-		go net.StartNanoWSClient(*wsUrl, utils.GetEnv("DONATION_ACCOUNT", ""))
+		go net.StartNanoWSClient(*wsUrl, utils.GetEnv("DONATION_ACCOUNT", ""), nanoController.Callback)
 	}
 
 	// Start stats worker

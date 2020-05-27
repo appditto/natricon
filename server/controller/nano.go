@@ -1,16 +1,14 @@
 package controller
 
 import (
-	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/appditto/natricon/server/db"
 	"github.com/appditto/natricon/server/image"
-	"github.com/appditto/natricon/server/model"
 	"github.com/appditto/natricon/server/net"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/bsm/redislock"
-	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
 	socketio "github.com/googollee/go-socket.io"
 )
@@ -25,31 +23,31 @@ type NanoController struct {
 }
 
 // Handle callback for donation listener
-func (nc NanoController) Callback(c *gin.Context) {
-	var callbackData model.Callback
-	err := c.BindJSON(&callbackData)
-	if err != nil {
-		glog.Errorf("Error processing callback")
-		return
-	}
-	var blockData model.Block
-	err = json.Unmarshal([]byte(callbackData.Block), &blockData)
-	if err != nil {
-		glog.Errorf("Error parsing callback block json")
-		return
-	}
-	// Check if send to doantion account
-	if blockData.LinkAsAccount == nc.DonationAccount && blockData.LinkAsAccount != blockData.Account {
-		durationDays := nc.calcDonorDurationDays(callbackData.Amount)
-		if durationDays > 0 {
-			glog.Infof("Giving donor status to %s for %d days", blockData.Account, durationDays)
-			db.GetDB().UpdateDonorStatus(callbackData.Hash, blockData.Account, durationDays)
-		}
+func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse) {
+	block := confirmationResponse.Message["block"].(map[string]string)
+	amount := confirmationResponse.Message["amount"].(string)
+	hash := confirmationResponse.Message["hash"].(string)
+	// Check if send to donation account
+	if block["link_as_account"] == nc.DonationAccount && block["link_as_account"] != block["account"] {
 		// Emit SIO event
 		data := map[string]string{
-			"amount": callbackData.Amount,
+			"amount": amount,
 		}
 		nc.SIOServer.BroadcastToRoom("", "bcast", "donation_event", data)
+		// Calc donor duration with lock
+		lock, err := db.GetDB().Locker.Obtain(fmt.Sprintf("natricon:callback_lock:%s", hash), 100*time.Second, nil)
+		if err == redislock.ErrNotObtained {
+			return
+		} else if err != nil {
+			glog.Error(err)
+			return
+		}
+		defer lock.Release()
+		durationDays := nc.calcDonorDurationDays(amount)
+		if durationDays > 0 {
+			glog.Infof("Giving donor status to %s for %d days", block["account"], durationDays)
+			db.GetDB().UpdateDonorStatus(hash, block["account"], durationDays)
+		}
 	}
 }
 
