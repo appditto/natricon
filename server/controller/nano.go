@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"math"
 	"time"
 
 	"github.com/appditto/natricon/server/db"
@@ -53,7 +54,7 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 		if err != nil {
 			return
 		}
-		if len(amount) >= 28 && asNano >= 0.001 {
+		if len(amount) >= 28 && asNano >= 0.001 && asNano != math.Trunc(asNano) {
 			// Refund
 			refundRaw := amount[len(amount)-28:]
 			glog.Infof("Going to refund %s raw to %s", refundRaw, block["account"])
