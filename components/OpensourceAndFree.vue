@@ -197,7 +197,6 @@ export default {
       isDropdownOpen: false,
       isDonationInitiated: false,
       donationAmountModifierBase: 0.001,
-      donationAmountModifierID: 0,
       qrValueAmountRaw: "",
       qrValue: "",
       qrSize: 150,
@@ -220,6 +219,8 @@ export default {
       return nanoRaw.times(nanoAmount)
     },
     appendIdToRaw(inAmount) {
+      // Modifify donation amount with 0.001 + socketio client ID
+      // Will let us recognize this donation
       let idModifier = Big(this.clientID)
       let amountModifier = Big(10).pow(27) // 0.001 NANO
       return inAmount.add(idModifier).add(amountModifier).toFixed()
