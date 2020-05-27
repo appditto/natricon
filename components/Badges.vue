@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center py-16">
+  <div class="w-full flex flex-col items-center pt-16 pb-20">
     <div class="n-container flex flex-col items-center px-5">
       <h3 class="text-4xl md:text-5xl text-center leading-none">
         exchanges? services? nodes?

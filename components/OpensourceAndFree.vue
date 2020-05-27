@@ -154,13 +154,19 @@
                   <qrcode-vue :value="qrValue" :size="qrSize" level="Q"></qrcode-vue>
                 </div>
                 <div class="flex flex-col m-4">
-                  <h5 class="text-lg px-2">{{$device.isMobile?'tap the button':'scan'}} to donate</h5>
-                  <h4 class="text-2xl font-bold break-all px-2">{{donationAmount}} nano</h4>
+                  <h5
+                    class="text-lg px-2 leading-tight"
+                  >{{$device.isMobile?'tap the button':'scan'}} to donate</h5>
+                  <h4 class="text-2xl font-bold break-all px-2">{{donationAmount + 0.001}} nano</h4>
+                  <h6 class="text-xs px-2 opacity-50">
+                    (the extra 0.001~ nano is for
+                    <br />verification, it'll be refunded)
+                  </h6>
                   <button
                     @click="doCopy()"
                     ref="copyButton"
                     :class="isAddressCopied?'bg-green hover:bg-green':'bg-white hover:bg-lightPink'"
-                    class="text-xs space-mono text-left mt-3 rounded-lg transition-colors duration-300 ease-out px-2 py-0_5"
+                    class="text-xs space-mono text-left rounded-lg transition-colors duration-300 ease-out px-2 py-0_5 mt-3"
                     v-html="isAddressCopied?copiedHtml:addressHtml"
                   ></button>
                 </div>
@@ -273,7 +279,7 @@ export default {
     },
     customAmountAction() {
       this.donationAmount = this.$refs.customNanoAmount.value;
-      if (this.donationAmount >= 0.000001 && this.donationAmount <= 10000000) {
+      if (this.donationAmount >= 0.01 && this.donationAmount <= 10000000) {
         this.initiateDonationFor(Number(this.donationAmount));
       } else {
         this.inputError = true;
