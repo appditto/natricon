@@ -29,12 +29,48 @@
         >{{isDropdownOpen?'close':'donate'}}</button>
       </div>
       <!-- Donate Dropdow Container-->
-      <div class="flex flex-row justify-center bg-white relative">
+      <div class="w-full flex flex-row justify-center bg-white relative">
         <!-- Donate Dropdown -->
         <div
-          :class="isDropdownOpen?'h-72 border-black shadow-lightPink':'h-0 border-transparent'"
-          class="absolute md:w-128 bg-white border-4 transition-all duration-300 ease-out overflow-hidden mt-5 rounded-lg"
-        ></div>
+          :class="isDropdownOpen?'h-108 border-black shadow-lightPink':'h-0 border-transparent'"
+          class="absolute flex flex-col justify-center items-center max-w-128 bg-white border-4 transition-all duration-300 ease-out overflow-hidden mt-5 rounded-lg px-6 md:px-12"
+        >
+          <img
+            class="w-40 h-40"
+            :src="require('~/assets/images/gifs/NatriconDonatePhase1.gif')"
+            alt="Natricon Donate 1"
+          />
+          <!-- Donate Amount Buttons -->
+          <div class="flex flex-row flex-wrap justify-center items-center my-4">
+            <div>
+              <button
+                class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
+              >2 nano</button>
+            </div>
+            <button
+              class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
+            >10 nano</button>
+            <button
+              class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
+            >20 nano</button>
+          </div>
+          <!-- Custom Amount Input Group -->
+          <form class="my-4">
+            <label class="text-xl font-bold mx-1" for="nanoAmount">or enter an amount instead</label>
+            <br />
+            <input
+              class="w-64 text-lg font-medium border-black border-2 px-4 pt-1 pb-2 rounded-lg mt-2 mx-1"
+              type="number"
+              ref="nanoAmount"
+              id="nanoAmount"
+              name="nanoAmount"
+              placeholder="enter amount"
+            />
+            <button
+              class="btn text-lg font-medium border-black hover:text-lightPink hover:border-lightPink border-2 bg-black text-white pt-1 pb-2 px-6 rounded-lg mx-1"
+            >donate</button>
+          </form>
+        </div>
       </div>
       <div class="w-full max-w-lg md:max-w-full px-4 md:px-24 md:hidden mt-12">
         <img
