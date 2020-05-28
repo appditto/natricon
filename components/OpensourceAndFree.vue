@@ -306,7 +306,10 @@ export default {
       }, 2000);
     },
     handleAmountCallback(rawAmount) {
+      // TODO - remove logging
+      console.log(`RECEIVED DONATION EVENT ${rawAmount}`)
       if (rawAmount == this.qrValueAmountRaw) {
+        console.log(`AMOUNT DOES NOT MATCH QR AMONUT ${this.qrValueAmountRaw}`)
         this.donationSuccess = true;
       }
     }
