@@ -79,11 +79,11 @@ func main() {
 	sio.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
 		s.Join("bcast")
-		clientId, err := strconv.ParseInt(s.ID(), 10, 64)
+		clientId, err := strconv.Atoi(s.ID())
 		if err != nil {
-			clientId = int64(rand.Intn(1000))
+			clientId = rand.Intn(1000)
 		}
-		s.Emit("connected", string(clientId))
+		s.Emit("connected", strconv.Itoa(clientId))
 		return nil
 	})
 	go sio.Serve()
