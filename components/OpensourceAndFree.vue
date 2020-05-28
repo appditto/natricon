@@ -208,7 +208,7 @@ import Vue from "vue";
 import VueClipboard from "vue-clipboard2";
 
 const donationAddress =
-  "nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd";
+  "nano_3natricon9grnc8caqkht19f1fwpz39r3deeyef66m3d4fch3fau7x5q57cj";
 
 VueClipboard.config.autoSetContainer = true; // add this line
 Vue.use(VueClipboard);
