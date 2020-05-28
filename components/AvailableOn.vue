@@ -37,35 +37,42 @@
           >visit nanocrawler</button>
         </a>
       </div>
-      <div class="w-full flex flex-col items-center mt-12 md:mt-0">
-        <div class="w-full max-w-md md:max-w-full px-16 md:hidden">
+      <div class="w-full flex flex-row flex-wrap justify-center items-center mt-12 mb-8">
+        <a
+          href="https://natrium.io"
+          target="_blank"
+          class="w-full md:w-1/2 max-w-xs lg:max-w-sm md:px-4 my-2 transform hover:scale-95 duration-300 ease-out"
+        >
           <img
             class="w-full h-auto"
             :src="require('~/assets/images/illustrations/natrium.svg')"
             alt="Natrium"
           />
+        </a>
+        <div class="w-full md:w-1/2 max-w-lg md:px-4 flex flex-col my-4">
+          <a
+            target="_blank"
+            href="https://nanocrawler.cc/explorer/account/nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd/history"
+            class="w-full pl-2 pr-12 my-3 transform hover:scale-95 duration-300 ease-out"
+          >
+            <img
+              class="w-full h-auto"
+              :src="require('~/assets/images/illustrations/nanocrawler-account.svg')"
+              alt="Nanocrawler Account"
+            />
+          </a>
+          <a
+            target="_blank"
+            href="https://nanocrawler.cc/explorer/block/4FA3860DD9EA8482B559081A3EF01D76331FA5020799779AFCCFE87043E0A418"
+            class="w-full pl-12 pr-2 my-3 transform hover:scale-95 duration-300 ease-out"
+          >
+            <img
+              class="w-full h-auto"
+              :src="require('~/assets/images/illustrations/nanocrawler-send.svg')"
+              alt="Nanocrawler Send"
+            />
+          </a>
         </div>
-        <div class="w-full max-w-md md:max-w-full pl-2 pr-12 md:hidden mt-10">
-          <img
-            class="w-full h-auto"
-            :src="require('~/assets/images/illustrations/nanocrawler-account.svg')"
-            alt="Nanocrawler Account"
-          />
-        </div>
-        <div class="w-full max-w-md md:max-w-full pl-12 pr-2 md:hidden mt-6">
-          <img
-            class="w-full h-auto"
-            :src="require('~/assets/images/illustrations/nanocrawler-send.svg')"
-            alt="Nanocrawler Send"
-          />
-        </div>
-      </div>
-      <div class="w-full md:px-16 lg:px-24 mt-16 hidden md:block">
-        <img
-          class="w-full h-auto"
-          :src="require('~/assets/images/illustrations/natrium-and-nanocrawler-desktop.svg')"
-          alt="Natrium and Nanocrawler"
-        />
       </div>
     </div>
   </div>

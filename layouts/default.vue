@@ -36,6 +36,6 @@ html {
 pre,
 code,
 .space-mono {
-  font-family: "Space Mono", monospace;
+  font-family: "Space Mono", monospace !important;
 }
 </style>
