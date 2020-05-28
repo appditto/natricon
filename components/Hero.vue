@@ -30,7 +30,7 @@
       <div
         ref="generatorInside"
         :class="isGeneratorOpen?'scale-100 opacity-100 duration-500':'scale-0 opacity-0 duration-200'"
-        class="w-108 h-108 flex flex-col justify-center items-center rounded-full bg-white shadow-xl mx-auto -mt-8 transform transition-all ease-out absolute generator z-50"
+        class="flex flex-col justify-center items-center rounded-full bg-white shadow-xl mx-auto -mt-8 transform transition-all ease-out absolute generator z-50"
       >
         <!-- Nano Address Form Group -->
         <form class="w-full flex flex-col justify-center px-12">
@@ -57,14 +57,14 @@
         alt="Hero Background Desktop"
       />
       <img
-        :class="isGeneratorOpen?'-ml-84 hero-desktop-open':'hero-desktop'"
+        :class="isGeneratorOpen?'hero-left-desktop-open':'hero-left-desktop'"
         class="h-auto absolute top-0 left-0 transition-all duration-500 ease-out"
         :src="require('~/assets/images/illustrations/hero-left-desktop.svg')"
         alt="Hero Left Desktop"
         ref="heroLeftDesktop"
       />
       <img
-        :class="isGeneratorOpen?'-mr-84 hero-desktop-open':'hero-desktop'"
+        :class="isGeneratorOpen?'hero-right-desktop-open':'hero-right-desktop'"
         class="h-auto absolute top-0 right-0 transition-all duration-500 ease-out"
         :src="require('~/assets/images/illustrations/hero-right-desktop.svg')"
         alt="Hero Right Desktop"
@@ -114,13 +114,17 @@ export default {
 }
 .generator {
   left: 50%;
-  margin-left: -13.5rem;
+  margin-left: -10vw;
+  width: 20vw;
+  height: 20vw;
 }
-.hero-desktop {
+.hero-left-desktop,
+.hero-right-desktop {
   width: 55.5%;
 }
-.hero-desktop-open {
-  width: 50%;
+.hero-left-desktop-open,
+.hero-right-desktop-open {
+  width: 40%;
 }
 .btn-shadow-cyan {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#66ffff;
