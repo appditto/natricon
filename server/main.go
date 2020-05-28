@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math/rand"
+	"strconv"
 
 	"github.com/appditto/natricon/server/controller"
 	"github.com/appditto/natricon/server/net"
@@ -77,7 +79,13 @@ func main() {
 	sio.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
 		s.Join("bcast")
-		s.Emit("connected", s.ID())
+		clientId, err := strconv.ParseInt(s.ID(), 10, 64)
+		if err != nil {
+			clientId = int64(rand.Intn(1000))
+		}
+		// Generate a random nonce to avoid collisions with other processes
+		clientId += int64(rand.Intn(1000))
+		s.Emit("connected", string(clientId))
 		return nil
 	})
 	go sio.Serve()
