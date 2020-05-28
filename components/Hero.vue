@@ -43,6 +43,7 @@
             name="nanoAddress"
             v-model="nanoAddress"
             placeholder="enter your address"
+            @input="inputChange()"
           />
           <button
             @click.prevent="generateNatricon()"
@@ -74,6 +75,7 @@
   </div>
 </template>
 <script>
+import { genAddress, validateAddress } from "~/plugins/address.js";
 export default {
   data() {
     return {
@@ -89,17 +91,26 @@ export default {
     },
     async generateNatricon() {
       let ref = this;
-      const getNatriconResult = async () => {
-        try {
-          return await this.$axios.get(
-            "https://natricon.com/api/v1/nano?address=" + ref.nanoAddress
-          );
-        } catch (e) {
-          console.error(e);
-        }
-      };
-      const natriconResult = await getNatriconResult();
-      this.$refs.generatorInside.innerHTML = natriconResult.data;
+      if (validateAddress(ref.nanoAddress)) {
+        const getNatriconResult = async () => {
+          try {
+            return await this.$axios.get(
+              "https://natricon.com/api/v1/nano?address=" + ref.nanoAddress
+            );
+          } catch (e) {
+            console.error(e);
+          }
+        };
+        const natriconResult = await getNatriconResult();
+        ref.$refs.generatorInside.innerHTML = natriconResult.data;
+      } else {
+        ref.inputError = true;
+      }
+    },
+    inputChange() {
+      if (this.inputError) {
+        this.inputError = false;
+      }
     }
   }
 };
