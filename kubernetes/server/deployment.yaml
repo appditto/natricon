@@ -19,13 +19,13 @@ spec:
       - name: go-natricon
         image: replaceme
         command: ["/bin/bash", "-c"]
-        args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://nano-node.nano:7076 -nano-ws-url ws://nano-node.nano:7078"]
+        args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://pippin-nano.pippin:11338 -nano-ws-url ws://nano-node.nano:7078"]
         ports:
           - containerPort: 5555
         imagePullPolicy: "Always"
         env:
           - name: DONATION_ACCOUNT
-            value: nano_1natrium1o3z5519ifou7xii8crpxpk8y65qmkih8e8bpsjri651oza8imdd
+            value: nano_3natricon9grnc8caqkht19f1fwpz39r3deeyef66m3d4fch3fau7x5q57cj
           - name: REDIS_HOST
             value: redis-0.redis
           - name: REDIS_DB
@@ -35,6 +35,11 @@ spec:
               secretKeyRef:
                 name: natricon
                 key: seed
+          - name: WALLET_ID
+            valueFrom:
+              secretKeyRef:
+                name: natricon
+                key: wallet_id                
       imagePullSecrets:
           - name: regcred
  

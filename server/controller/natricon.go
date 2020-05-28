@@ -63,7 +63,7 @@ var vanities = map[string]*Vanity{
 		badge:        image.BTDonor,
 	},
 	// natricon
-	/* "insert natricon pubkey here": {
+	"d11ac4155a1dd8a28ca45e4fd00ed03796f84f80ad8cf31a424c2b1354f0b51b": {
 		bodyColor:    color.HTMLToRGBAlt("#00FFBF"),
 		hairColor:    color.HTMLToRGBAlt("#00BFFF"),
 		bodyAssetID:  1,
@@ -71,7 +71,7 @@ var vanities = map[string]*Vanity{
 		mouthAssetID: 2,
 		eyeAssetID:   1,
 		badge:        image.BTService,
-	},*/
+	},
 	// natrium
 	"511ac43730543f18c07836bb2f61032b16eda46f10779ca0f330c9b663881060": {
 		bodyColor:    color.HTMLToRGBAlt("#a3cdff"),
