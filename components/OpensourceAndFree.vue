@@ -309,8 +309,10 @@ export default {
       // TODO - remove logging
       console.log(`RECEIVED DONATION EVENT ${rawAmount}`)
       if (rawAmount == this.qrValueAmountRaw) {
-        console.log(`AMOUNT DOES NOT MATCH QR AMONUT ${this.qrValueAmountRaw}`)
+        console.log(`AMOUNT MATCHES QR AMOUNT ${this.qrValueAmountRaw}`)
         this.donationSuccess = true;
+      } else {
+        console.log(`AMOUNT DOES NOT MATCH QR AMOUNT ${this.qrValueAmountRaw}`)
       }
     }
   },
