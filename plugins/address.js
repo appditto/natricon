@@ -2,6 +2,8 @@ import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 
 import { nacl } from "~/plugins/nacl.js"
 
+const ALPHABET = '13456789abcdefghijkmnopqrstuwxyz'
+
 function getAddressFromPublic(accountPublicKeyBytes, prefix = "nano") {
     const accountHex = uint8ToHex(accountPublicKeyBytes)
     const keyBytes = uint4ToUint8(hexToUint4(accountHex)) // For some reason here we go from u, to hex, to 4, to 8??
@@ -74,11 +76,62 @@ function uint4ToUint5(uintValue) {
 }
 
 function uint5ToString(uint5) {
-    const letter_list = "13456789abcdefghijkmnopqrstuwxyz".split("")
+    const letter_list = ALPHABET.split("")
     let string = ""
     for (let i = 0; i < uint5.length; i++) string += letter_list[uint5[i]]
 
     return string
+}
+
+// Extract nano address candidate from string, return null if not found
+function extractAddress(rawString) {
+    let pattern = new RegExp("(xrb|nano)(_)(1|3)[13456789abcdefghijkmnopqrstuwxyz]{59}", "g");
+    rawString = rawString.toLowerCase();
+    let matches = rawString.match(pattern)
+    if (matches == null) {
+        return null
+    }
+    return matches[0]
+}
+
+function readChar(char) {
+    const idx = ALPHABET.indexOf(char)
+
+    if (idx === -1) {
+        throw new Error(`Invalid character found: ${char}`)
+    }
+
+    return idx
+}
+
+function decodeNanoBase32(input) {
+    const length = input.length
+    const leftover = (length * 5) % 8
+    const offset = leftover === 0 ? 0 : 8 - leftover
+
+    let bits = 0
+    let value = 0
+
+    let index = 0
+    let output = new Uint8Array(Math.ceil((length * 5) / 8))
+
+    for (let i = 0; i < length; i++) {
+        value = (value << 5) | readChar(input[i])
+        bits += 5
+
+        if (bits >= 8) {
+        output[index++] = (value >>> (bits + offset - 8)) & 255
+        bits -= 8
+        }
+    }
+    if (bits > 0) {
+        output[index++] = (value << (bits + offset - 8)) & 255
+    }
+
+    if (leftover !== 0) {
+        output = output.slice(1)
+    }
+    return output
 }
 
 export function genAddress() {
@@ -97,4 +150,31 @@ export function genAddress() {
     const address = getAddressFromPublic(publicKey)
 
     return address
+}
+
+// Validate nano address, return true if valid, false if invalid
+export function validateAddress(address) {
+    if (typeof address != "string") {
+        return false
+    } else if (address.length != 64 && address.length != 65) {
+        return false
+    } else if (!address.startsWith("nano_") && !address.startsWith("xrb_")) {
+        return false
+    }
+    address = address.replace("nano_", "xrb_")
+    const publicKeyBytes = decodeNanoBase32(address.substr(4, 52))
+    const checksumBytes = decodeNanoBase32(address.substr(4 + 52))
+    
+    const context = blake2bInit(5)
+    blake2bUpdate(context, publicKeyBytes)
+    const computedChecksumBytes = blake2bFinal(context).reverse()
+    
+    let valid = true;
+    for (let i = 0; i < checksumBytes.length; i++) {
+        if (checksumBytes[i] !== computedChecksumBytes[i]) {
+            valid = false
+        }
+    }
+    
+    return valid
 }
