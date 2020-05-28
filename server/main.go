@@ -83,8 +83,6 @@ func main() {
 		if err != nil {
 			clientId = int64(rand.Intn(1000))
 		}
-		// Generate a random nonce to avoid collisions with other processes
-		clientId += int64(rand.Intn(1000))
 		s.Emit("connected", string(clientId))
 		return nil
 	})
