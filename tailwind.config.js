@@ -41,6 +41,9 @@ module.exports = {
       padding: {
         '0_5': '0.125rem',
         '1_5': '0.375rem'
+      },
+      borderRadius: {
+        'xl': "1rem"
       }
     }
   },

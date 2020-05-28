@@ -30,10 +30,13 @@
       <div
         ref="generatorInside"
         :class="isGeneratorOpen?'scale-100 opacity-100 duration-500':'scale-0 opacity-0 duration-200'"
-        class="flex flex-col justify-center items-center rounded-full bg-white shadow-xl mx-auto -mt-8 transform transition-all ease-out absolute generator z-50"
+        class="flex flex-col justify-center items-center rounded-full bg-white shadow-xl mx-auto -mt-8 transform transition-all ease-out absolute generator z-50 overflow-hidden"
       >
         <!-- Nano Address Form Group -->
-        <form class="w-full flex flex-col justify-center px-12">
+        <form
+          :class="generateInitiated?'scale-0':'scale-100' "
+          class="w-full flex flex-col justify-center px-12 transform duration-200 ease-out"
+        >
           <input
             :class="inputError?'border-red text-red':'border-black'"
             class="w-full text-xl font-medium border-2 px-4 pt-1 pb-2 rounded-lg my-1 transition-colors duration-200 ease-out"
@@ -50,6 +53,26 @@
             class="w-full btn text-xl font-medium border-black hover:text-cyan hover:border-cyan border-2 bg-black text-white pt-1 pb-2 px-6 rounded-lg mt-1"
           >go!</button>
         </form>
+        <div v-if="generateInitiated" ref="natriconContainer" class="w-full h-full absolute"></div>
+        <!-- Received Animation -->
+        <div
+          v-if="generateInitiated"
+          :class="receivedNatricon?'ray-margin-received':'ray-margin'"
+          class="w-full h-full flex flex-row justify-center items-center left-0 top-0 absolute transition-all duration-1000 ease-out"
+        >
+          <div class="w-1/12 h-110 rounded-md bg-lime"></div>
+          <div class="w-1/12 h-120 rounded-md bg-brightPink"></div>
+          <div class="w-1/12 h-130 rounded-md bg-yellow"></div>
+          <div class="w-1/12 h-140 rounded-md bg-cyan"></div>
+          <div class="w-1/12 h-110 rounded-md bg-lime"></div>
+          <div class="w-1/12 h-120 rounded-md bg-brightPink"></div>
+          <div class="w-1/12 h-130 rounded-md bg-yellow"></div>
+          <div class="w-1/12 h-140 rounded-md bg-cyan"></div>
+          <div class="w-1/12 h-110 rounded-md bg-lime"></div>
+          <div class="w-1/12 h-120 rounded-md bg-brightPink"></div>
+          <div class="w-1/12 h-130 rounded-md bg-yellow"></div>
+          <div class="w-1/12 h-140 rounded-md bg-cyan"></div>
+        </div>
       </div>
       <!--  -->
       <img
@@ -81,7 +104,9 @@ export default {
     return {
       isGeneratorOpen: false,
       nanoAddress: "",
-      inputError: false
+      inputError: false,
+      generateInitiated: false,
+      receivedNatricon: false
     };
   },
   methods: {
@@ -92,6 +117,7 @@ export default {
     async generateNatricon() {
       let ref = this;
       if (validateAddress(ref.nanoAddress)) {
+        ref.generateInitiated = true;
         const getNatriconResult = async () => {
           try {
             return await this.$axios.get(
@@ -102,7 +128,14 @@ export default {
           }
         };
         const natriconResult = await getNatriconResult();
-        ref.$refs.generatorInside.innerHTML = natriconResult.data;
+        if (natriconResult.data) {
+          ref.receivedNatricon = true;
+          setTimeout(() => {
+            ref.$refs.natriconContainer.innerHTML = natriconResult.data;
+          }, 300);
+        } else {
+          // Do something
+        }
       } else {
         ref.inputError = true;
       }
@@ -125,9 +158,9 @@ export default {
 }
 .generator {
   left: 50%;
-  margin-left: -10vw;
-  width: 20vw;
-  height: 20vw;
+  margin-left: calc(-10vw + 2rem);
+  width: calc(20vw - 4rem);
+  height: calc(20vw - 4rem);
 }
 .hero-left-desktop,
 .hero-right-desktop {
@@ -136,6 +169,24 @@ export default {
 .hero-left-desktop-open,
 .hero-right-desktop-open {
   width: 40%;
+}
+.h-110 {
+  height: 110%;
+}
+.h-120 {
+  height: 120%;
+}
+.h-130 {
+  height: 130%;
+}
+.h-140 {
+  height: 140%;
+}
+.ray-margin-received {
+  margin-top: 150%;
+}
+.ray-margin {
+  margin-top: -150%;
 }
 .btn-shadow-cyan {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#66ffff;
