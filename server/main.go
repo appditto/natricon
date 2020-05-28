@@ -11,7 +11,6 @@ import (
 	"github.com/golang/glog"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/jasonlvhit/gocron"
-	_ "go.uber.org/automaxprocs"
 )
 
 func CorsMiddleware() gin.HandlerFunc {
