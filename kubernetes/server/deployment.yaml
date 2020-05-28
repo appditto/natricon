@@ -19,6 +19,13 @@ spec:
       - name: go-natricon
         image: replaceme
         command: ["/bin/bash", "-c"]
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 1500Mi
         args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://pippin-nano.pippin:11338 -nano-ws-url ws://nano-node.nano:7078"]
         ports:
           - containerPort: 5555

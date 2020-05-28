@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math/rand"
+	"strconv"
 
 	"github.com/appditto/natricon/server/controller"
 	"github.com/appditto/natricon/server/net"
@@ -11,7 +13,6 @@ import (
 	"github.com/golang/glog"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/jasonlvhit/gocron"
-	_ "go.uber.org/automaxprocs"
 )
 
 func CorsMiddleware() gin.HandlerFunc {
@@ -78,7 +79,11 @@ func main() {
 	sio.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
 		s.Join("bcast")
-		s.Emit("connected", s.ID())
+		clientId, err := strconv.Atoi(s.ID())
+		if err != nil {
+			clientId = rand.Intn(1000)
+		}
+		s.Emit("connected", strconv.Itoa(clientId))
 		return nil
 	})
 	go sio.Serve()
