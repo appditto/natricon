@@ -93,9 +93,12 @@
             />
             <div class="flex flex-row justify-center">
               <!-- Donation Initated -->
-              <div v-if="!isDonationInitiated" class="flex flex-col items-center">
+              <div
+                v-if="!isDonationInitiated"
+                class="flex flex-col items-center transition-all duration-200 ease-out"
+              >
                 <!-- Donate Amount Buttons -->
-                <div class="flex flex-row flex-wrap justify-center items-center my-4">
+                <div class="flex flex-row flex-wrap justify-center items-center mb-4">
                   <button
                     @mouseover="donationAmount=2"
                     @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
@@ -138,7 +141,7 @@
               <!-- QR Code or Button for the Donation -->
               <div
                 v-else-if="isDonationInitiated  && !donationSuccess"
-                class="flex flex-row flex-wrap justify-center items-center m-4"
+                class="flex flex-row flex-wrap justify-center items-center m-4 transition-all duration-200 ease-out"
               >
                 <div class="my-2" v-if="$device.isMobile">
                   <a :href="qrValue">
@@ -173,7 +176,7 @@
               </div>
               <!-- Success Screen Text -->
               <div
-                class="flex flex-col items-center my-4"
+                class="flex flex-col items-center mb-4 transition-all duration-200 ease-out"
                 v-else-if="isDonationInitiated && donationSuccess"
               >
                 <h4 class="text-4xl text-center font-bold">thank you!</h4>
@@ -307,12 +310,12 @@ export default {
     },
     handleAmountCallback(rawAmount) {
       // TODO - remove logging
-      console.log(`RECEIVED DONATION EVENT ${rawAmount}`)
+      console.log(`RECEIVED DONATION EVENT ${rawAmount}`);
       if (rawAmount == this.qrValueAmountRaw) {
-        console.log(`AMOUNT MATCHES QR AMOUNT ${this.qrValueAmountRaw}`)
+        console.log(`AMOUNT MATCHES QR AMOUNT ${this.qrValueAmountRaw}`);
         this.donationSuccess = true;
       } else {
-        console.log(`AMOUNT DOES NOT MATCH QR AMOUNT ${this.qrValueAmountRaw}`)
+        console.log(`AMOUNT DOES NOT MATCH QR AMOUNT ${this.qrValueAmountRaw}`);
       }
     }
   },
