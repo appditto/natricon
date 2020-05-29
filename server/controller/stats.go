@@ -7,6 +7,7 @@ import (
 
 	"github.com/appditto/natricon/server/db"
 	"github.com/appditto/natricon/server/image"
+	"github.com/appditto/natricon/server/spc"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -58,7 +59,7 @@ func TestBodyDistribution(seed string) {
 	for i := 0; i < 10000; i++ {
 		address = utils.GenerateAddress()
 		sha256 = utils.AddressSha256(address, seed)
-		accessories, _ = image.GetAccessoriesForHash(sha256, image.BTNone, false, nil)
+		accessories, _ = image.GetAccessoriesForHash(sha256, spc.BTNone, false, nil)
 		ret += fmt.Sprintf("%f,%f,%f,%f\n", accessories.BodyColor.ToHSB().H, accessories.BodyColor.ToHSB().S*100.0, accessories.BodyColor.ToHSB().B*100.0, accessories.BodyColor.PerceivedBrightness())
 		if accessories.BodyColor.ToHSB().S*100.0 < 20 {
 			lt20 += 1
@@ -100,7 +101,7 @@ func TestHairDistribution(seed string) {
 	for i := 0; i < 10000; i++ {
 		address = utils.GenerateAddress()
 		sha256 = utils.AddressSha256(address, seed)
-		accessories, _ = image.GetAccessoriesForHash(sha256, image.BTNone, false, nil)
+		accessories, _ = image.GetAccessoriesForHash(sha256, spc.BTNone, false, nil)
 		ret += fmt.Sprintf("%f,%f,%f,%f\n", accessories.HairColor.ToHSB().H, accessories.HairColor.ToHSB().S*100.0, accessories.HairColor.ToHSB().B*100.0, accessories.HairColor.PerceivedBrightness())
 		if accessories.HairColor.ToHSB().S*100.0 < 20 {
 			lt20 += 1

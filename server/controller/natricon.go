@@ -9,6 +9,7 @@ import (
 	"github.com/appditto/natricon/server/color"
 	"github.com/appditto/natricon/server/image"
 	"github.com/appditto/natricon/server/magickwand"
+	"github.com/appditto/natricon/server/spc"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -20,68 +21,6 @@ const maxConvertedSize = 1000 // Maximum size of PNG/WEBP converted output
 type NatriconController struct {
 	Seed         string
 	StatsChannel *chan *gin.Context
-}
-
-// Special addresses
-type Vanity struct {
-	// Optional fields
-	hash  string          // Will generate the natricon with specific hash
-	badge image.BadgeType // Will generate natricon with specified badge
-	// If using any of the below then ALL of them are required
-	bodyColor    *color.RGB
-	hairColor    *color.RGB
-	bodyAssetID  int
-	hairAssetID  int
-	mouthAssetID int
-	eyeAssetID   int
-}
-
-var vanities = map[string]*Vanity{
-	/* Example to base off of a hash
-	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": {
-		hash:  "2f2f45946be8ee4f4a9fdc328f2ebb2ba6a163fbf4c8a5c8f5e23d43790ef7d8",
-		check: true,
-	},*/
-	// yekta
-	"7992d2015963ef13fc1b45735b9f6b071b18cbdef1b1d07a81572718230395e7": {
-		bodyColor:    color.HTMLToRGBAlt("#6666ff"),
-		hairColor:    color.HTMLToRGBAlt("#19ffc6"),
-		bodyAssetID:  1,
-		hairAssetID:  33,
-		mouthAssetID: 10,
-		eyeAssetID:   11,
-		badge:        image.BTDonor,
-	},
-	// bboss
-	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": {
-		bodyColor:    color.HTMLToRGBAlt("#bababa"),
-		hairColor:    color.HTMLToRGBAlt("#1378f2"),
-		bodyAssetID:  18,
-		hairAssetID:  14,
-		mouthAssetID: 15,
-		eyeAssetID:   12,
-		badge:        image.BTDonor,
-	},
-	// natricon
-	/* "insert natricon pubkey here": {
-		bodyColor:    color.HTMLToRGBAlt("#00FFBF"),
-		hairColor:    color.HTMLToRGBAlt("#00BFFF"),
-		bodyAssetID:  1,
-		hairAssetID:  1,
-		mouthAssetID: 2,
-		eyeAssetID:   1,
-		badge:        image.BTService,
-	},*/
-	// natrium
-	"511ac43730543f18c07836bb2f61032b16eda46f10779ca0f330c9b663881060": {
-		bodyColor:    color.HTMLToRGBAlt("#a3cdff"),
-		hairColor:    color.HTMLToRGBAlt("#002a65"),
-		bodyAssetID:  30,
-		hairAssetID:  33,
-		mouthAssetID: 8,
-		eyeAssetID:   11,
-		badge:        image.BTService,
-	},
 }
 
 // APIs
@@ -98,24 +37,24 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 	*nc.StatsChannel <- c
 
 	var sha256 string
-	var badgeType image.BadgeType
+	var badgeType spc.BadgeType
 	specialNatricon := false
 	pubKey := utils.AddressToPub(address)
-	vanity := vanities[pubKey]
+	vanity := spc.Vanities[pubKey]
 	if vanity == nil {
 		sha256 = utils.PKSha256(pubKey, nc.Seed)
 		badgeType = image.GetBadgeSvc().GetBadgeType(pubKey)
 	} else {
-		badgeType = vanity.badge
+		badgeType = vanity.Badge
 		if badgeType == "" {
-			badgeType = image.BTNone
+			badgeType = spc.BTNone
 		}
-		if vanity.bodyAssetID > 0 && vanity.hairAssetID > 0 && vanity.eyeAssetID > 0 && vanity.bodyColor != nil && vanity.hairColor != nil {
+		if vanity.BodyAssetID > 0 && vanity.HairAssetID > 0 && vanity.EyeAssetID > 0 && vanity.BodyColor != nil && vanity.HairColor != nil {
 			specialNatricon = true
-		} else if vanity.hash == "" {
+		} else if vanity.Hash == "" {
 			sha256 = utils.PKSha256(pubKey, nc.Seed)
 		} else {
-			sha256 = vanity.hash
+			sha256 = vanity.Hash
 		}
 	}
 
@@ -133,7 +72,7 @@ func (nc NatriconController) GetRandomSvg(c *gin.Context) {
 	address := utils.GenerateAddress()
 	sha256 := utils.AddressSha256(address, nc.Seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256, image.BTNone, false, nil)
+	accessories, err := image.GetAccessoriesForHash(sha256, spc.BTNone, false, nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -158,7 +97,7 @@ func (nc NatriconController) GetRandom(c *gin.Context) {
 	address := utils.GenerateAddress()
 	sha256 := utils.AddressSha256(utils.AddressToPub(address), nc.Seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256, image.BTNone, false, nil)
+	accessories, err := image.GetAccessoriesForHash(sha256, spc.BTNone, false, nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -217,7 +156,7 @@ func (nc NatriconController) GetNatricon(c *gin.Context) {
 	// }
 	sha256 := utils.AddressSha256(utils.AddressToPub(address), nc.Seed)
 
-	accessories, err := image.GetAccessoriesForHash(sha256, image.BTNone, false, nil)
+	accessories, err := image.GetAccessoriesForHash(sha256, spc.BTNone, false, nil)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "%s", err.Error())
 		return
@@ -247,7 +186,7 @@ func (nc NatriconController) GetNatricon(c *gin.Context) {
 }
 
 // Generate natricon with given hash
-func generateIcon(hash *string, badgeType image.BadgeType, c *gin.Context) {
+func generateIcon(hash *string, badgeType spc.BadgeType, c *gin.Context) {
 	var err error
 
 	format := strings.ToLower(c.Query("format"))
@@ -312,7 +251,7 @@ func generateIcon(hash *string, badgeType image.BadgeType, c *gin.Context) {
 }
 
 // Generate icon for special accounts
-func generateSpecialIcon(vanity *Vanity, badgeType image.BadgeType, c *gin.Context) {
+func generateSpecialIcon(vanity *spc.Vanity, badgeType spc.BadgeType, c *gin.Context) {
 	var err error
 
 	format := strings.ToLower(c.Query("format"))
@@ -346,7 +285,7 @@ func generateSpecialIcon(vanity *Vanity, badgeType image.BadgeType, c *gin.Conte
 		}
 	}
 
-	accessories := image.GetSpecificNatricon(badgeType, outline, outlineColor, vanity.bodyColor, vanity.hairColor, vanity.bodyAssetID, vanity.hairAssetID, vanity.mouthAssetID, vanity.eyeAssetID)
+	accessories := image.GetSpecificNatricon(badgeType, outline, outlineColor, vanity.BodyColor, vanity.HairColor, vanity.BodyAssetID, vanity.HairAssetID, vanity.MouthAssetID, vanity.EyeAssetID)
 	svg, err := image.CombineSVG(accessories)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Error occured")
