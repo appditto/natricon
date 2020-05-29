@@ -9,6 +9,7 @@ import (
 
 	"github.com/appditto/natricon/server/color"
 	"github.com/appditto/natricon/server/rand"
+	"github.com/appditto/natricon/server/spc"
 )
 
 // Accessories - represents accessories for natricon
@@ -33,7 +34,7 @@ const hexRegexStr = "^[0-9a-fA-F]+$"
 var hexRegex = regexp.MustCompile(hexRegexStr)
 
 // GetSpecificNatricon - Return Accessories object with specific parameters
-func GetSpecificNatricon(badgeType BadgeType, outline bool, outlineColor *color.RGB, bodyColor *color.RGB, hairColor *color.RGB, bodyAsset int, hairAsset int, mouthAsset int, eyeAsset int) Accessories {
+func GetSpecificNatricon(badgeType spc.BadgeType, outline bool, outlineColor *color.RGB, bodyColor *color.RGB, hairColor *color.RGB, bodyAsset int, hairAsset int, mouthAsset int, eyeAsset int) Accessories {
 	var accessories = Accessories{}
 
 	// Set colors
@@ -46,7 +47,7 @@ func GetSpecificNatricon(badgeType BadgeType, outline bool, outlineColor *color.
 	accessories.BackHairAsset = GetBackHairAsset(accessories.HairAsset)
 
 	// Get badge
-	if badgeType != "" && badgeType != BTNone {
+	if badgeType != "" && badgeType != spc.BTNone {
 		accessories.BadgeAsset = GetBadgeAsset(accessories.BodyAsset, badgeType)
 	}
 
@@ -70,7 +71,7 @@ func GetSpecificNatricon(badgeType BadgeType, outline bool, outlineColor *color.
 }
 
 // GetAccessoriesForHash - Return Accessories object based on 64-character hex string
-func GetAccessoriesForHash(hash string, badgeType BadgeType, outline bool, outlineColor *color.RGB) (Accessories, error) {
+func GetAccessoriesForHash(hash string, badgeType spc.BadgeType, outline bool, outlineColor *color.RGB) (Accessories, error) {
 	var err error
 	if len(hash) != 64 {
 		return Accessories{}, errors.New("Invalid hash")
@@ -97,7 +98,7 @@ func GetAccessoriesForHash(hash string, badgeType BadgeType, outline bool, outli
 	accessories.BackHairAsset = GetBackHairAsset(accessories.HairAsset)
 
 	// Get badge
-	if badgeType != "" && badgeType != BTNone {
+	if badgeType != "" && badgeType != spc.BTNone {
 		accessories.BadgeAsset = GetBadgeAsset(accessories.BodyAsset, badgeType)
 	}
 
@@ -172,7 +173,7 @@ func GetBodyOutlineAsset(bodyAsset Asset) *Asset {
 }
 
 // GetBadgeAsset - return badge asset for a particular body
-func GetBadgeAsset(bodyAsset Asset, btype BadgeType) *Asset {
+func GetBadgeAsset(bodyAsset Asset, btype spc.BadgeType) *Asset {
 	identifier, _ := strconv.Atoi(strings.Split(bodyAsset.FileName, "_")[0])
 	searchStr := fmt.Sprintf("b%d", identifier)
 	for _, v := range GetAssets().GetBadgeAssets(btype) {

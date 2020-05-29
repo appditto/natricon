@@ -319,7 +319,9 @@ export default {
   computed: mapState(["clientID"]),
   mounted() {
     this.socket = this.$nuxtSocket({
-      name: "natricon"
+      name: "natricon",
+      reconnection: true,
+      teardown: false
     });
     let inst = this;
     this.socket.on("connected", function(data) {

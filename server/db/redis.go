@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/appditto/natricon/server/spc"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/bsm/redislock"
 	"github.com/go-redis/redis/v7"
@@ -201,19 +202,6 @@ func (r *redisManager) GetPrincipalReps() []string {
 	return repsU
 }
 
-// Stats
-type StatsService string
-
-const (
-	StatsNatrium     StatsService = "natrium"
-	StatsNanoCrawler StatsService = "nanocrawler"
-)
-
-var svcList = []StatsService{
-	StatsNatrium,
-	StatsNanoCrawler,
-}
-
 // UpdateStatsAddress - Update stats for an address that has requested natricon
 func (r *redisManager) UpdateStatsAddress(address string) {
 	key := fmt.Sprintf("%s:stats_unique_addresses", keyPrefix)
@@ -245,7 +233,7 @@ func (r *redisManager) StatsUniqueAddresses() int64 {
 func (r *redisManager) UpdateStatsByService(svc string, address string) {
 	// See if valid service
 	valid := false
-	for _, rSvc := range svcList {
+	for _, rSvc := range spc.SvcList {
 		if string(rSvc) == svc {
 			valid = true
 		}
@@ -268,9 +256,9 @@ func (r *redisManager) UpdateStatsByService(svc string, address string) {
 }
 
 // ServiceStats - Service Stats
-func (r *redisManager) ServiceStats() map[StatsService]int64 {
-	ret := map[StatsService]int64{}
-	for _, svc := range svcList {
+func (r *redisManager) ServiceStats() map[spc.StatsService]int64 {
+	ret := map[spc.StatsService]int64{}
+	for _, svc := range spc.SvcList {
 		key := fmt.Sprintf("%s:stats:%s", keyPrefix, svc)
 		len, err := r.hlen(key)
 		if err != nil {

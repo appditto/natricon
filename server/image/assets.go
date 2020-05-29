@@ -7,6 +7,8 @@ import (
 	"path"
 	"strings"
 	"sync"
+
+	"github.com/appditto/natricon/server/spc"
 )
 
 type IllustrationType string
@@ -212,15 +214,15 @@ func (sm *assetManager) GetNHairAssets() int {
 }
 
 // GetBadges - get badge assets
-func (sm *assetManager) GetBadgeAssets(btype BadgeType) []Asset {
+func (sm *assetManager) GetBadgeAssets(btype spc.BadgeType) []Asset {
 	switch btype {
-	case BTDonor:
+	case spc.BTDonor:
 		return sm.donorBadgeAssets
-	case BTExchange:
+	case spc.BTExchange:
 		return sm.exchBadgeAssets
-	case BTNode:
+	case spc.BTNode:
 		return sm.nodeBadgeAssets
-	case BTService:
+	case spc.BTService:
 		return sm.svcBadgeAssets
 	default:
 		return sm.donorBadgeAssets
