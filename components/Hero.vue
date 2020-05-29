@@ -11,7 +11,7 @@
       <h2 class="text-xl md:text-2xl text-center mt-3">like you've never seen before.</h2>
       <button
         :class="isGeneratorOpen?'bg-cyan text-black btn-shadow-black':'bg-black text-white hover:text-cyan btn-shadow-cyan'"
-        @click="toggleGenerator"
+        @click="isGeneratorOpen=!isGeneratorOpen"
         class="font-medium text-2xl rounded-full px-16 pt-1 pb-3 mt-5"
       >{{isGeneratorOpen?"close":"let's meet"}}</button>
     </div>
@@ -19,7 +19,7 @@
     <div class="flex flex-row justify-center w-full h-0">
       <div class="generator-container z-40 mt-8 md:mt-10">
         <div
-          :class="[isGeneratorOpen ? 'scale-100' : 'scale-0', isGeneratorOpen ? 'opacity-100' : 'opacity-0', generatorClass]"
+          :class="isGeneratorOpen ? 'scale-100 opacity-100 generator':'scale-0 opacity-0'"
           class="w-full h-full relative origin-top duration-300 justify-center items-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
         >
           <!-- Nano Address Form Group -->
@@ -131,14 +131,10 @@ export default {
       receivedNatricon: false,
       showAgainButton: false,
       natriconLoading: false,
-      generatorClass: ''
+      generatorClass: ""
     };
   },
   methods: {
-    toggleGenerator() {
-      this.isGeneratorOpen = !this.isGeneratorOpen
-      this.generatorClass = 'generator'
-    },
     async generateNatricon() {
       let ref = this;
       if (validateAddress(ref.nanoAddress)) {
@@ -334,23 +330,25 @@ export default {
   animation: cyan-animation;
   animation-duration: 2.2s;
   animation-iteration-count: infinite;
-  animation-delay: 1s;
+  animation-delay: -1s;
 }
 .green-circle {
   animation: cyan-animation;
   animation-duration: 2s;
   animation-iteration-count: infinite;
+  animation-delay: -2s;
 }
 .brightPink-circle {
   animation: yellow-animation;
   animation-duration: 2.1s;
   animation-iteration-count: infinite;
-  animation-delay: -1s;
+  animation-delay: -2s;
 }
 .yellow-circle {
   animation: yellow-animation;
-  animation-duration: 2.4s;
+  animation-duration: 2.5s;
   animation-iteration-count: infinite;
+  animation-delay: -1.2s;
 }
 @keyframes cyan-animation {
   0% {
