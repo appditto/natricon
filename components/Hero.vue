@@ -20,12 +20,12 @@
       <div class="generator-container z-40 mt-8 md:mt-10">
         <div
           :class="isGeneratorOpen?'scale-100 opacity-100':'scale-0 opacity-0'"
-          class="w-full h-full relative generator flex flex-col origin-top duration-300 justify-center items-center align-middle content-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
+          class="w-full h-full relative generator flex flex-col origin-top duration-300 justify-center items-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
         >
           <!-- Nano Address Form Group -->
           <form
             :class="generateInitiated?'scale-0':'scale-100'"
-            class="w-full flex flex-col justify-center items-center px-5 md:px-6 lg:px-8 transform duration-200 ease-out"
+            class="w-full flex flex-col justify-center items-center px-5 md:px-6 lg:px-8 transform duration-200 ease-out absolute"
           >
             <input
               :class="inputError?'border-red text-red':'border-black focus:bg-cyan'"
