@@ -65,12 +65,20 @@
           <div
             v-if="generateInitiated"
             :class="natriconLoading?'scale-100 transition-all duration-200':'scale-0'"
-            class="w-full h-full flex flex-row transform justify-center items-center left-0 top-0 absolute"
+            class="w-full h-full transform left-0 top-0 absolute"
           >
-            <div class="absolute rounded-full bg-green green-circle"></div>
-            <div class="absolute rounded-full bg-brightPink brightPink-circle"></div>
-            <div class="absolute rounded-full bg-yellow yellow-circle"></div>
-            <div class="absolute rounded-full bg-cyan cyan-circle"></div>
+            <div
+              class="absolute transform left-half top-half -translate-x-1/2 -translate-y-1/2 rounded-full bg-green green-circle"
+            ></div>
+            <div
+              class="absolute transform left-half top-half -translate-x-1/2 -translate-y-1/2 rounded-full bg-brightPink brightPink-circle"
+            ></div>
+            <div
+              class="absolute transform left-half top-half -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow yellow-circle"
+            ></div>
+            <div
+              class="absolute transform left-half top-half -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan cyan-circle"
+            ></div>
           </div>
           <!-- Received Animation -->
           <div
@@ -409,5 +417,8 @@ export default {
 }
 .left-half {
   left: 50%;
+}
+.top-half {
+  top: 50%;
 }
 </style>
