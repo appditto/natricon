@@ -16,11 +16,11 @@
       >{{isGeneratorOpen?"close":"let's meet"}}</button>
     </div>
     <!-- Generator -->
-    <div class="flex flex-row justify-center w-full h-0 relative">
-      <div class="generator-container z-40 relative mt-8 md:mt-10">
+    <div class="flex flex-row justify-center w-full h-0">
+      <div class="generator-container z-40 mt-8 md:mt-10">
         <div
           :class="isGeneratorOpen?'scale-100 opacity-100':'scale-0 opacity-0'"
-          class="w-full h-full absolute top-0 left-0 generator flex flex-col origin-top duration-300 justify-center items-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
+          class="w-full h-full relative generator flex flex-col origin-top duration-300 justify-center items-center align-middle content-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
         >
           <!-- Nano Address Form Group -->
           <form
@@ -43,12 +43,15 @@
               class="btn-2-shadow-cyan w-full md:max-w-sm btn text-xl font-medium hover:text-cyan bg-black text-white pt-1 pb-2 px-6 rounded-full mt-1"
             >meet!</button>
           </form>
+          <!-- Randomize Button -->
           <button
             :class="generateInitiated?'scale-0':'scale-100 hover:scale-95'"
             @click.prevent="generateRandomNatricon()"
-            class="btn-3-shadow-green bg-black text-white hover:text-green btn-randomize transform transition-all duration-200 text-lg md:text-xl mb-8 lg:mb-10 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium rounded-full bottom-0 absolute"
+            class="btn-3-shadow-green bg-black text-white hover:text-green btn-randomize absolute bottom-0 transform transition-all duration-200 text-lg md:text-xl mb-8 lg:mb-10 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium rounded-full"
           >randomize</button>
+          <!-- Natricon Container -->
           <div v-if="generateInitiated" ref="natriconContainer" class="w-full h-full absolute"></div>
+          <!-- Again Button -->
           <button
             :class="showAgainButton?'scale-100 hover:scale-95':'scale-0'"
             @click.prevent="resetProcess()"
