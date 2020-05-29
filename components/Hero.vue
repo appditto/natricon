@@ -11,7 +11,7 @@
       <h2 class="text-xl md:text-2xl text-center mt-3">like you've never seen before.</h2>
       <button
         :class="isGeneratorOpen?'bg-cyan text-black btn-shadow-black':'bg-black text-white hover:text-cyan btn-shadow-cyan'"
-        @click="isGeneratorOpen=!isGeneratorOpen"
+        @click="toggleGenerator"
         class="font-medium text-2xl rounded-full px-16 pt-1 pb-3 mt-5"
       >{{isGeneratorOpen?"close":"let's meet"}}</button>
     </div>
@@ -19,8 +19,8 @@
     <div class="flex flex-row justify-center w-full h-0">
       <div class="generator-container z-40 mt-8 md:mt-10">
         <div
-          :class="isGeneratorOpen?'scale-100 opacity-100':'scale-0 opacity-0'"
-          class="w-full h-full relative generator origin-top duration-300 justify-center items-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
+          :class="[isGeneratorOpen ? 'scale-100' : 'scale-0', isGeneratorOpen ? 'opacity-100' : 'opacity-0', generatorClass]"
+          class="w-full h-full relative origin-top duration-300 justify-center items-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
         >
           <!-- Nano Address Form Group -->
           <form
@@ -130,13 +130,14 @@ export default {
       generateInitiated: false,
       receivedNatricon: false,
       showAgainButton: false,
-      natriconLoading: false
+      natriconLoading: false,
+      generatorClass: ''
     };
   },
   methods: {
-    openGenerator() {
-      this.isGeneratorOpen = true;
-      this.$refs.heroLeftDesktop.style.marginRight = "0rem";
+    toggleGenerator() {
+      this.isGeneratorOpen = !this.isGeneratorOpen
+      this.generatorClass = 'generator'
     },
     async generateNatricon() {
       let ref = this;
