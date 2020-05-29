@@ -4,17 +4,6 @@ import (
 	"github.com/appditto/natricon/server/color"
 )
 
-// Badge types
-type BadgeType string
-
-const (
-	BTNone     BadgeType = ""
-	BTDonor    BadgeType = "donor"
-	BTExchange BadgeType = "exchange"
-	BTNode     BadgeType = "node"
-	BTService  BadgeType = "service"
-)
-
 var Vanities = map[string]*Vanity{
 	/* Example to base off of a hash
 	"2535ce406f14c289f09e3b471ef9744e36cc0f585b23cfaafcc6412e283dacb4": {

@@ -4,6 +4,17 @@ import (
 	"github.com/appditto/natricon/server/color"
 )
 
+// Badge types
+type BadgeType string
+
+const (
+	BTNone     BadgeType = ""
+	BTDonor    BadgeType = "donor"
+	BTExchange BadgeType = "exchange"
+	BTNode     BadgeType = "node"
+	BTService  BadgeType = "service"
+)
+
 // Vanity
 type Vanity struct {
 	// Optional fields
