@@ -20,12 +20,12 @@
       <div class="generator-container z-40 mt-8 md:mt-10">
         <div
           :class="isGeneratorOpen?'scale-100 opacity-100':'scale-0 opacity-0'"
-          class="w-full h-full relative generator flex flex-col origin-top duration-300 justify-center items-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
+          class="w-full h-full relative generator origin-top duration-300 justify-center items-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
         >
           <!-- Nano Address Form Group -->
           <form
             :class="generateInitiated?'scale-0':'scale-100'"
-            class="w-full flex flex-col justify-center items-center px-5 md:px-6 lg:px-8 transform duration-200 ease-out absolute"
+            class="w-full flex flex-col left-0 right-0 top-0 bottom-0 m-auto justify-center items-center px-5 md:px-6 lg:px-8 transform duration-200 ease-out absolute"
           >
             <input
               :class="inputError?'border-red text-red':'border-black focus:bg-cyan'"
@@ -47,15 +47,19 @@
           <button
             :class="generateInitiated?'scale-0':'scale-100 hover:scale-95'"
             @click.prevent="generateRandomNatricon()"
-            class="btn-3-shadow-green bg-black text-white hover:text-green btn-randomize absolute bottom-0 transform transition-all duration-200 text-lg md:text-xl mb-8 lg:mb-10 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium rounded-full"
+            class="btn-3-shadow-green bg-black left-half bottom-0 -translate-x-1/2 text-white hover:text-green btn-randomize absolute transform transition-all duration-200 text-lg md:text-xl mb-8 lg:mb-10 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium rounded-full"
           >randomize</button>
           <!-- Natricon Container -->
-          <div v-if="generateInitiated" ref="natriconContainer" class="w-full h-full absolute"></div>
+          <div
+            v-if="generateInitiated"
+            ref="natriconContainer"
+            class="w-full h-full absolute top-0 left-0"
+          ></div>
           <!-- Again Button -->
           <button
             :class="showAgainButton?'scale-100 hover:scale-95':'scale-0'"
             @click.prevent="resetProcess()"
-            class="btn-3-shadow-green hover:text-green bg-black text-white transform transition-all duration-200 md:text-xl mb-6 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium border-black rounded-full bottom-0 absolute"
+            class="left-half bottom-0 -translate-x-1/2 btn-3-shadow-green hover:text-green bg-black text-white transform transition-all duration-200 md:text-xl mb-6 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium border-black rounded-full absolute"
           >again!</button>
           <!-- Loading Animation -->
           <div
@@ -402,5 +406,8 @@ export default {
     margin-left: 0%;
     margin-top: 0%;
   }
+}
+.left-half {
+  left: 50%;
 }
 </style>
