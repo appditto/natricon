@@ -4,3 +4,6 @@
     margin-left: auto;
     margin-right: auto;
 }
+button:focus, button:visited, button:active, input:focus, input:visited, input:active {
+    outline: 0!important;
+}

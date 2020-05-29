@@ -1,6 +1,21 @@
 <template>
-  <div class="w-full flex flex-col items-center py-8 md:py-24">
-    <div class="n-container flex flex-col items-center px-5">
+  <div class="w-full flex flex-col items-center relative pt-4 pb-4">
+    <!-- Right Illustration -->
+    <img
+      class="hidden md:block bg-illustration h-auto absolute right-0 opacity-15 md:opacity-100"
+      :src="require('~/assets/images/illustrations/natricon-formula-right.svg')"
+      alt="Background Illustration Right"
+    />
+    <!-- Left Illustration -->
+    <img
+      class="hidden md:block bg-illustration h-auto absolute left-0 bottom-0 opacity-15 md:opacity-100"
+      :src="require('~/assets/images/illustrations/natricon-formula-left.svg')"
+      alt="Background Illustration Left"
+    />
+    <!-- Main Part -->
+    <div
+      class="n-container flex flex-col items-center px-5 z-10 my-8 md:mt-24 md:mb-40 lg:mt-32 lg:mb-56"
+    >
       <h3 class="text-4xl md:text-5xl text-center leading-none">
         how does it
         <br class="md:hidden" />
@@ -44,5 +59,20 @@
   margin-top: -0.6rem;
   background-color: #fe98cd;
   z-index: -1;
+}
+.bg-illustration {
+  max-width: calc((100vw - 1280px) / 2.75);
+  min-width: 12rem;
+  width: 100%;
+}
+@media only screen and (min-width: 768px) {
+  .bg-illustration {
+    min-width: 12rem;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  .bg-illustration {
+    min-width: 16rem;
+  }
 }
 </style>

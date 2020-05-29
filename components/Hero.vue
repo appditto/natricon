@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center pt-4 pb-8 md:pt-12">
+  <div class="w-full flex flex-col items-center pt-6 pb-8 md:pt-12 z-50">
     <div class="n-container flex flex-col items-center px-5">
       <h1 class="text-4xl md:text-5xl text-center leading-none">
         meet your
@@ -10,8 +10,71 @@
       </h1>
       <h2 class="text-xl md:text-2xl text-center mt-3">like you've never seen before.</h2>
       <button
-        class="bg-black text-white hover:text-cyan btn-shadow-cyan font-medium text-2xl rounded-full px-16 pt-1 pb-3 mt-5"
-      >let's meet</button>
+        :class="isGeneratorOpen?'bg-cyan text-black btn-shadow-black':'bg-black text-white hover:text-cyan btn-shadow-cyan'"
+        @click="isGeneratorOpen=!isGeneratorOpen"
+        class="font-medium text-2xl rounded-full px-16 pt-1 pb-3 mt-5"
+      >{{isGeneratorOpen?"close":"let's meet"}}</button>
+    </div>
+    <!-- Generator -->
+    <div class="flex flex-row justify-center w-full h-0 relative">
+      <div class="generator-container z-40 relative mt-8 md:mt-10">
+        <div
+          :class="isGeneratorOpen?'scale-100 opacity-100':'scale-0 opacity-0'"
+          class="w-full h-full absolute top-0 left-0 generator flex flex-col origin-top duration-300 justify-center items-center rounded-full bg-white shadow-xl mx-auto transform transition-all ease-out z-50 overflow-hidden"
+        >
+          <!-- Nano Address Form Group -->
+          <form
+            :class="generateInitiated?'scale-0':'scale-100'"
+            class="w-full flex flex-col justify-center items-center px-8 mx:px-12 transform duration-200 ease-out"
+          >
+            <input
+              :class="inputError?'border-red text-red':'border-black'"
+              class="w-full md:max-w-sm text-xl font-medium border-2 px-4 pt-1 pb-2 rounded-lg my-1 transition-colors duration-200 ease-out"
+              type="text"
+              ref="nanoAddress"
+              id="nanoAddress"
+              name="nanoAddress"
+              v-model="nanoAddress"
+              placeholder="enter your address"
+              @input="inputChange()"
+            />
+            <button
+              @click.prevent="generateNatricon()"
+              class="w-full md:max-w-sm btn text-xl font-medium border-black hover:text-cyan hover:border-cyan border-2 bg-black text-white pt-1 pb-2 px-6 rounded-lg mt-1"
+            >go!</button>
+          </form>
+          <button
+            :class="generateInitiated?'scale-0':'scale-100 hover:scale-95'"
+            @click.prevent="generateRandomNatricon()"
+            class="transform transition-all duration-200 text-lg font-medium border-black hover:text-cyan hover:border-cyan border-2 bg-black text-white pt-0_5 pb-1_5 px-4 rounded-lg bottom-0 mb-6 absolute"
+          >randomize</button>
+          <div v-if="generateInitiated" ref="natriconContainer" class="w-full h-full absolute"></div>
+          <button
+            :class="showAgainButton?'scale-100 hover:scale-95':'scale-0'"
+            @click.prevent="resetProcess()"
+            class="transform transition-all duration-200 text-lg font-medium border-black hover:text-cyan hover:border-cyan border-2 bg-black text-white pt-0_5 pb-1_5 px-4 rounded-lg bottom-0 mb-6 absolute"
+          >again!</button>
+          <!-- Received Animation -->
+          <div
+            v-if="generateInitiated"
+            :class="receivedNatricon?'ray-margin-received':'ray-margin'"
+            class="w-full h-full flex flex-row justify-center items-center left-0 top-0 absolute transition-all duration-1000 ease-out"
+          >
+            <div class="w-1/12 h-110 rounded-md bg-green"></div>
+            <div class="w-1/12 h-120 rounded-md bg-brightPink"></div>
+            <div class="w-1/12 h-130 rounded-md bg-yellow"></div>
+            <div class="w-1/12 h-140 rounded-md bg-cyan"></div>
+            <div class="w-1/12 h-110 rounded-md bg-green"></div>
+            <div class="w-1/12 h-120 rounded-md bg-brightPink"></div>
+            <div class="w-1/12 h-130 rounded-md bg-yellow"></div>
+            <div class="w-1/12 h-140 rounded-md bg-cyan"></div>
+            <div class="w-1/12 h-110 rounded-md bg-green"></div>
+            <div class="w-1/12 h-120 rounded-md bg-brightPink"></div>
+            <div class="w-1/12 h-130 rounded-md bg-yellow"></div>
+            <div class="w-1/12 h-140 rounded-md bg-cyan"></div>
+          </div>
+        </div>
+      </div>
     </div>
     <img
       class="w-full h-auto mt-12 md:hidden"
@@ -30,7 +93,123 @@
     />
   </div>
 </template>
+<script>
+import { genAddress, validateAddress } from "~/plugins/address.js";
+export default {
+  data() {
+    return {
+      isGeneratorOpen: false,
+      nanoAddress: "",
+      inputError: false,
+      generateInitiated: false,
+      receivedNatricon: false,
+      showAgainButton: false
+    };
+  },
+  methods: {
+    openGenerator() {
+      this.isGeneratorOpen = true;
+      this.$refs.heroLeftDesktop.style.marginRight = "0rem";
+    },
+    async generateNatricon() {
+      let ref = this;
+      if (validateAddress(ref.nanoAddress)) {
+        ref.generateInitiated = true;
+        const getNatriconResult = async () => {
+          try {
+            return await this.$axios.get(
+              "https://natricon.com/api/v1/nano?svc=natricon.com&address=" +
+                ref.nanoAddress
+            );
+          } catch (e) {
+            console.error(e);
+          }
+        };
+        const natriconResult = await getNatriconResult();
+        if (natriconResult.data) {
+          ref.receivedNatricon = true;
+          setTimeout(() => {
+            ref.$refs.natriconContainer.innerHTML = natriconResult.data;
+            ref.showAgainButton = true;
+          }, 300);
+        } else {
+          // Do something
+        }
+      } else {
+        ref.inputError = true;
+      }
+    },
+    generateRandomNatricon() {
+      let randomAddress = genAddress();
+      this.nanoAddress = randomAddress;
+      this.generateNatricon();
+    },
+    inputChange() {
+      if (this.inputError) {
+        this.inputError = false;
+      }
+    },
+    resetProcess() {
+      this.showAgainButton = false;
+      this.generateInitiated = false;
+      this.receivedNatricon = false;
+      this.$refs.natriconContainer.innerHTML = "";
+    }
+  }
+};
+</script>
 <style scoped>
+.btn {
+  transition: all 0.2s ease-out;
+  transform: scale(1);
+}
+.btn:hover {
+  transform: scale(0.95);
+}
+.h-110 {
+  height: 110%;
+}
+.h-120 {
+  height: 120%;
+}
+.h-130 {
+  height: 130%;
+}
+.h-140 {
+  height: 140%;
+}
+.ray-margin-received {
+  margin-top: 150%;
+}
+.ray-margin {
+  margin-top: -150%;
+}
+.generator {
+  box-shadow: 0rem 0.75rem 1.5rem 0rem rgba(0, 0, 0, 0.3),
+    -0.9rem -0.9rem 0rem 0rem#66ffff, 0.65rem -0.7rem 0rem 0rem#FFA4F6,
+    -0.5rem 0.85rem 0rem 0rem#FFEE52, 0.8rem 0.9rem 0rem 0rem#66FFB2;
+  animation-name: shadow-animation;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+@keyframes shadow-animation {
+  0% {
+    box-shadow: 0rem 0.75rem 1.5rem 0rem rgba(0, 0, 0, 0.3),
+      -0.9rem -0.9rem 0rem 0rem#66ffff, 0.65rem -0.7rem 0rem 0rem#FFA4F6,
+      -0.5rem 0.85rem 0rem 0rem#FFEE52, 0.8rem 0.9rem 0rem 0rem#66FFB2;
+  }
+  50% {
+    box-shadow: 0rem 0.5rem 1rem 0rem rgba(0, 0, 0, 0.3),
+      0.75rem 1rem 0rem 0rem#66ffff, -0.75rem 1rem 0rem 0rem#FFA4F6,
+      0.75rem -1rem 0rem 0rem#FFEE52, -0.75rem -1rem 0rem 0rem#66FFB2;
+  }
+  100% {
+    box-shadow: 0rem 0.75rem 1.5rem 0rem rgba(0, 0, 0, 0.3),
+      -0.9rem -0.9rem 0rem 0rem#66ffff, 0.65rem -0.7rem 0rem 0rem#FFA4F6,
+      -0.5rem 0.85rem 0rem 0rem#FFEE52, 0.8rem 0.9rem 0rem 0rem#66FFB2;
+  }
+}
 .btn-shadow-cyan {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#66ffff;
   transition: all 0.2s ease-out;
@@ -38,6 +217,15 @@
 }
 .btn-shadow-cyan:hover {
   box-shadow: 0rem 0rem 0rem 0rem#66ffff;
+  transform: scale(0.95);
+}
+.btn-shadow-black {
+  box-shadow: -0.3rem 0.4rem 0rem 0rem#000000;
+  transition: all 0.2s ease-out;
+  transform: scale(1);
+}
+.btn-shadow-black:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#000000;
   transform: scale(0.95);
 }
 .line-cyan::after {
@@ -53,5 +241,24 @@
   margin-top: -0.6rem;
   background-color: #66ffff;
   z-index: -1;
+}
+.bg-line {
+  z-index: -1;
+}
+.generator-container {
+  width: calc(100vw - 3rem);
+  height: calc(100vw - 3rem);
+  max-width: 25rem;
+  max-height: 25rem;
+}
+@media only screen and (min-width: 768px) {
+  .generator-container {
+    width: 22vw;
+    height: 22vw;
+    min-width: 22rem;
+    min-height: 22rem;
+    max-width: 30vw;
+    max-height: 30vw;
+  }
 }
 </style>

@@ -3,17 +3,39 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math/rand"
+	"strconv"
 
 	"github.com/appditto/natricon/server/controller"
 	"github.com/appditto/natricon/server/net"
 	"github.com/appditto/natricon/server/utils"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
+	socketio "github.com/googollee/go-socket.io"
 	"github.com/jasonlvhit/gocron"
-
-	_ "go.uber.org/automaxprocs"
 )
+
+func CorsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		origin := c.Request.Header.Get("Origin")
+		if origin == "" {
+			origin = "https://natricon.com"
+		}
+		c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, Content-Length, X-CSRF-Token, Token, session, Origin, Host, Connection, Accept-Encoding, Accept-Language, X-Requested-With")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Request.Header.Del("Origin")
+
+		c.Next()
+	}
+}
 
 func main() {
 	// Get seed from env
@@ -26,6 +48,7 @@ func main() {
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
 	rpcUrl := flag.String("rpc-url", "", "Optional URL to use for nano RPC Client")
+	wsUrl := flag.String("nano-ws-url", "", "Nano WS Url to use for tracking donation account")
 	flag.Parse()
 
 	if *loadFiles {
@@ -49,7 +72,24 @@ func main() {
 
 	// Setup router
 	router := gin.Default()
-	router.Use(cors.Default())
+	router.Use(CorsMiddleware())
+
+	// Setup socket IO server
+	sio, _ := socketio.NewServer(nil)
+	sio.OnConnect("/", func(s socketio.Conn) error {
+		s.SetContext("")
+		s.Join("bcast")
+		clientId, err := strconv.Atoi(s.ID())
+		if err != nil {
+			clientId = rand.Intn(1000)
+		}
+		s.Emit("connected", strconv.Itoa(clientId))
+		return nil
+	})
+	go sio.Serve()
+	defer sio.Close()
+	router.GET("/socket.io/*any", gin.WrapH(sio))
+	router.POST("/socket.io/*any", gin.WrapH(sio))
 
 	// Setup channel for stats processing job
 	statsChan := make(chan *gin.Context, 100)
@@ -61,15 +101,15 @@ func main() {
 	}
 	// Setup nano controller
 	nanoController := controller.NanoController{
-		RPCClient: rpcClient,
+		RPCClient:       rpcClient,
+		SIOServer:       sio,
+		DonationAccount: utils.GetEnv("DONATION_ACCOUNT", ""),
 	}
 
 	// V1 API
 	router.GET("/api/v1/nano", natriconController.GetNano)
 	// Stats
 	router.GET("/api/v1/nano/stats", controller.Stats)
-	// Donation callback
-	router.POST("/api/nanocallback", nanoController.Callback)
 	// For testing
 	router.GET("/api/natricon", natriconController.GetNatricon)
 	router.GET("/api/random", natriconController.GetRandom)
@@ -86,6 +126,11 @@ func main() {
 			gocron.Every(30).Minutes().Do(nanoController.UpdatePrincipalReps)
 			<-gocron.Start()
 		}()
+	}
+
+	// Start Nano WS client
+	if *wsUrl != "" {
+		go net.StartNanoWSClient(*wsUrl, utils.GetEnv("DONATION_ACCOUNT", ""), nanoController.Callback)
 	}
 
 	// Start stats worker

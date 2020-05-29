@@ -19,6 +19,8 @@ module.exports = {
       aquaGreen: "#7BFFC8",
       brightPink: "#FFA4F6",
       lime: "#D4FF00",
+      red: "#FF4646",
+      lightGreen: "#B5FFD8"
     },
     extend: {
       spacing: {
@@ -28,6 +30,7 @@ module.exports = {
         '108': '27rem',
         '120': '30rem',
         '128': '33rem',
+        '144': '39rem',
       },
       opacity: {
         '5': '.05',
@@ -38,6 +41,9 @@ module.exports = {
       padding: {
         '0_5': '0.125rem',
         '1_5': '0.375rem'
+      },
+      borderRadius: {
+        'xl': "1rem"
       }
     }
   },

@@ -15,6 +15,25 @@ type RPCClient struct {
 	Url string
 }
 
+// Base request
+func (client RPCClient) makeRequest(request interface{}) ([]byte, error) {
+	requestBody, _ := json.Marshal(request)
+	// HTTP post
+	resp, err := http.Post(client.Url, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		glog.Errorf("Error making RPC request %s", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+	// Try to decode+deserialize
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		glog.Errorf("Error decoding response body %s", err)
+		return nil, err
+	}
+	return body, nil
+}
+
 // Nano account_history request
 func (client RPCClient) MakeAccountHistoryRequest(account string, count uint) (*model.AccountHistoryResponse, error) {
 	// Build request
@@ -23,22 +42,13 @@ func (client RPCClient) MakeAccountHistoryRequest(account string, count uint) (*
 		Account:     account,
 		Count:       count,
 	}
-	requestBody, _ := json.Marshal(request)
-	// HTTP post
-	resp, err := http.Post(client.Url, "application/json", bytes.NewBuffer(requestBody))
+	response, err := client.makeRequest(request)
 	if err != nil {
-		glog.Errorf("Error making RPC request %s", err)
-		return nil, errors.New("Error")
+		glog.Errorf("Error making request %s", err)
+		return nil, err
 	}
-	defer resp.Body.Close()
-	// Try to decode+deserialize
 	var historyResponse model.AccountHistoryResponse
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		glog.Errorf("Error decoding request body %s", err)
-		return nil, errors.New("Error")
-	}
-	err = json.Unmarshal(body, &historyResponse)
+	err = json.Unmarshal(response, &historyResponse)
 	if err != nil {
 		glog.Errorf("Error unmarshaling response %s", err)
 		return nil, errors.New("Error")
@@ -52,22 +62,14 @@ func (client RPCClient) MakeConfirmationQuorumRequest() (*model.ConfirmationQuor
 	request := model.ConfirmationQuorumRequest{
 		BaseRequest: model.ConfirmationQuorumAction,
 	}
-	requestBody, _ := json.Marshal(request)
-	// HTTP post
-	resp, err := http.Post(client.Url, "application/json", bytes.NewBuffer(requestBody))
+	response, err := client.makeRequest(request)
 	if err != nil {
-		glog.Errorf("Error making RPC request %s", err)
-		return nil, errors.New("Error")
+		glog.Errorf("Error making request %s", err)
+		return nil, err
 	}
-	defer resp.Body.Close()
 	// Try to decode+deserialize
 	var quorumResponse model.ConfirmationQuorumResponse
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		glog.Errorf("Error decoding request body %s", err)
-		return nil, errors.New("Error")
-	}
-	err = json.Unmarshal(body, &quorumResponse)
+	err = json.Unmarshal(response, &quorumResponse)
 	if err != nil {
 		glog.Errorf("Error unmarshaling response %s", err)
 		return nil, errors.New("Error")
@@ -81,25 +83,43 @@ func (client RPCClient) MakeRepresentativesRequest() (*model.RepresentativeRespo
 	request := model.RepresentativesRequest{
 		BaseRequest: model.RepresentativesAction,
 	}
-	requestBody, _ := json.Marshal(request)
-	// HTTP post
-	resp, err := http.Post(client.Url, "application/json", bytes.NewBuffer(requestBody))
+	response, err := client.makeRequest(request)
 	if err != nil {
-		glog.Errorf("Error making RPC request %s", err)
-		return nil, errors.New("Error")
+		glog.Errorf("Error making request %s", err)
+		return nil, err
 	}
-	defer resp.Body.Close()
 	// Try to decode+deserialize
 	var repResponse model.RepresentativeResponse
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		glog.Errorf("Error decoding request body %s", err)
-		return nil, errors.New("Error")
-	}
-	err = json.Unmarshal(body, &repResponse)
+	err = json.Unmarshal(response, &repResponse)
 	if err != nil {
 		glog.Errorf("Error unmarshaling response %s", err)
 		return nil, errors.New("Error")
 	}
 	return &repResponse, nil
+}
+
+// send
+func (client RPCClient) MakeSendRequest(source string, destination string, amountRaw string, id string, wallet string) (*model.SendResponse, error) {
+	// Build request
+	request := model.SendRequest{
+		BaseRequest: model.SendAction,
+		Source:      source,
+		Destination: destination,
+		AmountRaw:   amountRaw,
+		ID:          id,
+		Wallet:      wallet,
+	}
+	response, err := client.makeRequest(request)
+	if err != nil {
+		glog.Errorf("Error making request %s", err)
+		return nil, err
+	}
+	// Try to decode+deserialize
+	var sendResponse model.SendResponse
+	err = json.Unmarshal(response, &sendResponse)
+	if err != nil {
+		glog.Errorf("Error unmarshaling response %s", err)
+		return nil, errors.New("Error")
+	}
+	return &sendResponse, nil
 }
