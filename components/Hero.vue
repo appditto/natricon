@@ -25,11 +25,11 @@
           <!-- Nano Address Form Group -->
           <form
             :class="generateInitiated?'scale-0':'scale-100'"
-            class="w-full flex flex-col justify-center items-center px-8 mx:px-12 transform duration-200 ease-out"
+            class="w-full flex flex-col justify-center items-center px-5 md:px-6 lg:px-8 transform duration-200 ease-out"
           >
             <input
-              :class="inputError?'border-red text-red':'border-black'"
-              class="w-full md:max-w-sm text-xl font-medium border-2 px-4 pt-1 pb-2 rounded-lg my-1 transition-colors duration-200 ease-out"
+              :class="inputError?'border-red text-red':'border-black focus:bg-cyan'"
+              class="w-full md:max-w-sm text-xl font-medium border-2 px-4 pt-1 pb-2 rounded-full my-1 transition-colors duration-200 ease-out"
               type="text"
               ref="nanoAddress"
               id="nanoAddress"
@@ -40,20 +40,31 @@
             />
             <button
               @click.prevent="generateNatricon()"
-              class="w-full md:max-w-sm btn text-xl font-medium border-black hover:text-cyan hover:border-cyan border-2 bg-black text-white pt-1 pb-2 px-6 rounded-lg mt-1"
-            >go!</button>
+              class="btn-2-shadow-cyan w-full md:max-w-sm btn text-xl font-medium hover:text-cyan bg-black text-white pt-1 pb-2 px-6 rounded-full mt-1"
+            >meet!</button>
           </form>
           <button
             :class="generateInitiated?'scale-0':'scale-100 hover:scale-95'"
             @click.prevent="generateRandomNatricon()"
-            class="transform transition-all duration-200 text-lg font-medium border-black hover:text-cyan hover:border-cyan border-2 bg-black text-white pt-0_5 pb-1_5 px-4 rounded-lg bottom-0 mb-6 absolute"
+            class="btn-3-shadow-green bg-black text-white hover:text-green btn-randomize transform transition-all duration-200 text-lg md:text-xl mb-8 lg:mb-10 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium rounded-full bottom-0 absolute"
           >randomize</button>
           <div v-if="generateInitiated" ref="natriconContainer" class="w-full h-full absolute"></div>
           <button
             :class="showAgainButton?'scale-100 hover:scale-95':'scale-0'"
             @click.prevent="resetProcess()"
-            class="transform transition-all duration-200 text-lg font-medium border-black hover:text-cyan hover:border-cyan border-2 bg-black text-white pt-0_5 pb-1_5 px-4 rounded-lg bottom-0 mb-6 absolute"
+            class="btn-3-shadow-green hover:text-green bg-black text-white transform transition-all duration-200 md:text-xl mb-6 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium border-black rounded-full bottom-0 absolute"
           >again!</button>
+          <!-- Loading Animation -->
+          <div
+            v-if="generateInitiated"
+            :class="natriconLoading?'scale-100 transition-all duration-200':'scale-0'"
+            class="w-full h-full flex flex-row transform justify-center items-center left-0 top-0 absolute"
+          >
+            <div class="absolute rounded-full bg-green green-circle"></div>
+            <div class="absolute rounded-full bg-brightPink brightPink-circle"></div>
+            <div class="absolute rounded-full bg-yellow yellow-circle"></div>
+            <div class="absolute rounded-full bg-cyan cyan-circle"></div>
+          </div>
           <!-- Received Animation -->
           <div
             v-if="generateInitiated"
@@ -103,7 +114,8 @@ export default {
       inputError: false,
       generateInitiated: false,
       receivedNatricon: false,
-      showAgainButton: false
+      showAgainButton: false,
+      natriconLoading: false
     };
   },
   methods: {
@@ -115,6 +127,9 @@ export default {
       let ref = this;
       if (validateAddress(ref.nanoAddress)) {
         ref.generateInitiated = true;
+        setTimeout(() => {
+          ref.natriconLoading = true;
+        }, 100);
         const getNatriconResult = async () => {
           try {
             return await this.$axios.get(
@@ -130,6 +145,7 @@ export default {
           ref.receivedNatricon = true;
           setTimeout(() => {
             ref.$refs.natriconContainer.innerHTML = natriconResult.data;
+            ref.natriconLoading = false;
             ref.showAgainButton = true;
           }, 300);
         } else {
@@ -189,7 +205,7 @@ export default {
     -0.9rem -0.9rem 0rem 0rem#66ffff, 0.65rem -0.7rem 0rem 0rem#FFA4F6,
     -0.5rem 0.85rem 0rem 0rem#FFEE52, 0.8rem 0.9rem 0rem 0rem#66FFB2;
   animation-name: shadow-animation;
-  animation-duration: 4s;
+  animation-duration: 6s;
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
 }
@@ -199,10 +215,20 @@ export default {
       -0.9rem -0.9rem 0rem 0rem#66ffff, 0.65rem -0.7rem 0rem 0rem#FFA4F6,
       -0.5rem 0.85rem 0rem 0rem#FFEE52, 0.8rem 0.9rem 0rem 0rem#66FFB2;
   }
+  25% {
+    box-shadow: 0rem 0.75rem 1.5rem 0rem rgba(0, 0, 0, 0.3),
+      1.2rem 0.8rem 0rem 0rem#66ffff, -0.9rem 1rem 0rem 0rem#FFA4F6,
+      0.7rem -1rem 0rem 0rem#FFEE52, -0.9rem -0.95rem 0rem 0rem#66FFB2;
+  }
   50% {
-    box-shadow: 0rem 0.5rem 1rem 0rem rgba(0, 0, 0, 0.3),
-      0.75rem 1rem 0rem 0rem#66ffff, -0.75rem 1rem 0rem 0rem#FFA4F6,
-      0.75rem -1rem 0rem 0rem#FFEE52, -0.75rem -1rem 0rem 0rem#66FFB2;
+    box-shadow: 0rem 0.75rem 1.5rem 0rem rgba(0, 0, 0, 0.3),
+      -0.9rem -0.8rem 0rem 0rem#66ffff, 0.8rem -1.1rem 0rem 0rem#FFA4F6,
+      -1.1rem 1rem 0rem 0rem#FFEE52, 1rem 0.9rem 0rem 0rem#66FFB2;
+  }
+  75% {
+    box-shadow: 0rem 0.75rem 1.5rem 0rem rgba(0, 0, 0, 0.3),
+      0.9rem 1.1rem 0rem 0rem#66ffff, -0.8rem 0.9rem 0rem 0rem#FFA4F6,
+      0.9rem -0.9rem 0rem 0rem#FFEE52, -0.9rem -1.1rem 0rem 0rem#66FFB2;
   }
   100% {
     box-shadow: 0rem 0.75rem 1.5rem 0rem rgba(0, 0, 0, 0.3),
@@ -218,6 +244,24 @@ export default {
 .btn-shadow-cyan:hover {
   box-shadow: 0rem 0rem 0rem 0rem#66ffff;
   transform: scale(0.95);
+}
+.btn-2-shadow-cyan {
+  box-shadow: 0rem 0.4rem 0rem 0rem#66ffff;
+}
+.btn-2-shadow-cyan:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#66ffff;
+}
+.btn-3-shadow-green {
+  box-shadow: 0rem 0.3rem 0rem 0rem#66FFB2;
+}
+.btn-3-shadow-green:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#66FFB2;
+}
+.btn-3-shadow-black {
+  box-shadow: 0rem 0.3rem 0rem 0rem#000000;
+}
+.btn-3-shadow-black:hover {
+  box-shadow: 0rem 0rem 0rem 0rem#000000;
 }
 .btn-shadow-black {
   box-shadow: -0.3rem 0.4rem 0rem 0rem#000000;
@@ -259,6 +303,101 @@ export default {
     min-height: 22rem;
     max-width: 30vw;
     max-height: 30vw;
+  }
+}
+.cyan-circle,
+.brightPink-circle,
+.green-circle,
+.yellow-circle {
+  width: 25%;
+  height: 25%;
+  margin-left: 0%;
+  margin-top: 0%;
+}
+.cyan-circle {
+  animation: cyan-animation;
+  animation-duration: 2.2s;
+  animation-iteration-count: infinite;
+  animation-delay: 1s;
+}
+.green-circle {
+  animation: cyan-animation;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+.brightPink-circle {
+  animation: yellow-animation;
+  animation-duration: 2.1s;
+  animation-iteration-count: infinite;
+  animation-delay: -1s;
+}
+.yellow-circle {
+  animation: yellow-animation;
+  animation-duration: 2.4s;
+  animation-iteration-count: infinite;
+}
+@keyframes cyan-animation {
+  0% {
+    width: 25%;
+    height: 25%;
+    margin-left: 0%;
+    margin-top: 0%;
+  }
+  25% {
+    width: 32%;
+    height: 32%;
+    margin-left: -10%;
+    margin-top: -10%;
+  }
+  50% {
+    width: 23%;
+    height: 23%;
+    margin-left: 0%;
+    margin-top: 0%;
+  }
+  75% {
+    width: 30%;
+    height: 30%;
+    margin-left: 10%;
+    margin-top: 10%;
+  }
+  100% {
+    width: 25%;
+    height: 25%;
+    margin-left: 0%;
+    margin-top: 0%;
+  }
+}
+@keyframes yellow-animation {
+  0% {
+    width: 25%;
+    height: 25%;
+    margin-left: 0%;
+    margin-top: 0%;
+  }
+  25% {
+    width: 30%;
+    height: 30%;
+    margin-left: 10%;
+    margin-top: -10%;
+  }
+  50% {
+    width: 26%;
+    height: 26%;
+    margin-left: 0%;
+    margin-top: 0%;
+  }
+  75% {
+    width: 32%;
+    height: 32%;
+    margin-left: -10%;
+    margin-top: 10%;
+  }
+  100% {
+    width: 25%;
+    height: 25%;
+    margin-left: 0%;
+    margin-top: 0%;
   }
 }
 </style>

@@ -6,7 +6,7 @@
           <span class="font-bold line-brightPink">required</span>
         </span> parameters
       </h1>
-      <div class="w-full flex flex-row flex-wrap justify-center items-center mt-10">
+      <div class="flex flex-row flex-wrap items-center mt-10 px-2">
         <code class="bg-brightPink px-3 py-1 text-xl font-bold rounded-lg">address</code>
         <span class="text-2xl font-bold m-3">:</span>
         <div class="flex flex-col">
