@@ -100,20 +100,20 @@
                 <!-- Donate Amount Buttons -->
                 <div class="flex flex-row flex-wrap justify-center items-center mb-4">
                   <button
-                    @mouseover="donationAmount=2"
-                    @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
+                    @mouseover="!isDonationInitiated ? donationAmount=2 : null"
+                    @mouseleave="!isDonationInitiated ? customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2 : null"
                     @click="initiateDonationFor(2)"
                     class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
                   >2 nano</button>
                   <button
-                    @mouseover="donationAmount=10"
-                    @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
+                    @mouseover="!isDonationInitiated ? donationAmount=10 : null"
+                    @mouseleave="!isDonationInitiated ? customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2 : null"
                     @click="initiateDonationFor(10)"
                     class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
                   >10 nano</button>
                   <button
-                    @mouseover="donationAmount=20"
-                    @mouseleave="customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2"
+                    @mouseover="!isDonationInitiated ? donationAmount=20 : null"
+                    @mouseleave="!isDonationInitiated ? customNanoAmountModel?donationAmount=customNanoAmountModel:donationAmount=2 : null"
                     @click="initiateDonationFor(20)"
                     class="btn w-32 font-medium text-lg bg-black text-white hover:text-lightPink btn-sm-shadow-lightPink rounded-lg px-3 pt-1 pb-3 mt-5 mx-3"
                   >20 nano</button>
@@ -294,19 +294,14 @@ export default {
       }
       this.donationAmount = this.$refs.customNanoAmount.value;
     },
-    doCopy() {
-      let ref = this;
-      this.$copyText(this.address).then(
-        function(e) {
-          ref.isAddressCopied = true;
-        },
-        function(e) {
-          alert("Can not copy");
-        }
-      );
-      setTimeout(function() {
-        ref.isAddressCopied = false;
-      }, 2000);
+    timeout(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    async doCopy() {
+      await this.$copyText(this.address)
+      this.isAddressCopied = true
+      await this.timeout(2000)
+      this.isAddressCopied = false
     },
     handleAmountCallback(rawAmount) {
       // TODO - remove logging
