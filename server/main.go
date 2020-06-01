@@ -51,7 +51,7 @@ func RandFiles(count int, seed string) {
 
 		accessories, _ := image.GetAccessoriesForHash(sha256, spc.BTNone, false, nil)
 		svg, _ := image.CombineSVG(accessories)
-		ioutil.WriteFile(fmt.Sprintf("randsvg/%d.svg", i+1), svg, os.FileMode(0644))
+		ioutil.WriteFile(fmt.Sprintf("randsvg/%s.svg", address), svg, os.FileMode(0644))
 	}
 }
 
