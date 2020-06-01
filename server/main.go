@@ -3,11 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
+	"os"
 	"strconv"
 
 	"github.com/appditto/natricon/server/controller"
+	"github.com/appditto/natricon/server/image"
 	"github.com/appditto/natricon/server/net"
+	"github.com/appditto/natricon/server/spc"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
@@ -37,6 +41,20 @@ func CorsMiddleware() gin.HandlerFunc {
 	}
 }
 
+func RandFiles(count int, seed string) {
+	if _, err := os.Stat("randsvg"); os.IsNotExist(err) {
+		os.Mkdir("randsvg", os.FileMode(0755))
+	}
+	for i := 0; i < count; i++ {
+		address := utils.GenerateAddress()
+		sha256 := utils.AddressSha256(address, seed)
+
+		accessories, _ := image.GetAccessoriesForHash(sha256, spc.BTNone, false, nil)
+		svg, _ := image.CombineSVG(accessories)
+		ioutil.WriteFile(fmt.Sprintf("randsvg/%d.svg", i+1), svg, os.FileMode(0644))
+	}
+}
+
 func main() {
 	// Get seed from env
 	seed := utils.GetEnv("NATRICON_SEED", "1234567890")
@@ -44,6 +62,7 @@ func main() {
 	loadFiles := flag.Bool("load-files", false, "Print assets as GO arrays")
 	testBodyDist := flag.Bool("test-bd", false, "Test body distribution")
 	testHairDist := flag.Bool("test-hd", false, "Test hair distribution")
+	randomFiles := flag.Int("rand-files", -1, "Generate this many random SVGs and output to randsvg folder")
 
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
@@ -53,6 +72,10 @@ func main() {
 
 	if *loadFiles {
 		LoadAssetsToArray()
+		return
+	} else if *randomFiles > 0 {
+		fmt.Printf("Generating %d files in ./randsvg", *randomFiles)
+		RandFiles(*randomFiles, seed)
 		return
 	}
 
