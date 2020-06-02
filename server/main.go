@@ -154,8 +154,9 @@ func main() {
 	}
 
 	// Start Nano WS client
-	if *wsUrl != "" {
-		go net.StartNanoWSClient(*wsUrl, utils.GetEnv("DONATION_ACCOUNT", ""), nanoController.Callback)
+	donationAccount := utils.GetEnv("DONATION_ACCOUNT", "")
+	if *wsUrl != "" && utils.ValidateAddress(donationAccount) {
+		go net.StartNanoWSClient(*wsUrl, donationAccount, nanoController.Callback)
 	}
 
 	// Start stats worker
