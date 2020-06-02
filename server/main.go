@@ -133,10 +133,12 @@ func main() {
 	router.GET("/api/v1/nano", natriconController.GetNano)
 	// Stats
 	router.GET("/api/v1/nano/stats", controller.Stats)
-	// For testing
-	router.GET("/api/natricon", natriconController.GetNatricon)
-	router.GET("/api/random", natriconController.GetRandom)
-	router.GET("/api/randomsvg", natriconController.GetRandomSvg)
+	if gin.IsDebugging() {
+		// For testing
+		router.GET("/api/natricon", natriconController.GetNatricon)
+		router.GET("/api/random", natriconController.GetRandom)
+		router.GET("/api/randomsvg", natriconController.GetRandomSvg)
+	}
 
 	// Setup cron jobs
 	if !gin.IsDebugging() {

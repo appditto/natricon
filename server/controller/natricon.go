@@ -65,7 +65,7 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 	}
 }
 
-// TODO - remove us: Testing APIs
+// Testing APIs
 func (nc NatriconController) GetRandomSvg(c *gin.Context) {
 	var err error
 
