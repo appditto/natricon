@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container: 
       image: appditto/imagemagick_go:latest
     steps:
@@ -22,7 +22,7 @@ jobs:
 
   build_and_publish_nuxt:
     name: Build and Publish Nuxt Image
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       GITHUB_RUN_ID: ${{ github.run_id }}    
     steps:
@@ -48,7 +48,7 @@ jobs:
   build_and_publish_go:
     name: Build and Publish GO Image
     needs: test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       GITHUB_RUN_ID: ${{ github.run_id }}    
     steps:
@@ -73,7 +73,7 @@ jobs:
   deploy_nuxt:
     name: Deploy nuxt app
     needs: build_and_publish_nuxt
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       GITHUB_RUN_ID: ${{ github.run_id }}
     steps:
@@ -99,7 +99,7 @@ jobs:
   deploy_go:
     name: Deploy GO app
     needs: build_and_publish_go
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       GITHUB_RUN_ID: ${{ github.run_id }}
     steps:
