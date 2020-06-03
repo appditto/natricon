@@ -42,7 +42,7 @@
           alt="Natricon Formula Desktop"
         />
       </div>
-      <div class="w-full md:max-w-xl lg:max-w-4xl mt-12 md:mt-20 lg:mt-24">
+      <div class="w-full md:max-w-xl lg:max-w-4xl mt-16 md:mt-20 lg:mt-24">
         <div class="videoContainer rounded-lg overflow-hidden bg-shadow">
           <iframe
             class="border-white"
@@ -60,7 +60,7 @@
 </template>
 <style scoped>
 .bg-shadow {
-  box-shadow: -0.6rem 0.6rem 0rem 0rem#000000;
+  box-shadow: 0rem 0rem 0rem 0.3rem#000000;
 }
 .videoContainer {
   position: relative;
