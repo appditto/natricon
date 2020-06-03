@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center py-8 md:py-24">
+  <div class="w-full flex flex-col items-center py-8 md:py-24" id="integrate">
     <div class="n-container flex flex-col items-center px-5">
       <h3 class="text-4xl md:text-5xl text-center leading-none">
         wanna integrate

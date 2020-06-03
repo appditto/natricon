@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center pt-16 pb-8 md:pb-16">
+  <div class="w-full flex flex-col items-center pt-16 pb-8 md:pb-16" id="required-parameters">
     <div class="n-container flex flex-col items-center px-5">
       <h1 class="text-4xl md:text-5xl text-center leading-none">
         <span class="relative inline-block">

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center pt-6 pb-8 md:pt-20 pb-24">
+  <div class="w-full flex flex-col items-center pt-6 pb-8 md:pt-20 pb-24" id="opensource-and-free">
     <div class="n-container flex flex-col items-center px-5">
       <h3 class="text-4xl md:text-5xl text-center leading-tight">
         <span class="relative inline-block">
@@ -298,10 +298,10 @@ export default {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
     async doCopy() {
-      await this.$copyText(this.address)
-      this.isAddressCopied = true
-      await this.timeout(2000)
-      this.isAddressCopied = false
+      await this.$copyText(this.address);
+      this.isAddressCopied = true;
+      await this.timeout(2000);
+      this.isAddressCopied = false;
     },
     handleAmountCallback(rawAmount) {
       if (rawAmount == this.qrValueAmountRaw) {

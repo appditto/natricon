@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center relative pt-4 pb-4">
+  <div class="w-full flex flex-col items-center relative pt-4 pb-4" id="how">
     <!-- Right Illustration -->
     <img
       class="hidden md:block bg-illustration h-auto absolute right-0 opacity-15 md:opacity-100"

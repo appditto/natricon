@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center py-8 md:py-20 relative">
+  <div class="w-full flex flex-col items-center py-8 md:py-20 relative" id="available-on">
     <!-- Right Illustration -->
     <img
       class="hidden md:block bg-illustration h-auto absolute right-0"

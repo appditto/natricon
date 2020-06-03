@@ -6,6 +6,7 @@
     <available-on />
     <opensource-and-free />
     <integrate />
+    <stats :uniqueServed="uniqueServed" :serviceCount="serviceCount" />
   </div>
 </template>
 <script>
@@ -15,6 +16,7 @@ import Badges from "~/components/Badges.vue";
 import AvailableOn from "~/components/AvailableOn.vue";
 import OpensourceAndFree from "~/components/OpensourceAndFree.vue";
 import Integrate from "~/components/Integrate.vue";
+import Stats from "~/components/Stats.vue";
 export default {
   components: {
     Hero,
@@ -22,7 +24,44 @@ export default {
     Badges,
     AvailableOn,
     OpensourceAndFree,
-    Integrate
+    Integrate,
+    Stats
+  },
+  asyncData({ error, params, $axios }) {
+    function abbreviateNumber(value) {
+      var newValue = value;
+      if (value >= 1000) {
+        var suffixes = ["", "K", "M", "B", "T"];
+        var suffixNum = Math.floor(("" + value).length / 3);
+        var shortValue = "";
+        for (var precision = 2; precision >= 1; precision--) {
+          shortValue = parseFloat(
+            (suffixNum != 0
+              ? value / Math.pow(1000, suffixNum)
+              : value
+            ).toPrecision(precision)
+          );
+          var dotLessShortValue = (shortValue + "").replace(
+            /[^a-zA-Z 0-9]+/g,
+            ""
+          );
+          if (dotLessShortValue.length <= 2) {
+            break;
+          }
+        }
+        if (shortValue % 1 != 0) shortValue = shortValue.toFixed(1);
+        newValue = shortValue + suffixes[suffixNum];
+      }
+      return newValue;
+    }
+    return $axios.get(`https://natricon.com/api/v1/nano/stats`).then(res => {
+      let serviceCount = Object.keys(res.data.services).length;
+      console.log(res.data);
+      return {
+        uniqueServed: abbreviateNumber(res.data.unique_served),
+        serviceCount: abbreviateNumber(serviceCount)
+      };
+    });
   },
   data() {
     return {

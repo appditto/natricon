@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-row justify-center items-center px-4 py-8 md:px-6">
+  <div class="w-full flex flex-row justify-center items-center px-4 py-8 md:px-6" id="footer">
     <div class="n-container flex flex-col justify-center items-center">
       <div class="flex flex-row flex-wrap justify-center">
         <a class="relative m-3" href="https://twitter.com/appditto" target="_blank">

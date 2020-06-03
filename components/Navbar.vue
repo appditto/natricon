@@ -1,5 +1,8 @@
 <template>
-  <div class="w-full flex flex-row justify-center items-center px-4 py-4 md:px-6 md:py-6">
+  <div
+    class="w-full flex flex-row justify-center items-center px-4 py-4 md:px-6 md:py-6"
+    id="navbar"
+  >
     <div class="n-container flex flex-row justify-between items-center">
       <nuxt-link class="relative" to="/">
         <div class="w-36 md:w-40 h-auto line bga-cyan scaleY">

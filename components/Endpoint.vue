@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center pt-12 pb-16">
+  <div class="w-full flex flex-col items-center pt-12 pb-16" id="api-endpoint">
     <div class="n-container flex flex-col items-center px-5">
       <h1 class="text-4xl md:text-5xl text-center leading-none">
         <span class="relative inline-block">
