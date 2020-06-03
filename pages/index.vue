@@ -56,7 +56,6 @@ export default {
     }
     return $axios.get(`https://natricon.com/api/v1/nano/stats`).then(res => {
       let serviceCount = Object.keys(res.data.services).length;
-      console.log(res.data);
       return {
         uniqueServed: abbreviateNumber(res.data.unique_served),
         serviceCount: abbreviateNumber(serviceCount)

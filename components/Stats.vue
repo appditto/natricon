@@ -4,7 +4,7 @@
     <div class="n-container flex flex-col items-center px-5 md:px-12 lg:px-24 z-10">
       <h3 class="text-4xl md:text-5xl text-center leading-tight">
         <span class="relative inline-block">
-          <span class="font-bold line-green">live</span>
+          <span class="font-bold line-green">natricon</span>
         </span> stats
       </h3>
       <div class="w-full relative mt-2">
