@@ -7,7 +7,7 @@
           <span class="font-bold line-green">natricon</span>
         </span> stats
       </h3>
-      <div class="w-full relative mt-2">
+      <div class="w-full relative mt-2 md:mt-4">
         <!-- Background -->
         <div
           class="w-full hidden md:block bg-white bg-shadow border-4 border-black rounded-full h-20 absolute bottom-0 z-0 -mb-10"
@@ -18,18 +18,18 @@
             <div
               class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 md:px-8 border-4 border-black card overflow-hidden"
             >
-              <h6 class="text-sm text-center">we served</h6>
+              <h6 class="text text-center">we served</h6>
               <h5 class="text-5xl font-bold text-center leading-tight">{{ uniqueServed }}</h5>
-              <h6 class="text-sm text-center mt-2">unique natricons</h6>
+              <h6 class="text text-center mt-2">unique natricons</h6>
             </div>
           </div>
           <div class="w-full md:w-1/2 lg:w-1/3 max-w-sm px-4 mt-8 flex flex-col">
             <div
               class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 md:px-8 border-4 border-black card overflow-hidden"
             >
-              <h6 class="text-sm text-center">available on</h6>
+              <h6 class="text text-center">available on</h6>
               <h5 class="text-5xl font-bold text-center leading-tight">{{ serviceCount }}</h5>
-              <h6 class="text-sm text-center mt-2">services</h6>
+              <h6 class="text text-center mt-2">services</h6>
             </div>
           </div>
         </div>
