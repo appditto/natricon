@@ -60,7 +60,12 @@
 </template>
 <style scoped>
 .bg-shadow {
-  box-shadow: 0rem 0rem 0rem 0.3rem#000000;
+  box-shadow: 0rem 0rem 0rem 0.2rem#000000;
+}
+@media only screen and (min-width: 768px) {
+  .bg-shadow {
+    box-shadow: 0rem 0rem 0rem 0.3rem#000000;
+  }
 }
 .videoContainer {
   position: relative;
