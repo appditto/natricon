@@ -14,7 +14,7 @@
     />
     <!-- Main Part -->
     <div
-      class="n-container flex flex-col items-center px-5 z-10 my-8 md:mt-24 md:mb-40 lg:mt-32 lg:mb-56"
+      class="n-container flex flex-col items-center px-5 z-10 my-8 md:mt-24 md:mb-40 lg:mt-32 lg:mb-48"
     >
       <h3 class="text-4xl md:text-5xl text-center leading-none">
         how does it
@@ -42,10 +42,38 @@
           alt="Natricon Formula Desktop"
         />
       </div>
+      <div class="w-full md:max-w-xl lg:max-w-4xl mt-12 md:mt-20 lg:mt-24">
+        <div class="videoContainer rounded-lg overflow-hidden bg-shadow">
+          <iframe
+            class="border-white"
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/ZtaTEqTtukk"
+            frameborder="0"
+            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <style scoped>
+.bg-shadow {
+  box-shadow: -0.6rem 0.6rem 0rem 0rem#000000;
+}
+.videoContainer {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+}
+.videoContainer iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 .line-redPink::after {
   display: block;
   position: absolute;
