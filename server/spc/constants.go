@@ -100,4 +100,5 @@ var SvcList = []StatsService{
 	"natrium",
 	"nanocrawler",
 	"natricon.com",
+	"sendr.space",
 }
