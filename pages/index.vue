@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       pageDescription:
-        "nano address visualisation with a twist. available on natrium & nanocrawler.",
+        "a friendly, familiar face for your nano address. available on natrium & nanocrawler",
       pageTitle: "natricon | meet your nano address",
       pagePreview: "https://natricon.com/images/previews/preview-home.png",
       pageThemeColor: "#FFFFFF",
