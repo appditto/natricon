@@ -276,7 +276,7 @@ func (r *redisManager) ServiceStats() map[spc.StatsService]int64 {
 }
 
 // Re-randomization - nonces for address re-randomization
-const NoNonceApplied = -1
+const NoNonceApplied = -2
 
 func (r *redisManager) GetNonce(pubkey string) int {
 	nonceStr, err := r.hget(fmt.Sprintf("%s:nonces", keyPrefix), pubkey)
