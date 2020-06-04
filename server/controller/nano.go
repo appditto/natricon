@@ -11,6 +11,7 @@ import (
 	"github.com/appditto/natricon/server/utils"
 	"github.com/bsm/redislock"
 	"github.com/golang/glog"
+	guuid "github.com/google/uuid"
 	socketio "github.com/googollee/go-socket.io"
 )
 
@@ -81,7 +82,7 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 				nc.DonationAccount,
 				block["account"].(string),
 				amount,
-				utils.AddressSha256(block["account"].(string), strconv.Itoa(newNonce)),
+				guuid.New().String(),
 				wallet,
 			)
 			if err != nil {
