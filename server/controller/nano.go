@@ -77,12 +77,13 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 				glog.Warningf("Not issuing refund for %s because WALLET_ID is not configured", hash)
 				return
 			}
-			glog.Infof("Issuing refund to %s for %s due to nonce change", block["account"], amount)
+			sendId := guuid.New().String()
+			glog.Infof("Issuing refund to %s for %s due to nonce change ID %s", block["account"], amount, sendId)
 			response, err := nc.RPCClient.MakeSendRequest(
 				nc.DonationAccount,
 				block["account"].(string),
 				amount,
-				guuid.New().String(),
+				sendId,
 				wallet,
 			)
 			if err != nil {
