@@ -2,7 +2,6 @@ package controller
 
 import (
 	"fmt"
-	"math/big"
 	"strconv"
 	"time"
 
@@ -51,10 +50,14 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 			} else if amountBig.Cmp(reRandomTrigger) == 0 {
 				// Do re-random with nonce 0
 				doReRandom = true
-			} else if amountBig.Cmp(big.NewInt(-1)) == 0 {
-				// Remove nonce
-				doReRandom = true
-				nonce = db.NoNonceApplied
+			} else if amountBig.Cmp(reRandomTrigger) == -1 {
+				delta := amountBig.Sub(amountBig, reRandomTrigger)
+				nonce64 := delta.Int64()
+				if nonce64 == -1 {
+					// Remove nonce
+					doReRandom = true
+					nonce = db.NoNonceApplied
+				}
 			}
 		}
 		if doReRandom {
