@@ -268,3 +268,60 @@ func (r *redisManager) ServiceStats() map[spc.StatsService]int64 {
 	}
 	return ret
 }
+
+// Re-randomization - nonces for address re-randomization
+const NoNonceApplied = -1
+
+func (r *redisManager) GetNonce(pubkey string) int {
+	nonceStr, err := r.hget(fmt.Sprintf("%s:nonces", keyPrefix), pubkey)
+	if err != nil {
+		return NoNonceApplied
+	}
+	nonce, err := strconv.Atoi(nonceStr)
+	if err != nil {
+		return NoNonceApplied
+	}
+	return nonce
+}
+
+func (r *redisManager) IncreaseNonce(pubkey string) int {
+	lock, err := r.Locker.Obtain(fmt.Sprintf("natricon:noncelock:%s", pubkey), 100*time.Second, &redislock.Options{
+		RetryStrategy: redislock.LimitRetry(
+			redislock.LinearBackoff(
+				1*time.Second,
+			),
+			10,
+		),
+	})
+	if err == redislock.ErrNotObtained {
+		return NoNonceApplied
+	} else if err != nil {
+		glog.Error(err)
+		return NoNonceApplied
+	}
+	defer lock.Release()
+	nonce := r.GetNonce(pubkey)
+	nonce++
+	r.hset(fmt.Sprintf("%s:nonces", keyPrefix), pubkey, strconv.Itoa(nonce))
+	return nonce
+}
+
+func (r *redisManager) SetNonce(pubkey string, nonce int) int {
+	lock, err := r.Locker.Obtain(fmt.Sprintf("natricon:noncelock:%s", pubkey), 100*time.Second, &redislock.Options{
+		RetryStrategy: redislock.LimitRetry(
+			redislock.LinearBackoff(
+				1*time.Second,
+			),
+			10,
+		),
+	})
+	if err == redislock.ErrNotObtained {
+		return NoNonceApplied
+	} else if err != nil {
+		glog.Error(err)
+		return NoNonceApplied
+	}
+	defer lock.Release()
+	r.hset(fmt.Sprintf("%s:nonces", keyPrefix), pubkey, strconv.Itoa(nonce))
+	return nonce
+}

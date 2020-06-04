@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/appditto/natricon/server/color"
+	"github.com/appditto/natricon/server/db"
 	"github.com/appditto/natricon/server/image"
 	"github.com/appditto/natricon/server/magickwand"
 	"github.com/appditto/natricon/server/spc"
@@ -27,6 +28,10 @@ type NatriconController struct {
 // Generate natricon with given nano address
 func (nc NatriconController) GetNano(c *gin.Context) {
 	address := c.Query("address")
+	nonce, err := strconv.Atoi(c.Query("nonce"))
+	if err != nil {
+		nonce = db.NoNonceApplied
+	}
 	valid := utils.ValidateAddress(address)
 	if !valid {
 		c.String(http.StatusBadRequest, "Invalid address")
@@ -42,6 +47,12 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 	pubKey := utils.AddressToPub(address)
 	vanity := spc.Vanities[pubKey]
 	if vanity == nil {
+		if nonce == db.NoNonceApplied {
+			nonce = db.GetDB().GetNonce(pubKey)
+		}
+		if nonce != db.NoNonceApplied {
+			pubKey = fmt.Sprintf("%s:%s", strconv.Itoa(nonce), pubKey)
+		}
 		sha256 = utils.PKSha256(pubKey, nc.Seed)
 		badgeType = image.GetBadgeSvc().GetBadgeType(pubKey)
 	} else {
