@@ -131,6 +131,7 @@ func main() {
 
 	// V1 API
 	router.GET("/api/v1/nano", natriconController.GetNano)
+	router.GET("/api/v1/nano/nonce", natriconController.GetNonce)
 	// Stats
 	router.GET("/api/v1/nano/stats", controller.Stats)
 	if gin.IsDebugging() {

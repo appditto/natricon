@@ -25,6 +25,25 @@ type NatriconController struct {
 }
 
 // APIs
+// Get current nonce for a natricon
+func (nc NatriconController) GetNonce(c *gin.Context) {
+	address := c.Query("address")
+	valid := utils.ValidateAddress(address)
+	if !valid {
+		c.String(http.StatusBadRequest, "Invalid address")
+		return
+	}
+
+	pubKey := utils.AddressToPub(address)
+	nonce := db.GetDB().GetNonce(pubKey)
+	if nonce == db.NoNonceApplied {
+		nonce = -1
+	}
+	c.JSON(200, gin.H{
+		"nonce": nonce,
+	})
+}
+
 // Generate natricon with given nano address
 func (nc NatriconController) GetNano(c *gin.Context) {
 	address := c.Query("address")
