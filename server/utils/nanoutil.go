@@ -62,6 +62,15 @@ func AddressSha256(account string, seed string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
+// Raw to Big - converts raw amount to a big.Int
+func RawToBigInt(raw string) (*big.Int, error) {
+	rawBig, ok := new(big.Int).SetString(raw, 10)
+	if !ok {
+		return nil, errors.New(fmt.Sprintf("Unable to convert %s to big int", raw))
+	}
+	return rawBig, nil
+}
+
 // RawToNano - Converts Raw amount to usable Nano amount
 func RawToNano(raw string, truncate bool) (float64, error) {
 	rawBig, ok := new(big.Float).SetString(raw)

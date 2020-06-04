@@ -86,6 +86,12 @@ func (r *redisManager) hset(key string, field string, value string) error {
 	return err
 }
 
+// hdel - Redis HDEL
+func (r *redisManager) hdel(key string, field string) error {
+	err := r.Client.HDel(key, field).Err()
+	return err
+}
+
 // UpdateDonorStatus - Update donor status with given duration in days
 func (r *redisManager) UpdateDonorStatus(hash string, acct string, durationDays uint) {
 	pubkey := utils.AddressToPub(acct)
@@ -322,6 +328,10 @@ func (r *redisManager) SetNonce(pubkey string, nonce int) int {
 		return NoNonceApplied
 	}
 	defer lock.Release()
+	if nonce == NoNonceApplied {
+		r.hdel(fmt.Sprintf("%s:nonces", keyPrefix), pubkey)
+		return NoNonceApplied
+	}
 	r.hset(fmt.Sprintf("%s:nonces", keyPrefix), pubkey, strconv.Itoa(nonce))
 	return nonce
 }
