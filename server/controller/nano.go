@@ -11,7 +11,6 @@ import (
 	"github.com/appditto/natricon/server/utils"
 	"github.com/bsm/redislock"
 	"github.com/golang/glog"
-	guuid "github.com/google/uuid"
 	socketio "github.com/googollee/go-socket.io"
 )
 
@@ -77,7 +76,16 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 				glog.Warningf("Not issuing refund for %s because WALLET_ID is not configured", hash)
 				return
 			}
-			sendId := guuid.New().String()
+			// Lock refund
+			lock, err := db.GetDB().Locker.Obtain(fmt.Sprintf("natricon:refund_lock:%s:%s", hash, block["account"]), 100*time.Second, nil)
+			if err == redislock.ErrNotObtained {
+				return
+			} else if err != nil {
+				glog.Error(err)
+				return
+			}
+			defer lock.Release()
+			sendId := fmt.Sprintf("%s:%s", hash, block["account"])
 			glog.Infof("Issuing refund to %s for %s due to nonce change ID %s", block["account"], amount, sendId)
 			response, err := nc.RPCClient.MakeSendRequest(
 				nc.DonationAccount,
