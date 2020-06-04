@@ -40,18 +40,18 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 		if len(amount) == 28 && string(amountRune[0:6]) == "123456" {
 			amountBig, _ := utils.RawToBigInt(amount)
 			reRandomTrigger, _ := utils.RawToBigInt(donationReRandomAmount)
-			delta := amountBig.Sub(amountBig, reRandomTrigger)
-			if delta.Cmp(reRandomTrigger) == 1 {
+			if amountBig.Cmp(reRandomTrigger) == 1 {
+				delta := amountBig.Sub(amountBig, reRandomTrigger)
 				nonce64 := delta.Int64()
 				// If it fits into an int64, use this nonce and re-random
 				if nonce64 != 0 {
 					doReRandom = true
 					nonce = int(nonce64)
 				}
-			} else if delta.Cmp(reRandomTrigger) == 0 {
+			} else if amountBig.Cmp(reRandomTrigger) == 0 {
 				// Do re-random with nonce 0
 				doReRandom = true
-			} else if delta.Cmp(big.NewInt(-1)) == 0 {
+			} else if amountBig.Cmp(big.NewInt(-1)) == 0 {
 				// Remove nonce
 				doReRandom = true
 				nonce = db.NoNonceApplied
