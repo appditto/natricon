@@ -66,6 +66,7 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 	pubKey := utils.AddressToPub(address)
 	vanity := spc.Vanities[pubKey]
 	if vanity == nil {
+		badgeType = image.GetBadgeSvc().GetBadgeType(pubKey)
 		if nonce != -1 {
 			if nonce == db.NoNonceApplied {
 				nonce = db.GetDB().GetNonce(pubKey)
@@ -75,7 +76,6 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 			}
 		}
 		sha256 = utils.PKSha256(pubKey, nc.Seed)
-		badgeType = image.GetBadgeSvc().GetBadgeType(pubKey)
 	} else {
 		badgeType = vanity.Badge
 		if badgeType == "" {
