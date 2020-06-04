@@ -77,7 +77,7 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 				return
 			}
 			// Lock refund
-			lock, err := db.GetDB().Locker.Obtain(fmt.Sprintf("natricon:refund_lock:%s:%s", hash, block["account"]), 100*time.Second, nil)
+			lock, err := db.GetDB().Locker.Obtain(fmt.Sprintf("natricon:refundl:%s", hash), 100*time.Second, nil)
 			if err == redislock.ErrNotObtained {
 				return
 			} else if err != nil {
@@ -85,13 +85,12 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 				return
 			}
 			defer lock.Release()
-			sendId := fmt.Sprintf("%s:%s", hash, block["account"])
-			glog.Infof("Issuing refund to %s for %s due to nonce change ID %s", block["account"], amount, sendId)
+			glog.Infof("Issuing refund to %s for %s due to nonce change ID %s", block["account"], amount, hash)
 			response, err := nc.RPCClient.MakeSendRequest(
 				nc.DonationAccount,
 				block["account"].(string),
 				amount,
-				sendId,
+				hash,
 				wallet,
 			)
 			if err != nil {
