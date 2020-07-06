@@ -42,22 +42,6 @@
           alt="Natricon Formula Desktop"
         />
       </div>
-      <div class="w-full md:max-w-xl lg:max-w-4xl mt-16 md:mt-20 lg:mt-24">
-        <div class="videoContainer rounded-lg overflow-hidden bg-shadow">
-          <iframe
-            title="Introduction Video"
-            id="introductionVideo"
-            name="introductionVideo"
-            class="border-white"
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/ZtaTEqTtukk"
-            frameborder="0"
-            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        </div>
-      </div>
     </div>
   </div>
 </template>
