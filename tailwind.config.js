@@ -20,7 +20,8 @@ module.exports = {
       brightPink: "#FFA4F6",
       lime: "#D4FF00",
       red: "#FF4646",
-      lightGreen: "#B5FFD8"
+      lightGreen: "#B5FFD8",
+      transparent: "transparent"
     },
     extend: {
       spacing: {
@@ -49,6 +50,10 @@ module.exports = {
         '2': '2px',
         '3': '3px',
         '4': '4px'
+      },
+      fontSize: {
+        'xxs': '0.5rem',
+        'xxxs': '0.25rem',
       }
     }
   },
