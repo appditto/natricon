@@ -10,8 +10,6 @@ import (
 type ImageFormat string
 
 func ConvertSvgToBinary(svgData []byte, format ImageFormat, size uint) ([]byte, error) {
-	imagick.Initialize()
-	defer imagick.Terminate()
 	mw := imagick.NewMagickWand()
 	mw.SetImageFormat("SVG")
 	pixelWand := imagick.NewPixelWand()
