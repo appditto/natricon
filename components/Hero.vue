@@ -23,7 +23,10 @@
           class="w-full h-full relative origin-top duration-300 justify-center items-center rounded-full bg-white mx-auto transform transition-all ease-out z-50 overflow-hidden"
         >
           <!-- Nano Address Form Group -->
+          <label class="hidden" for="nanoAddressGroup">nano address</label>
           <form
+            id="nanoAddressGroup"
+            name="nanoAddressGroup"
             :class="generateInitiated?'scale-0':'scale-100'"
             class="w-full flex flex-col left-0 right-0 top-0 bottom-0 m-auto justify-center items-center px-5 md:px-6 lg:px-8 transform duration-200 ease-out absolute"
           >

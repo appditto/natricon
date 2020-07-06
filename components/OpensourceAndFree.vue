@@ -119,7 +119,12 @@
                   >20 nano</button>
                 </div>
                 <!-- Custom Amount Input Group -->
-                <form class="w-full md:w-64 flex flex-col justify-center px-3 my-5">
+                <label class="hidden" for="customAmountGroup">custom amount</label>
+                <form
+                  id="customAmountGroup"
+                  name="customAmountGroup"
+                  class="w-full md:w-64 flex flex-col justify-center px-3 my-5"
+                >
                   <label class="w-full text-xl font-bold" for="customNanoAmount">custom amount</label>
                   <input
                     :class="inputError?'border-red text-red':'border-black'"
