@@ -18,7 +18,8 @@
     "nuxt": "^2.12.2",
     "nuxt-socket-io": "^1.0.25",
     "qrcode.vue": "^1.7.0",
-    "vue-clipboard2": "^0.3.1"
+    "vue-clipboard2": "^0.3.1",
+    "vue-lazy-youtube-video": "^2.0.0"
   },
   "devDependencies": {
     "@nuxtjs/google-analytics": "^2.3.0",

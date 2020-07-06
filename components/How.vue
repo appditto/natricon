@@ -42,9 +42,27 @@
           alt="Natricon Formula Desktop"
         />
       </div>
+      <!-- Youtube Video -->
+      <div class="w-full md:max-w-xl lg:max-w-4xl mt-16 md:mt-20 lg:mt-24">
+        <lazy-youtube-video
+          :iframeAttributes="{title: 'Introduction Video'}"
+          class="w-full h-auto rounded-lg overflow-hidden border-3 lg:border-4 border-black"
+          alt="Introduction Video"
+          src="https://www.youtube.com/embed/ZtaTEqTtukk"
+        />
+      </div>
     </div>
   </div>
 </template>
+<script>
+import LazyYoutubeVideo from "vue-lazy-youtube-video";
+import "vue-lazy-youtube-video/dist/style.css";
+export default {
+  components: {
+    LazyYoutubeVideo
+  }
+};
+</script>
 <style scoped>
 .bg-shadow {
   box-shadow: 0rem 0rem 0rem 0.2rem#000000;
@@ -53,18 +71,6 @@
   .bg-shadow {
     box-shadow: 0rem 0rem 0rem 0.3rem#000000;
   }
-}
-.videoContainer {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
-}
-.videoContainer iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 }
 .line-redPink::after {
   display: block;

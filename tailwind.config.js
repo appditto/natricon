@@ -44,6 +44,11 @@ module.exports = {
       },
       borderRadius: {
         'xl': "1rem"
+      },
+      borderWidth: {
+        '2': '2px',
+        '3': '3px',
+        '4': '4px'
       }
     }
   },
