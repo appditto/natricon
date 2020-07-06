@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center pt-6 pb-8 md:pt-20 pb-24" id="opensource-and-free">
+  <div class="w-full flex flex-col items-center pt-6 md:pt-20 pb-24" id="opensource-and-free">
     <div class="n-container flex flex-col items-center px-5">
       <h3 class="text-4xl md:text-5xl text-center leading-tight">
         <span class="relative inline-block">
@@ -119,7 +119,12 @@
                   >20 nano</button>
                 </div>
                 <!-- Custom Amount Input Group -->
-                <form class="w-full md:w-64 flex flex-col justify-center px-3 my-5">
+                <label class="hidden" for="customAmountGroup">custom amount</label>
+                <form
+                  id="customAmountGroup"
+                  name="customAmountGroup"
+                  class="w-full md:w-64 flex flex-col justify-center px-3 my-5"
+                >
                   <label class="w-full text-xl font-bold" for="customNanoAmount">custom amount</label>
                   <input
                     :class="inputError?'border-red text-red':'border-black'"

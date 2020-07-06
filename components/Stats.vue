@@ -41,7 +41,7 @@
 export default {
   props: {
     serviceCount: Number,
-    uniqueServed: Number
+    uniqueServed: String
   }
 };
 </script>

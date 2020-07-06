@@ -95,10 +95,11 @@ var Services = []string{
 	"74a987c87532671d6a577658e125f7b7dcb8ba35eedc17c095fe49289723cadd",
 }
 
-// Services registered for stats
+// SvcList ... Services registered for stats
 var SvcList = []StatsService{
 	"natrium",
 	"nanocrawler",
 	"natricon.com",
 	"sendr.space",
+	"plinko.somenano.com",
 }
