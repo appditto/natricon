@@ -17,6 +17,7 @@ import (
 	"github.com/golang/glog"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/jasonlvhit/gocron"
+	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
 func CorsMiddleware() gin.HandlerFunc {
@@ -92,6 +93,10 @@ func main() {
 		glog.Infof("RPC Client configured at %s", *rpcUrl)
 		rpcClient = &net.RPCClient{Url: *rpcUrl}
 	}
+
+	// Setup magickwand
+	imagick.Initialize()
+	defer imagick.Terminate()
 
 	// Setup router
 	router := gin.Default()
