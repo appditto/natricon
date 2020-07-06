@@ -27,6 +27,7 @@
             :class="generateInitiated?'scale-0':'scale-100'"
             class="w-full flex flex-col left-0 right-0 top-0 bottom-0 m-auto justify-center items-center px-5 md:px-6 lg:px-8 transform duration-200 ease-out absolute"
           >
+            <label for="nanoAddress" class="hidden">nano address</label>
             <input
               :class="inputError?'border-red text-red':'border-black focus:bg-cyan'"
               class="w-full md:max-w-sm text-xl font-medium border-2 px-4 pt-1 pb-2 rounded-full my-1 transition-colors duration-200 ease-out"
