@@ -49,6 +49,7 @@
           class="w-full h-auto rounded-lg overflow-hidden border-3 lg:border-4 border-black"
           alt="Introduction Video"
           src="https://www.youtube.com/embed/ZtaTEqTtukk"
+          previewImageSize="sddefault"
         />
       </div>
     </div>
