@@ -269,7 +269,7 @@ func (r *redisManager) UpdateStatsByService(svc string, address string) {
 		if err != nil {
 			totalCountInt = 0
 			allAddresses, err := r.hgetall(key)
-			if err != nil {
+			if err == nil {
 				for _, el := range allAddresses {
 					indyInt, err := strconv.Atoi(el)
 					if err != nil {
