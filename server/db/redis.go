@@ -308,6 +308,35 @@ func (r *redisManager) DailyStats() map[string]map[string]int64 {
 	return ret
 }
 
+// UpdateStatsClient - Update stats for specific client
+func (r *redisManager) UpdateStatsClient(ip string) {
+	// Hash IP for privacy concerns
+	hashed := utils.PKSha256(ip, "")
+	key := fmt.Sprintf("%s:stats_clients", keyPrefix)
+	existing, err := r.hget(key, hashed)
+	count := 1
+	if err == nil {
+		existingInt, err := strconv.Atoi(existing)
+		if err != nil {
+			count = existingInt + 1
+		}
+	}
+	err = r.hset(key, hashed, string(count))
+	if err != nil {
+		glog.Errorf("Error updating StatsClient %s", err)
+	}
+}
+
+// ClientsServed - return # of clients served
+func (r *redisManager) ClientsServed() int64 {
+	key := fmt.Sprintf("%s:stats_clients", keyPrefix)
+	len, err := r.hlen(key)
+	if err != nil {
+		return 0
+	}
+	return len
+}
+
 // StatsUniqueAddresses - Return # of unique natricons served
 func (r *redisManager) StatsUniqueAddresses() int64 {
 	key := fmt.Sprintf("%s:stats_unique_addresses", keyPrefix)
