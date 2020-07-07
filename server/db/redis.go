@@ -254,7 +254,7 @@ func (r *redisManager) UpdateStatsByService(svc string, address string) {
 		key := fmt.Sprintf("%s:stats:%s", keyPrefix, svc)
 		count := 1
 		existing, err := r.hget(key, address)
-		if err != nil {
+		if err == nil {
 			existingInt, err := strconv.Atoi(existing)
 			if err != nil {
 				count = existingInt + 1
