@@ -29,11 +29,13 @@ func StatsWorker(statsChan <-chan *gin.Context) {
 func Stats(c *gin.Context) {
 	// Get # of unique natricons served
 	numServed := db.GetDB().StatsUniqueAddresses()
+	numServedTotal := db.GetDB().StatsTotal()
 	svcStats := db.GetDB().ServiceStats()
 
 	// Return response
 	c.JSON(200, gin.H{
 		"unique_served": numServed,
+		"total_served":  numServedTotal,
 		"services":      svcStats,
 	})
 }

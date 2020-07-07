@@ -219,7 +219,7 @@ func (r *redisManager) UpdateStatsAddress(address string) {
 	key := fmt.Sprintf("%s:stats_unique_addresses", keyPrefix)
 	count := 1
 	existing, err := r.hget(key, address)
-	if err != nil {
+	if err == nil {
 		existingInt, err := strconv.Atoi(existing)
 		if err != nil {
 			count = existingInt + 1
@@ -229,6 +229,18 @@ func (r *redisManager) UpdateStatsAddress(address string) {
 	if err != nil {
 		glog.Errorf("Error updating StatesAddresses %s", err)
 	}
+	key = fmt.Sprintf("%s:stats_total", keyPrefix)
+	val, err := r.get(key)
+	if err != nil {
+		glog.Errorf("Error updating StatesAddresses %s", err)
+		return
+	}
+	valInt, err := strconv.Atoi(val)
+	if err != nil {
+		glog.Errorf("Error updating StatesAddresses %s", err)
+	}
+	valInt += 1
+	r.set(key, strconv.Itoa(valInt))
 }
 
 // StatsUniqueAddresses - Return # of unique natricons served
@@ -239,6 +251,20 @@ func (r *redisManager) StatsUniqueAddresses() int64 {
 		return 0
 	}
 	return len
+}
+
+// StatsTotal - Return total # of unique natricons served
+func (r *redisManager) StatsTotal() int {
+	key := fmt.Sprintf("%s:stats_total", keyPrefix)
+	val, err := r.get(key)
+	if err != nil {
+		return 0
+	}
+	valInt, err := strconv.Atoi(val)
+	if err != nil {
+		return 0
+	}
+	return valInt
 }
 
 // UpdateStatsByService - Update stats for a service
