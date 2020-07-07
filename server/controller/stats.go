@@ -41,11 +41,11 @@ func Stats(c *gin.Context) {
 
 	// Return response
 	c.JSON(200, gin.H{
-		"unique_served":  numServed,
-		"total_served":   numServedTotal,
-		"clients_served": clientsServed,
-		"services":       svcStats,
-		"today":          today,
+		"unique_served":         numServed,
+		"total_served":          numServedTotal,
+		"unique_clients_served": clientsServed,
+		"services":              svcStats,
+		"today":                 today,
 		//"daily":          daily,
 	})
 }
