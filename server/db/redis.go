@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -241,6 +242,70 @@ func (r *redisManager) UpdateStatsAddress(address string) {
 	}
 	valInt += 1
 	r.set(key, strconv.Itoa(valInt))
+}
+
+// UpdateStatsDate - Update stats for current date
+func (r *redisManager) UpdateStatsDate(address string) {
+	dateStr := time.Now().Format("02-01-2006")
+	key := fmt.Sprintf("%s:stats_daily", keyPrefix)
+	existing, err := r.hget(key, fmt.Sprintf("%s_%s", dateStr, address))
+	count := 1
+	if err == nil {
+		existingInt, err := strconv.Atoi(existing)
+		if err != nil {
+			count = existingInt + 1
+		}
+	}
+	err = r.hset(key, fmt.Sprintf("%s_%s", dateStr, address), string(count))
+	if err != nil {
+		glog.Errorf("Error updating StatsDate %s", err)
+	}
+	// Total
+	total, err := r.hget(key, fmt.Sprintf("%s_%s", dateStr, "total"))
+	totalInt, err := strconv.Atoi(total)
+	if err != nil {
+		r.hset(key, fmt.Sprintf("%s_%s", dateStr, "total"), "1")
+	} else {
+		totalInt += 1
+		r.hset(key, fmt.Sprintf("%s_%s", dateStr, "total"), strconv.Itoa(totalInt))
+	}
+}
+
+// DailyStats - Daily Stats
+func (r *redisManager) DailyStats() map[string]map[string]int64 {
+	ret := map[string]map[string]int64{}
+	key := fmt.Sprintf("%s:stats_daily", keyPrefix)
+	allVals, err := r.hgetall(key)
+	if err != nil {
+		return ret
+	}
+	uniqueTracker := map[string]int64{}
+	for key, val := range allVals {
+		dt := strings.Split(key, "_")[0]
+		if _, ok := ret[dt]; !ok {
+			ret[dt] = map[string]int64{}
+		}
+		// Increase total
+		if strings.Split(key, "_")[1] == "total" {
+			asInt, err := strconv.Atoi(val)
+			if err != nil {
+				ret[dt]["total"] = 1
+			} else {
+				ret[dt]["total"] = int64(asInt)
+			}
+		} else {
+			// Check and increase unique
+			if _, ok := uniqueTracker[key]; !ok {
+				uniqueTracker[key] = 1
+				if _, ok := ret[dt]["unique"]; !ok {
+					ret[dt]["unique"] = 1
+				} else {
+					ret[dt]["unique"] += 1
+				}
+			}
+		}
+	}
+	return ret
 }
 
 // StatsUniqueAddresses - Return # of unique natricons served
