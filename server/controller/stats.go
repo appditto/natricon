@@ -35,7 +35,8 @@ func Stats(c *gin.Context) {
 	numServed := db.GetDB().StatsUniqueAddresses()
 	numServedTotal := db.GetDB().StatsTotal()
 	svcStats := db.GetDB().ServiceStats()
-	daily := db.GetDB().DailyStats()
+	//daily := db.GetDB().DailyStats()
+	today := db.GetDB().TodayStats()
 	clientsServed := db.GetDB().ClientsServed()
 
 	// Return response
@@ -44,7 +45,8 @@ func Stats(c *gin.Context) {
 		"total_served":   numServedTotal,
 		"clients_served": clientsServed,
 		"services":       svcStats,
-		"daily":          daily,
+		"today":          today,
+		//"daily":          daily,
 	})
 }
 

@@ -271,6 +271,44 @@ func (r *redisManager) UpdateStatsDate(address string) {
 	}
 }
 
+// TodayStats - Today Stats
+func (r *redisManager) TodayStats() map[string]int64 {
+	dateStr := time.Now().Format("02-01-2006")
+	ret := map[string]int64{}
+	key := fmt.Sprintf("%s:stats_daily", keyPrefix)
+	allVals, err := r.hgetall(key)
+	if err != nil {
+		return ret
+	}
+	uniqueTracker := map[string]int64{}
+	for key, val := range allVals {
+		dt := strings.Split(key, "_")[0]
+		if dt != dateStr {
+			continue
+		}
+		// Increase total
+		if strings.Split(key, "_")[1] == "total" {
+			asInt, err := strconv.Atoi(val)
+			if err != nil {
+				ret["total"] = 1
+			} else {
+				ret["total"] = int64(asInt)
+			}
+		} else {
+			// Check and increase unique
+			if _, ok := uniqueTracker[key]; !ok {
+				uniqueTracker[key] = 1
+				if _, ok := ret["unique"]; !ok {
+					ret["unique"] = 1
+				} else {
+					ret["unique"] += 1
+				}
+			}
+		}
+	}
+	return ret
+}
+
 // DailyStats - Daily Stats
 func (r *redisManager) DailyStats() map[string]map[string]int64 {
 	ret := map[string]map[string]int64{}
