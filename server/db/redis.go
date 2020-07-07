@@ -277,6 +277,8 @@ func (r *redisManager) UpdateStatsByService(svc string, address string) {
 					}
 				}
 				r.hset(key, "total", strconv.Itoa(totalCountInt))
+			} else {
+				glog.Errorf("Error retrieving StatsBySvc %s %s", key, err)
 			}
 		} else {
 			r.hset(key, "total", strconv.Itoa(totalCountInt+1))
