@@ -80,6 +80,12 @@ func (r *redisManager) hget(key string, field string) (string, error) {
 	return val, err
 }
 
+// hgetall - Redis HGETALL
+func (r *redisManager) hgetall(key string) (map[string]string, error) {
+	val, err := r.Client.HGetAll(key).Result()
+	return val, err
+}
+
 // hset - Redis HSET
 func (r *redisManager) hset(key string, field string, value string) error {
 	err := r.Client.HSet(key, field, value).Err()
@@ -254,23 +260,47 @@ func (r *redisManager) UpdateStatsByService(svc string, address string) {
 				count = existingInt + 1
 			}
 		}
-		err = r.hset(key, address, string(count))
+		err = r.hset(key, address, strconv.Itoa(count))
 		if err != nil {
 			glog.Errorf("Error updating StatsByService %s %s", svc, err)
+		}
+		totalCount, err := r.hget(key, "total")
+		totalCountInt, err := strconv.Atoi(totalCount)
+		if err != nil {
+			totalCountInt = 0
+			allAddresses, err := r.hgetall(key)
+			if err != nil {
+				for _, el := range allAddresses {
+					indyInt, err := strconv.Atoi(el)
+					if err != nil {
+						totalCountInt += indyInt
+					}
+				}
+				r.hset(key, "total", strconv.Itoa(totalCountInt))
+			}
+		} else {
+			r.hset(key, "total", strconv.Itoa(totalCountInt+1))
 		}
 	}
 }
 
 // ServiceStats - Service Stats
-func (r *redisManager) ServiceStats() map[spc.StatsService]int64 {
-	ret := map[spc.StatsService]int64{}
+func (r *redisManager) ServiceStats() map[spc.StatsService]map[string]int64 {
+	ret := map[spc.StatsService]map[string]int64{}
 	for _, svc := range spc.SvcList {
 		key := fmt.Sprintf("%s:stats:%s", keyPrefix, svc)
 		len, err := r.hlen(key)
+		ret[svc] = map[string]int64{}
 		if err != nil {
-			ret[svc] = 0
+			ret[svc]["unique"] = 0
 		}
-		ret[svc] = len
+		ret[svc]["unique"] = len
+		totalCount, err := r.hget(key, "total")
+		totalCountInt, err := strconv.Atoi(totalCount)
+		if err != nil {
+			totalCountInt = 0
+		}
+		ret[svc]["total"] = int64(totalCountInt)
 	}
 	return ret
 }
