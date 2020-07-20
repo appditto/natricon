@@ -6,7 +6,12 @@
     <available-on />
     <opensource-and-free />
     <integrate />
-    <stats :uniqueServed="uniqueServed" :serviceCount="serviceCount" />
+    <stats
+      :totalServed="totalServed"
+      :uniqueServed="uniqueServed"
+      :uniqueClientsServed="uniqueClientsServed"
+      :serviceCount="serviceCount"
+    />
   </div>
 </template>
 <script>
@@ -34,7 +39,7 @@ export default {
         var suffixes = ["", "K", "M", "B", "T"];
         var suffixNum = Math.floor(("" + value).length / 3);
         var shortValue = "";
-        for (var precision = 2; precision >= 1; precision--) {
+        for (var precision = 3; precision >= 1; precision--) {
           shortValue = parseFloat(
             (suffixNum != 0
               ? value / Math.pow(1000, suffixNum)
@@ -45,11 +50,15 @@ export default {
             /[^a-zA-Z 0-9]+/g,
             ""
           );
-          if (dotLessShortValue.length <= 2) {
+          if (dotLessShortValue.length <= 3) {
             break;
           }
         }
-        if (shortValue % 1 != 0) shortValue = shortValue.toFixed(1);
+        if (shortValue % 1 != 0)
+          shortValue = shortValue.toLocaleString("en-US", {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 0
+          });
         newValue = shortValue + suffixes[suffixNum];
       }
       return newValue;
@@ -57,7 +66,9 @@ export default {
     return $axios.get(`https://natricon.com/api/v1/nano/stats`).then(res => {
       let serviceCount = Object.keys(res.data.services).length;
       return {
+        totalServed: abbreviateNumber(res.data.total_served),
         uniqueServed: abbreviateNumber(res.data.unique_served),
+        uniqueClientsServed: abbreviateNumber(res.data.unique_clients_served),
         serviceCount: abbreviateNumber(serviceCount)
       };
     });
