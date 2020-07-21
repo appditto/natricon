@@ -45,11 +45,11 @@
       <!-- Youtube Video -->
       <div class="w-full md:max-w-xl lg:max-w-4xl mt-16 md:mt-20 lg:mt-24">
         <lazy-youtube-video
-          :iframeAttributes="{title: 'Introduction Video'}"
+          :iframeAttributes="{title: 'Introduction Video', allowfullscreen: true, frameborder: 0, allow: 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'}"
           class="w-full h-auto rounded-lg overflow-hidden border-3 lg:border-4 border-black"
           alt="Introduction Video"
           src="https://www.youtube.com/embed/ZtaTEqTtukk"
-          previewImageSize="sddefault"
+          previewImageSize="hqdefault"
         />
       </div>
     </div>
