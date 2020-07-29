@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col items-center pt-10 pb-16 md:pt-16 md:pb-56 relative" id="stats">
     <!-- Main Part -->
-    <div class="n-container flex flex-col items-center px-5 md:px-12 lg:px-16 z-10">
+    <div class="n-container flex flex-col items-center px-5 md:px-12 z-10">
       <h3 class="text-4xl md:text-5xl text-center leading-tight">
         <span class="relative inline-block">
           <span class="font-bold line-green">natricon</span>
@@ -13,10 +13,12 @@
           class="w-full hidden md:block bg-white bg-shadow border-4 border-black rounded-full h-20 absolute bottom-0 z-0 -mb-10"
         ></div>
         <!-- Stats -->
-        <div class="w-full flex flex-row flex-wrap justify-center z-50 relative md:px-8">
+        <div
+          class="w-full flex flex-row flex-wrap justify-center z-50 relative md:px-8 lg:px-6 xl:px-12"
+        >
           <div class="w-full md:w-1/2 lg:w-1/4 max-w-sm px-4 mt-8 flex flex-col">
             <div
-              class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 md:px-8 border-4 border-black card"
+              class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 border-4 border-black card"
             >
               <h6 class="text text-center">we served</h6>
               <h5 class="text-4xl font-bold text-center leading-tight">{{ totalServed }}</h5>
@@ -25,7 +27,7 @@
           </div>
           <div class="w-full md:w-1/2 lg:w-1/4 max-w-sm px-4 mt-8 flex flex-col">
             <div
-              class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 md:px-8 border-4 border-black card"
+              class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 border-4 border-black card"
             >
               <h6 class="text text-center">we served</h6>
               <h5 class="text-4xl font-bold text-center leading-tight">{{ uniqueServed }}</h5>
@@ -34,7 +36,7 @@
           </div>
           <div class="w-full md:w-1/2 lg:w-1/4 max-w-sm px-4 mt-8 flex flex-col">
             <div
-              class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 md:px-8 border-4 border-black card"
+              class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 border-4 border-black card"
             >
               <h6 class="text text-center">we served to</h6>
               <h5 class="text-4xl font-bold text-center leading-tight">{{ uniqueClientsServed }}</h5>
@@ -43,7 +45,7 @@
           </div>
           <div class="w-full md:w-1/2 lg:w-1/4 max-w-sm px-4 mt-8 flex flex-col">
             <div
-              class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 md:px-8 border-4 border-black card"
+              class="w-full flex flex-col flex-1 justify-center items-center bg-green rounded-lg pt-6 pb-10 px-4 border-4 border-black card"
             >
               <div @mouseleave="isTooltipVisible=false" class="flex flex-col">
                 <h6 class="text text-center">available on</h6>
@@ -99,20 +101,20 @@ export default {
     serviceCount: Number,
     uniqueServed: String,
     uniqueClientsServed: String,
-    totalServed: String
+    totalServed: String,
   },
   data() {
     return {
-      isTooltipVisible: false
+      isTooltipVisible: false,
     };
-  }
+  },
 };
 </script>
 <style scoped>
 .line-green::before {
   display: block;
   position: absolute;
-  width: calc(100% + 0.15rem);
+  width: calc(100% + 0.3rem);
   left: -0.15rem;
   content: "";
   height: 0.75rem;
