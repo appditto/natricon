@@ -51,7 +51,7 @@
           <button
             :class="generateInitiated?'scale-0':'scale-100 hover:scale-95'"
             @click.prevent="generateRandomNatricon()"
-            class="btn-3-shadow-green bg-black left-half bottom-0 -translate-x-1/2 text-white hover:text-green btn-randomize absolute transform transition-all duration-200 text-lg md:text-xl mb-6 md:mb-8 lg:mb-10 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium rounded-full"
+            class="btn-3-shadow-green bg-black left-half bottom-0 -translate-x-1/2 text-white hover:text-green btn-randomize absolute transform transition-all duration-200 text-lg md:text-xl mb-6 pt-0_5 pb-1_5 md:pt-1 md:pb-2 px-4 md:px-5 lg:px-6 font-medium rounded-full"
           >randomize</button>
           <!-- Natricon Container -->
           <div
@@ -135,7 +135,7 @@ export default {
       receivedNatricon: false,
       showAgainButton: false,
       natriconLoading: false,
-      generatorClass: ""
+      generatorClass: "",
     };
   },
   methods: {
@@ -186,8 +186,8 @@ export default {
       this.generateInitiated = false;
       this.receivedNatricon = false;
       this.$refs.natriconContainer.innerHTML = "";
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
