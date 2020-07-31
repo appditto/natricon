@@ -1,5 +1,8 @@
 <template>
-  <div class="w-full flex flex-col items-center pt-6 md:pt-20 pb-24" id="opensource-and-free">
+  <div
+    class="w-full flex flex-col items-center pt-6 pb-20 md:pt-20 md:pb-24"
+    id="opensource-and-free"
+  >
     <div class="n-container flex flex-col items-center px-5">
       <h3 class="text-4xl md:text-5xl text-center leading-tight">
         <span class="relative inline-block">
@@ -242,11 +245,11 @@ export default {
         22,
         44
       )}<br/>${donationAddress.substring(44, 65)}`,
-      copiedHtml: `&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbspaddress copied&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp`
+      copiedHtml: `&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbspaddress copied&nbsp&nbsp&nbsp&nbsp<br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp`,
     };
   },
   components: {
-    QrcodeVue
+    QrcodeVue,
   },
   methods: {
     nanoToRaw(inAmount) {
@@ -259,10 +262,7 @@ export default {
       // Will let us recognize this donation
       let idModifier = Big(this.clientID);
       let amountModifier = Big(10).pow(27); // 0.001 NANO
-      return inAmount
-        .add(idModifier)
-        .add(amountModifier)
-        .toFixed();
+      return inAmount.add(idModifier).add(amountModifier).toFixed();
     },
     openDonateDropdown() {
       this.isDropdownOpen = true;
@@ -300,7 +300,7 @@ export default {
       this.donationAmount = this.$refs.customNanoAmount.value;
     },
     timeout(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
     async doCopy() {
       await this.$copyText(this.address);
@@ -312,17 +312,17 @@ export default {
       if (rawAmount == this.qrValueAmountRaw) {
         this.donationSuccess = true;
       }
-    }
+    },
   },
   computed: mapState(["clientID"]),
   mounted() {
     this.socket = this.$nuxtSocket({
       name: "natricon",
       reconnection: true,
-      teardown: false
+      teardown: false,
     });
     let inst = this;
-    this.socket.on("connected", function(data) {
+    this.socket.on("connected", function (data) {
       // Use ID sent from server as a donation modifier
       inst.$store.commit("SET_ID", data);
       if (inst.isDonationInitiated) {
@@ -332,10 +332,10 @@ export default {
         this.qrValue = `nano:${donationAddress}?amount=${this.qrValueAmountRaw}`;
       }
     });
-    this.socket.on("donation_event", function(data) {
+    this.socket.on("donation_event", function (data) {
       inst.handleAmountCallback(data.amount);
     });
-  }
+  },
 };
 </script>
 <style scoped>
