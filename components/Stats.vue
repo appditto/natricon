@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-center pt-10 pb-16 md:pt-16 md:pb-56 relative" id="stats">
+  <div class="w-full flex flex-col items-center pt-16 pb-16 md:pb-56 relative" id="stats">
     <!-- Main Part -->
     <div class="n-container flex flex-col items-center px-5 md:px-12 z-10">
       <h3 class="text-4xl md:text-5xl text-center leading-tight">
