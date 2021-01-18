@@ -14,9 +14,9 @@ var Vanities = map[string]*Vanity{
 	"7992d2015963ef13fc1b45735b9f6b071b18cbdef1b1d07a81572718230395e7": {
 		BodyColor:    color.HTMLToRGBAlt("#6666ff"),
 		HairColor:    color.HTMLToRGBAlt("#19ffc6"),
-		BodyAssetID:  1,
-		HairAssetID:  33,
-		MouthAssetID: 10,
+		BodyAssetID:  30,
+		HairAssetID:  15,
+		MouthAssetID: 8,
 		EyeAssetID:   11,
 		Badge:        BTDonor,
 	},
