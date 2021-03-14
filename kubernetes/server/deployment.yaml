@@ -26,7 +26,7 @@ spec:
           limits:
             cpu: 1250m
             memory: 300Mi
-        args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://pippin-nano.pippin:11338 -nano-ws-url ws://nano-node.nano:7078"]
+        args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://pippin-nano.pippin:11338 -nano-ws-url ws://10.98.0.6:7078"]
         ports:
           - containerPort: 5555
         imagePullPolicy: "Always"
