@@ -102,4 +102,5 @@ var SvcList = []StatsService{
 	"natricon.com",
 	"sendr.space",
 	"plinko.somenano.com",
+        "nanolooker",
 }
