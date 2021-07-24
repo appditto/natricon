@@ -194,7 +194,7 @@ func (nc NanoController) CheckMissedCallbacks() {
 	// Check history
 	historyResponse, err := nc.RPCClient.MakeAccountHistoryRequest(
 		nc.DonationAccount,
-		10,
+		621,
 	)
 	if err != nil {
 		glog.Errorf("Error occured checking donation account history %s", err)
