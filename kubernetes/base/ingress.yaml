@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: natricon-ingress
@@ -7,7 +7,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-        real_ip_header CF-Connecting-IP;
+      real_ip_header CF-Connecting-IP;
     nginx.ingress.kubernetes.io/add-base-url: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/websocket-services: "go-natricon-service"
@@ -20,37 +20,55 @@ metadata:
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
 spec:
   tls:
-  - hosts:
-    - natricon.com
-    secretName: natricon-com-server-secret
+    - hosts:
+        - natricon.com
+      secretName: natricon-com-server-secret
   rules:
-  - host: natricon.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: nuxt-natricon-service
-          servicePort: 3000
-      - path: /api
-        backend:
-          serviceName: go-natricon-service
-          servicePort: 5555
-      - path: /socket.io
-        backend:
-          serviceName: go-natricon-service
-          servicePort: 5555
-  - host: www.natricon.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: nuxt-natricon-service
-          servicePort: 3000
-      - path: /api
-        backend:
-          serviceName: go-natricon-service
-          servicePort: 5555
-      - path: /socket.io
-        backend:
-          serviceName: go-natricon-service
-          servicePort: 5555
+    - host: natricon.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nuxt-natricon-service
+                port:
+                  number: 3000
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: go-natricon-service
+                port:
+                  number: 5555
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: go-natricon-service
+                port:
+                  number: 5555
+    - host: www.natricon.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nuxt-natricon-service
+                port:
+                  number: 3000
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: go-natricon-service
+                port:
+                  number: 5555
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: go-natricon-service
+                port:
+                  number: 5555
