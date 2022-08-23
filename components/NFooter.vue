@@ -1,8 +1,15 @@
 <template>
-  <div class="w-full flex flex-row justify-center items-center px-4 py-8 md:px-6" id="footer">
+  <div
+    class="w-full flex flex-row justify-center items-center px-4 py-8 md:px-6"
+    id="footer"
+  >
     <div class="n-container flex flex-col justify-center items-center">
       <div class="flex flex-row flex-wrap justify-center">
-        <a class="relative m-3" href="https://twitter.com/appditto" target="_blank">
+        <a
+          class="relative m-3"
+          href="https://twitter.com/appditto"
+          target="_blank"
+        >
           <div class="line bga-yellow scaleY w-12 h-12">
             <img
               class="w-full h-full"
@@ -11,7 +18,11 @@
             />
           </div>
         </a>
-        <a class="relative m-3" href="https://medium.com/appditto" target="_blank">
+        <a
+          class="relative m-3"
+          href="https://medium.com/appditto"
+          target="_blank"
+        >
           <div class="w-12 h-12 line bga-yellow scaleY">
             <img
               class="w-full h-full"
@@ -20,7 +31,11 @@
             />
           </div>
         </a>
-        <a class="relative m-3" href="https://instagram.com/appditto" target="_blank">
+        <a
+          class="relative m-3"
+          href="https://instagram.com/appditto"
+          target="_blank"
+        >
           <div class="w-12 h-12 line bga-yellow scaleY">
             <img
               class="w-full h-full"
@@ -29,7 +44,11 @@
             />
           </div>
         </a>
-        <a class="relative m-3" href="https://github.com/appditto" target="_blank">
+        <a
+          class="relative m-3"
+          href="https://github.com/appditto"
+          target="_blank"
+        >
           <div class="w-12 h-12 line bga-yellow scaleY">
             <img
               class="w-full h-full"
@@ -39,7 +58,7 @@
           </div>
         </a>
       </div>
-      <h6 class="font-medium mt-2 md:mt-3 mb-3 md:mb-4">©2020, natricon.</h6>
+      <h6 class="font-medium mt-2 md:mt-3 mb-3 md:mb-4">©2022, natricon.</h6>
       <div class="flex flex-row justify-center my-2 md:my-3">
         <span class="font-medium mx-1 mt-1">made by</span>
         <a class="relative mx-1" href="https://appditto.com" target="_blank">
@@ -67,7 +86,7 @@
   position: absolute;
   width: calc(100% + 0.4rem);
   left: -0.2rem;
-  content: "";
+  content: '';
   height: 1.75rem;
   border-radius: 0.15rem;
   margin-left: auto;
@@ -83,7 +102,7 @@
   position: absolute;
   width: calc(100% + 0.4rem);
   left: -0.2rem;
-  content: "";
+  content: '';
   height: 1rem;
   border-radius: 0.15rem;
   margin-left: auto;
