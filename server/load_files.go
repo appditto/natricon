@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -70,7 +69,7 @@ func LoadAssetsToArray() {
 			bodyAsset = image.Asset{}
 			bodyAsset.FileName = info.Name()
 			bodyAsset.IllustrationPath = path
-			bodyAsset.SVGContents, err = ioutil.ReadFile(path)
+			bodyAsset.SVGContents, err = os.ReadFile(path)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", path)
 				panic(err.Error())
@@ -97,7 +96,7 @@ func LoadAssetsToArray() {
 			bodyOutlineAsset = image.Asset{}
 			bodyOutlineAsset.FileName = info.Name()
 			bodyOutlineAsset.IllustrationPath = path
-			bodyOutlineAsset.SVGContents, err = ioutil.ReadFile(path)
+			bodyOutlineAsset.SVGContents, err = os.ReadFile(path)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", path)
 				panic(err.Error())
@@ -122,7 +121,7 @@ func LoadAssetsToArray() {
 			badgeAssets = image.Asset{}
 			badgeAssets.FileName = info.Name()
 			badgeAssets.IllustrationPath = path
-			badgeAssets.SVGContents, err = ioutil.ReadFile(badgeAssets.IllustrationPath)
+			badgeAssets.SVGContents, err = os.ReadFile(badgeAssets.IllustrationPath)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", badgeAssets.IllustrationPath)
 				panic(err.Error())
@@ -148,7 +147,7 @@ func LoadAssetsToArray() {
 			badgeAssets = image.Asset{}
 			badgeAssets.FileName = info.Name()
 			badgeAssets.IllustrationPath = path
-			badgeAssets.SVGContents, err = ioutil.ReadFile(badgeAssets.IllustrationPath)
+			badgeAssets.SVGContents, err = os.ReadFile(badgeAssets.IllustrationPath)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", badgeAssets.IllustrationPath)
 				panic(err.Error())
@@ -174,7 +173,7 @@ func LoadAssetsToArray() {
 			badgeAssets = image.Asset{}
 			badgeAssets.FileName = info.Name()
 			badgeAssets.IllustrationPath = path
-			badgeAssets.SVGContents, err = ioutil.ReadFile(badgeAssets.IllustrationPath)
+			badgeAssets.SVGContents, err = os.ReadFile(badgeAssets.IllustrationPath)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", badgeAssets.IllustrationPath)
 				panic(err.Error())
@@ -200,7 +199,7 @@ func LoadAssetsToArray() {
 			badgeAssets = image.Asset{}
 			badgeAssets.FileName = info.Name()
 			badgeAssets.IllustrationPath = path
-			badgeAssets.SVGContents, err = ioutil.ReadFile(badgeAssets.IllustrationPath)
+			badgeAssets.SVGContents, err = os.ReadFile(badgeAssets.IllustrationPath)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", badgeAssets.IllustrationPath)
 				panic(err.Error())
@@ -227,7 +226,7 @@ func LoadAssetsToArray() {
 			hairAssets = image.Asset{}
 			hairAssets.FileName = info.Name()
 			hairAssets.IllustrationPath = path
-			hairAssets.SVGContents, err = ioutil.ReadFile(hairAssets.IllustrationPath)
+			hairAssets.SVGContents, err = os.ReadFile(hairAssets.IllustrationPath)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", hairAssets.IllustrationPath)
 				panic(err.Error())
@@ -254,7 +253,7 @@ func LoadAssetsToArray() {
 			hairBackAssets = image.Asset{}
 			hairBackAssets.FileName = info.Name()
 			hairBackAssets.IllustrationPath = path
-			hairBackAssets.SVGContents, err = ioutil.ReadFile(hairBackAssets.IllustrationPath)
+			hairBackAssets.SVGContents, err = os.ReadFile(hairBackAssets.IllustrationPath)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", hairBackAssets.IllustrationPath)
 				panic(err.Error())
@@ -281,7 +280,7 @@ func LoadAssetsToArray() {
 			hairOutlineAsset = image.Asset{}
 			hairOutlineAsset.FileName = info.Name()
 			hairOutlineAsset.IllustrationPath = path
-			hairOutlineAsset.SVGContents, err = ioutil.ReadFile(path)
+			hairOutlineAsset.SVGContents, err = os.ReadFile(path)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", path)
 				panic(err.Error())
@@ -308,7 +307,7 @@ func LoadAssetsToArray() {
 			eyeAssets = image.Asset{}
 			eyeAssets.FileName = info.Name()
 			eyeAssets.IllustrationPath = path
-			eyeAssets.SVGContents, err = ioutil.ReadFile(eyeAssets.IllustrationPath)
+			eyeAssets.SVGContents, err = os.ReadFile(eyeAssets.IllustrationPath)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", eyeAssets.IllustrationPath)
 				panic(err.Error())
@@ -335,7 +334,7 @@ func LoadAssetsToArray() {
 			mouthAssets = image.Asset{}
 			mouthAssets.FileName = info.Name()
 			mouthAssets.IllustrationPath = path
-			mouthAssets.SVGContents, err = ioutil.ReadFile(mouthAssets.IllustrationPath)
+			mouthAssets.SVGContents, err = os.ReadFile(mouthAssets.IllustrationPath)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", mouthAssets.IllustrationPath)
 				panic(err.Error())
@@ -362,7 +361,7 @@ func LoadAssetsToArray() {
 			mouthOutlineAsset = image.Asset{}
 			mouthOutlineAsset.FileName = info.Name()
 			mouthOutlineAsset.IllustrationPath = path
-			mouthOutlineAsset.SVGContents, err = ioutil.ReadFile(path)
+			mouthOutlineAsset.SVGContents, err = os.ReadFile(path)
 			if err != nil {
 				glog.Fatalf("Couldn't load file %s", path)
 				panic(err.Error())

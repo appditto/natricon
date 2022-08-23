@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"strconv"
@@ -52,7 +51,7 @@ func RandFiles(count int, seed string) {
 
 		accessories, _ := image.GetAccessoriesForHash(sha256, spc.BTNone, false, nil)
 		svg, _ := image.CombineSVG(accessories)
-		ioutil.WriteFile(fmt.Sprintf("randsvg/%s.svg", address), svg, os.FileMode(0644))
+		os.WriteFile(fmt.Sprintf("randsvg/%s.svg", address), svg, os.FileMode(0644))
 	}
 }
 
@@ -103,7 +102,7 @@ func main() {
 	router.Use(CorsMiddleware())
 
 	// Setup socket IO server
-	sio, _ := socketio.NewServer(nil)
+	sio := socketio.NewServer(nil)
 	sio.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
 		s.Join("bcast")

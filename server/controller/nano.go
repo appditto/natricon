@@ -77,14 +77,14 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 				return
 			}
 			// Lock refund
-			lock, err := db.GetDB().Locker.Obtain(fmt.Sprintf("natricon:refundl:%s", hash), 100*time.Second, nil)
+			lock, err := db.GetDB().Locker.Obtain(db.CTX, fmt.Sprintf("natricon:refundl:%s", hash), 100*time.Second, nil)
 			if err == redislock.ErrNotObtained {
 				return
 			} else if err != nil {
 				glog.Error(err)
 				return
 			}
-			defer lock.Release()
+			defer lock.Release(db.CTX)
 			glog.Infof("Issuing refund to %s for %s due to nonce change ID %s", block["account"], amount, hash)
 			response, err := nc.RPCClient.MakeSendRequest(
 				nc.DonationAccount,
@@ -105,14 +105,14 @@ func (nc NanoController) Callback(confirmationResponse net.ConfirmationResponse)
 			}
 			nc.SIOServer.BroadcastToRoom("", "bcast", "donation_event", data)
 			// Calc donor duration with lock
-			lock, err := db.GetDB().Locker.Obtain(fmt.Sprintf("natricon:callback_lock:%s", hash), 100*time.Second, nil)
+			lock, err := db.GetDB().Locker.Obtain(db.CTX, fmt.Sprintf("natricon:callback_lock:%s", hash), 100*time.Second, nil)
 			if err == redislock.ErrNotObtained {
 				return
 			} else if err != nil {
 				glog.Error(err)
 				return
 			}
-			defer lock.Release()
+			defer lock.Release(db.CTX)
 			durationDays := nc.calcDonorDurationDays(amount)
 			if durationDays > 0 {
 				glog.Infof("Giving donor status to %s for %d days", block["account"], durationDays)
@@ -183,14 +183,14 @@ func (nc NanoController) CheckMissedCallbacks() {
 	}
 
 	// Try to obtain lock.
-	lock, err := db.GetDB().Locker.Obtain("natricon:history_lock", 100*time.Second, nil)
+	lock, err := db.GetDB().Locker.Obtain(db.CTX, "natricon:history_lock", 100*time.Second, nil)
 	if err == redislock.ErrNotObtained {
 		return
 	} else if err != nil {
 		glog.Error(err)
 		return
 	}
-	defer lock.Release()
+	defer lock.Release(db.CTX)
 	// Check history
 	historyResponse, err := nc.RPCClient.MakeAccountHistoryRequest(
 		nc.DonationAccount,

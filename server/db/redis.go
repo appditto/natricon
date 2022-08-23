@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -11,9 +12,11 @@ import (
 	"github.com/appditto/natricon/server/spc"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/bsm/redislock"
-	"github.com/go-redis/redis/v7"
+	"github.com/go-redis/redis/v9"
 	"github.com/golang/glog"
 )
+
+var CTX = context.Background()
 
 // Prefix for all keys
 const keyPrefix = "natricon"
@@ -53,49 +56,49 @@ func GetDB() *redisManager {
 
 // del - Redis DEL
 func (r *redisManager) del(key string) (int64, error) {
-	val, err := r.Client.Del(key).Result()
+	val, err := r.Client.Del(CTX, key).Result()
 	return val, err
 }
 
 // get - Redis GET
 func (r *redisManager) get(key string) (string, error) {
-	val, err := r.Client.Get(key).Result()
+	val, err := r.Client.Get(CTX, key).Result()
 	return val, err
 }
 
 // set - Redis SET
 func (r *redisManager) set(key string, value string) error {
-	err := r.Client.Set(key, value, 0).Err()
+	err := r.Client.Set(CTX, key, value, 0).Err()
 	return err
 }
 
 // hlen - Redis HLEN
 func (r *redisManager) hlen(key string) (int64, error) {
-	val, err := r.Client.HLen(key).Result()
+	val, err := r.Client.HLen(CTX, key).Result()
 	return val, err
 }
 
 // hget - Redis HGET
 func (r *redisManager) hget(key string, field string) (string, error) {
-	val, err := r.Client.HGet(key, field).Result()
+	val, err := r.Client.HGet(CTX, key, field).Result()
 	return val, err
 }
 
 // hgetall - Redis HGETALL
 func (r *redisManager) hgetall(key string) (map[string]string, error) {
-	val, err := r.Client.HGetAll(key).Result()
+	val, err := r.Client.HGetAll(CTX, key).Result()
 	return val, err
 }
 
 // hset - Redis HSET
 func (r *redisManager) hset(key string, field string, value string) error {
-	err := r.Client.HSet(key, field, value).Err()
+	err := r.Client.HSet(CTX, key, field, value).Err()
 	return err
 }
 
 // hdel - Redis HDEL
 func (r *redisManager) hdel(key string, field string) error {
-	err := r.Client.HDel(key, field).Err()
+	err := r.Client.HDel(CTX, key, field).Err()
 	return err
 }
 
@@ -481,7 +484,7 @@ func (r *redisManager) GetNonce(pubkey string) int {
 }
 
 func (r *redisManager) IncreaseNonce(pubkey string) int {
-	lock, err := r.Locker.Obtain(fmt.Sprintf("natricon:noncelock:%s", pubkey), 100*time.Second, &redislock.Options{
+	lock, err := r.Locker.Obtain(CTX, fmt.Sprintf("natricon:noncelock:%s", pubkey), 100*time.Second, &redislock.Options{
 		RetryStrategy: redislock.LimitRetry(
 			redislock.LinearBackoff(
 				1*time.Second,
@@ -495,7 +498,7 @@ func (r *redisManager) IncreaseNonce(pubkey string) int {
 		glog.Error(err)
 		return NoNonceApplied
 	}
-	defer lock.Release()
+	defer lock.Release(CTX)
 	nonce := r.GetNonce(pubkey)
 	nonce++
 	r.hset(fmt.Sprintf("%s:nonces", keyPrefix), pubkey, strconv.Itoa(nonce))
@@ -503,7 +506,7 @@ func (r *redisManager) IncreaseNonce(pubkey string) int {
 }
 
 func (r *redisManager) SetNonce(pubkey string, nonce int) int {
-	lock, err := r.Locker.Obtain(fmt.Sprintf("natricon:noncelock:%s", pubkey), 100*time.Second, &redislock.Options{
+	lock, err := r.Locker.Obtain(CTX, fmt.Sprintf("natricon:noncelock:%s", pubkey), 100*time.Second, &redislock.Options{
 		RetryStrategy: redislock.LimitRetry(
 			redislock.LinearBackoff(
 				1*time.Second,
@@ -517,7 +520,7 @@ func (r *redisManager) SetNonce(pubkey string, nonce int) int {
 		glog.Error(err)
 		return NoNonceApplied
 	}
-	defer lock.Release()
+	defer lock.Release(CTX)
 	if nonce == NoNonceApplied {
 		r.hdel(fmt.Sprintf("%s:nonces", keyPrefix), pubkey)
 		return NoNonceApplied
