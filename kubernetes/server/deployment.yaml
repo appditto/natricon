@@ -26,7 +26,7 @@ spec:
           limits:
             cpu: 1250m
             memory: 300Mi
-        args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://pippin-nano.pippin:11338 -nano-ws-url ws://10.98.0.6:7078"]
+        args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://pippin-nano.pippin:11338 -nano-ws-url ws://10.8.0.2:7078"]
         ports:
           - containerPort: 5555
         imagePullPolicy: "Always"
@@ -34,7 +34,7 @@ spec:
           - name: DONATION_ACCOUNT
             value: nano_3natricon9grnc8caqkht19f1fwpz39r3deeyef66m3d4fch3fau7x5q57cj
           - name: REDIS_HOST
-            value: redis-0.redis
+            value: redis.redis
           - name: REDIS_DB
             value: "13"
           - name: NATRICON_SEED
@@ -47,6 +47,4 @@ spec:
               secretKeyRef:
                 name: natricon
                 key: wallet_id                
-      imagePullSecrets:
-          - name: regcred
  

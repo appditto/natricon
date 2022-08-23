@@ -18,6 +18,7 @@ metadata:
     nginx.ingress.kubernetes.io/session-cookie-name: "natricon_socket"
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
 spec:
   tls:
     - hosts:
@@ -25,30 +26,6 @@ spec:
       secretName: natricon-com-server-secret
   rules:
     - host: natricon.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: nuxt-natricon-service
-                port:
-                  number: 3000
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: go-natricon-service
-                port:
-                  number: 5555
-          - path: /socket.io
-            pathType: Prefix
-            backend:
-              service:
-                name: go-natricon-service
-                port:
-                  number: 5555
-    - host: www.natricon.com
       http:
         paths:
           - path: /
