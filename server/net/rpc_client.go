@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/appditto/natricon/server/model"
+	"github.com/appditto/natricon/server/utils"
 	"github.com/golang/glog"
 )
 
@@ -108,6 +109,10 @@ func (client RPCClient) MakeSendRequest(source string, destination string, amoun
 		AmountRaw:   amountRaw,
 		ID:          id,
 		Wallet:      wallet,
+	}
+	bpowKey := utils.GetEnv("BPOW_KEY", "")
+	if bpowKey != "" {
+		request.BpowKey = &bpowKey
 	}
 	response, err := client.makeRequest(request)
 	if err != nil {

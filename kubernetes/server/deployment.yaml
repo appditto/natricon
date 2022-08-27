@@ -46,5 +46,10 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: natricon
-                key: wallet_id                
+                key: wallet_id 
+          - name: BPOW_KEY
+            valueFrom:
+              secretKeyRef:
+                name: natricon
+                key: bpow_key                 
  
