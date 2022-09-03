@@ -18,4 +18,4 @@ ENV MALLOC_ARENA_MAX=2
 ENV GIN_MODE="release"
 
 # run main.go
-CMD ["natricon", "-host=0.0.0.0", "-port=5555", "-logtostderr"]
+CMD ["./natricon", "-host=0.0.0.0", "-port=5555", "-logtostderr"]
