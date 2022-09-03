@@ -11,6 +11,7 @@ RUN  go build -o /root/natricon
 
 FROM ubuntu:22.04
 
+ADD assets assets
 COPY --from=builder /root/natricon /usr/local/bin/natricon
 
 ENV MALLOC_ARENA_MAX=2
