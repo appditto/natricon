@@ -1,4 +1,4 @@
-FROM appditto/libvips:latest
+FROM appditto/libvips:latest as builder
 
 WORKDIR /root
 
@@ -6,16 +6,20 @@ WORKDIR /root
 ADD . .
 # add assets
 ADD assets assets
-# Dependencies and buil
-# Install dependencies, libvips, go, and cleanup
-RUN  go get \
-    && go build -o natricon
+# Build
+RUN  go build -o /root/natricon
 
-ENV ENVIRONMENT "production"
+FROM ubuntu:22.04
+
+COPY --from=builder /root/natricon /usr/local/bin/natricon
 
 ENV MALLOC_ARENA_MAX=2
-
 ENV GIN_MODE="release"
 
+# Install libvips
+RUN apt-get update && apt-get install -y \
+    libvips-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # run main.go
-CMD ["./natricon", "-host=0.0.0.0", "-port=5555", "-logtostderr"]
+CMD ["natricon", "-host=0.0.0.0", "-port=5555", "-logtostderr"]
