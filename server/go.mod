@@ -14,7 +14,6 @@ require (
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/recws-org/recws v1.4.0
 	github.com/tdewolff/minify/v2 v2.12.0
-	gopkg.in/gographics/imagick.v3 v3.4.1
 )
 
 require (

@@ -17,7 +17,6 @@ import (
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/h2non/bimg"
 	"github.com/jasonlvhit/gocron"
-	"gopkg.in/gographics/imagick.v3/imagick"
 )
 
 func CorsMiddleware() gin.HandlerFunc {
@@ -94,9 +93,11 @@ func main() {
 		rpcClient = &net.RPCClient{Url: *rpcUrl}
 	}
 
-	// Setup magickwand
-	imagick.Initialize()
-	defer imagick.Terminate()
+	// Setup libvips
+	bimg.Initialize()
+	bimg.VipsCacheSetMaxMem(0)
+	bimg.VipsCacheSetMax(0)
+	defer bimg.Shutdown()
 
 	// Setup router
 	router := gin.Default()
@@ -121,11 +122,6 @@ func main() {
 
 	// Setup channel for stats processing job
 	statsChan := make(chan *gin.Context, 100)
-	// Setup libvips
-	bimg.Initialize()
-	bimg.VipsCacheSetMaxMem(0)
-	bimg.VipsCacheSetMax(0)
-	defer bimg.Shutdown()
 
 	// Setup natricon controller
 	natriconController := controller.NatriconController{
