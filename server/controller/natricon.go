@@ -9,10 +9,10 @@ import (
 	"github.com/appditto/natricon/server/color"
 	"github.com/appditto/natricon/server/db"
 	"github.com/appditto/natricon/server/image"
-	"github.com/appditto/natricon/server/magickwand"
 	"github.com/appditto/natricon/server/spc"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/h2non/bimg"
 )
 
 const defaultRasterSize = 128 // Default size of PNG/WEBP images
@@ -20,8 +20,9 @@ const minConvertedSize = 100  // Minimum size of PNG/WEBP converted output
 const maxConvertedSize = 1000 // Maximum size of PNG/WEBP converted output
 
 type NatriconController struct {
-	Seed         string
-	StatsChannel *chan *gin.Context
+	Seed           string
+	StatsChannel   *chan *gin.Context
+	ImageConverter *image.ImageConverter
 }
 
 // APIs
@@ -91,9 +92,9 @@ func (nc NatriconController) GetNano(c *gin.Context) {
 	}
 
 	if specialNatricon {
-		generateSpecialIcon(vanity, badgeType, c)
+		generateSpecialIcon(vanity, badgeType, c, nc.ImageConverter)
 	} else {
-		generateIcon(&sha256, badgeType, c)
+		generateIcon(&sha256, badgeType, c, nc.ImageConverter)
 	}
 }
 
@@ -218,7 +219,7 @@ func (nc NatriconController) GetNatricon(c *gin.Context) {
 }
 
 // Generate natricon with given hash
-func generateIcon(hash *string, badgeType spc.BadgeType, c *gin.Context) {
+func generateIcon(hash *string, badgeType spc.BadgeType, c *gin.Context, imageConverter *image.ImageConverter) {
 	var err error
 
 	format := strings.ToLower(c.Query("format"))
@@ -271,7 +272,13 @@ func generateIcon(hash *string, badgeType spc.BadgeType, c *gin.Context) {
 	if format != "svg" {
 		// Convert
 		var converted []byte
-		converted, err = magickwand.ConvertSvgToBinary(svg, magickwand.ImageFormat(format), uint(size))
+		var bimgFormat bimg.ImageType
+		if format == "png" {
+			bimgFormat = bimg.PNG
+		} else {
+			bimgFormat = bimg.WEBP
+		}
+		converted, err = imageConverter.ConvertSvgToBinary(svg, bimgFormat, uint(size))
 		if err != nil {
 			c.String(http.StatusInternalServerError, "Error occured")
 			return
@@ -283,7 +290,7 @@ func generateIcon(hash *string, badgeType spc.BadgeType, c *gin.Context) {
 }
 
 // Generate icon for special accounts
-func generateSpecialIcon(vanity *spc.Vanity, badgeType spc.BadgeType, c *gin.Context) {
+func generateSpecialIcon(vanity *spc.Vanity, badgeType spc.BadgeType, c *gin.Context, imageConverter *image.ImageConverter) {
 	var err error
 
 	format := strings.ToLower(c.Query("format"))
@@ -326,7 +333,13 @@ func generateSpecialIcon(vanity *spc.Vanity, badgeType spc.BadgeType, c *gin.Con
 	if format != "svg" {
 		// Convert
 		var converted []byte
-		converted, err = magickwand.ConvertSvgToBinary(svg, magickwand.ImageFormat(format), uint(size))
+		var bimgFormat bimg.ImageType
+		if format == "png" {
+			bimgFormat = bimg.PNG
+		} else {
+			bimgFormat = bimg.WEBP
+		}
+		converted, err = imageConverter.ConvertSvgToBinary(svg, bimgFormat, uint(size))
 		if err != nil {
 			c.String(http.StatusInternalServerError, "Error occured")
 			return

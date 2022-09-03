@@ -123,8 +123,9 @@ func main() {
 
 	// Setup natricon controller
 	natriconController := controller.NatriconController{
-		Seed:         seed,
-		StatsChannel: &statsChan,
+		Seed:           seed,
+		StatsChannel:   &statsChan,
+		ImageConverter: &image.ImageConverter{},
 	}
 	// Setup nano controller
 	nanoController := controller.NanoController{
