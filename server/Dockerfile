@@ -1,6 +1,4 @@
-FROM appditto/imagemagick_go:latest as base
-
-FROM base as builder
+FROM appditto/libvips:latest
 
 WORKDIR /root
 
@@ -9,21 +7,13 @@ ADD . .
 # add assets
 ADD assets assets
 # Dependencies and buil
-# Install dependencies, imagemagick, go, and cleanup
-RUN apt-get update && apt-get install -y \
-    gcc pkg-config \
-&& go get \
-&& echo "Building natricon" \
-&& go build -o natricon \
-&& rm -rf /var/lib/apt/lists/*
+# Install dependencies, libvips, go, and cleanup
+RUN  go get \
+    && go build -o natricon
 
-# Copy binary to imagemagick image
-FROM appditto/imagemagick:latest
+ENV ENVIRONMENT "production"
 
-USER root
-WORKDIR /root
-
-COPY --from=builder /root/natricon /usr/bin/natricon
+ENV MALLOC_ARENA_MAX=2
 
 ENV GIN_MODE="release"
 
