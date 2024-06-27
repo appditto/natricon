@@ -91,7 +91,7 @@ jobs:
           context: server
           platforms: linux/amd64
           push: true
-          file: ./Dockerfile
+          file: ./server/Dockerfile
           tags: appditto/natricon-server:${{ env.BRANCH_NAME }}-${{ env.GITHUB_RUN_ID }}
 
   deploy_nuxt:
