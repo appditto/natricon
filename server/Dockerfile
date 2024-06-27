@@ -2,6 +2,14 @@ FROM appditto/libvips:latest as builder
 
 WORKDIR /root
 
+# Update GO
+# Install GOLang
+RUN apt-get update && apt-get install -y wget \
+  && wget -c https://dl.google.com/go/go1.22.linux-${TARGETARCH}.tar.gz -O - | tar -xz -C /usr/local \
+  && rm -rf go1.22.linux-${TARGETARCH}.tar.gz \
+  && rm -rf /var/lib/apt/lists/*
+ENV PATH="/usr/local/go/bin:${PATH}"
+
 # add source code
 ADD . .
 # add assets

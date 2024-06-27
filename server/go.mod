@@ -1,6 +1,6 @@
 module github.com/appditto/natricon/server
 
-go 1.19
+go 1.22
 
 require (
 	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b
