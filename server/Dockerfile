@@ -1,5 +1,7 @@
 FROM appditto/libvips:latest as builder
 
+ARG TARGETARCH
+
 WORKDIR /root
 
 # Update GO

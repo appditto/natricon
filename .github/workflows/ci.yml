@@ -67,6 +67,7 @@ jobs:
       GITHUB_RUN_ID: ${{ github.run_id }}    
     steps:
       - uses: actions/checkout@master   
+ 
       - name: Login to registry
         uses: actions-hub/docker/login@master
         env:
@@ -83,15 +84,15 @@ jobs:
         shell: bash
         run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
 
-      - name: Build and tag
+      - name: Build and push
         if: success()
-        run: docker build -t appditto/natricon-server:${{ env.BRANCH_NAME }}-${{ env.GITHUB_RUN_ID }} server
-
-      - name: Push image   
-        if: success()
-        uses: actions-hub/docker@master
+        uses: docker/build-push-action@v3
         with:
-          args: push appditto/natricon-server:${{ env.BRANCH_NAME }}-${{ env.GITHUB_RUN_ID }}
+          context: server
+          platforms: linux/amd64
+          push: true
+          file: ./Dockerfile
+          tags: appditto/natricon-server:${{ env.BRANCH_NAME }}-${{ env.GITHUB_RUN_ID }}
 
   deploy_nuxt:
     name: Deploy nuxt app
