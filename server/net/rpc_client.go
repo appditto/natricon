@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
+	"time"
 
 	"github.com/appditto/natricon/server/model"
 	"github.com/appditto/natricon/server/utils"
@@ -13,23 +14,37 @@ import (
 )
 
 type RPCClient struct {
-	Url string
+	Url        string
+	httpClient *http.Client
+}
+
+func NewRPCClient(url string) *RPCClient {
+	return &RPCClient{
+		Url: url,
+		httpClient: &http.Client{
+			Timeout: time.Second * 30, // Set a timeout for all requests
+		},
+	}
 }
 
 // Base request
-func (client RPCClient) makeRequest(request interface{}) ([]byte, error) {
-	requestBody, _ := json.Marshal(request)
-	// HTTP post
-	resp, err := http.Post(client.Url, "application/json", bytes.NewBuffer(requestBody))
+func (client *RPCClient) makeRequest(request interface{}) ([]byte, error) {
+	requestBody, err := json.Marshal(request)
 	if err != nil {
-		glog.Errorf("Error making RPC request %s", err)
+		return nil, err
+	}
+	resp, err := client.httpClient.Post(client.Url, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	// Try to decode+deserialize
-	body, err := ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("non-200 response from server")
+	}
+
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		glog.Errorf("Error decoding response body %s", err)
 		return nil, err
 	}
 	return body, nil

@@ -90,7 +90,7 @@ func main() {
 	var rpcClient *net.RPCClient
 	if *rpcUrl != "" {
 		glog.Infof("RPC Client configured at %s", *rpcUrl)
-		rpcClient = &net.RPCClient{Url: *rpcUrl}
+		rpcClient = net.NewRPCClient(*rpcUrl)
 	}
 
 	// Setup libvips
