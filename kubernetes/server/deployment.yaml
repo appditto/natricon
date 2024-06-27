@@ -25,7 +25,7 @@ spec:
             memory: 100Mi
           limits:
             cpu: 1250m
-            memory: 512Mi
+            memory: 1024Mi
         args: ["natricon -host=0.0.0.0 -port=5555 -logtostderr -rpc-url http://pippin-nano.pippin:11338 -nano-ws-url ws://10.7.0.1:7078"]
         ports:
           - containerPort: 5555
