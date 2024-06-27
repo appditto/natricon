@@ -12,8 +12,8 @@ import (
 	"github.com/appditto/natricon/server/spc"
 	"github.com/appditto/natricon/server/utils"
 	"github.com/bsm/redislock"
-	"github.com/go-redis/redis/v9"
 	"github.com/golang/glog"
+	"github.com/redis/go-redis/v9"
 )
 
 var CTX = context.Background()
