@@ -101,6 +101,7 @@ func main() {
 
 	// Setup router
 	router := gin.Default()
+	router.TrustedPlatform = gin.PlatformCloudflare
 	router.Use(CorsMiddleware())
 
 	// Setup socket IO server
