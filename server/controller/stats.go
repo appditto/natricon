@@ -18,8 +18,6 @@ func StatsWorker(statsChan <-chan *gin.Context) {
 	for c := range statsChan {
 		// Update unique addresses
 		db.GetDB().UpdateStatsAddress(c.Query("address"))
-		// Update daily
-		// db.GetDB().UpdateStatsDate(c.Query("address"))
 		// Update clients
 		db.GetDB().UpdateStatsClient(c.ClientIP())
 		// Update by service
@@ -35,8 +33,6 @@ func Stats(c *gin.Context) {
 	numServed := db.GetDB().StatsUniqueAddresses()
 	numServedTotal := db.GetDB().StatsTotal()
 	svcStats := db.GetDB().ServiceStats()
-	//daily := db.GetDB().DailyStats()
-	// today := db.GetDB().TodayStats()
 	clientsServed := db.GetDB().ClientsServed()
 
 	// Return response
@@ -45,8 +41,6 @@ func Stats(c *gin.Context) {
 		"total_served":          numServedTotal,
 		"unique_clients_served": clientsServed,
 		"services":              svcStats,
-		// "today":                 today,
-		//"daily":          daily,
 	})
 }
 

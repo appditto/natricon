@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/appditto/natricon/server/controller"
-	"github.com/appditto/natricon/server/db"
 	"github.com/appditto/natricon/server/image"
 	"github.com/appditto/natricon/server/net"
 	"github.com/appditto/natricon/server/spc"
@@ -64,7 +63,6 @@ func main() {
 	testBodyDist := flag.Bool("test-bd", false, "Test body distribution")
 	testHairDist := flag.Bool("test-hd", false, "Test hair distribution")
 	randomFiles := flag.Int("rand-files", -1, "Generate this many random SVGs and output to randsvg folder")
-	backfillStatsHLL := flag.Bool("backfill-stats-hll", false, "Copy the stats hashes into their HyperLogLog keys, safe to rerun")
 
 	serverHost := flag.String("host", "127.0.0.1", "Host to listen on")
 	serverPort := flag.Int("port", 8080, "Port to listen on")
@@ -78,18 +76,6 @@ func main() {
 	} else if *randomFiles > 0 {
 		fmt.Printf("Generating %d files in ./randsvg", *randomFiles)
 		RandFiles(*randomFiles, seed)
-		return
-	}
-
-	if *backfillStatsHLL {
-		results, err := db.GetDB().BackfillStatsHLL()
-		for _, res := range results {
-			fmt.Printf("%s -> %s: hlen=%d pfcount=%d\n", res.Source, res.Target, res.HashLen, res.Count)
-		}
-		if err != nil {
-			fmt.Printf("Backfill failed: %s\n", err)
-			os.Exit(1)
-		}
 		return
 	}
 

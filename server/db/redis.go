@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -73,21 +73,9 @@ func (r *redisManager) set(key string, value string) error {
 	return err
 }
 
-// hlen - Redis HLEN
-func (r *redisManager) hlen(key string) (int64, error) {
-	val, err := r.Client.HLen(CTX, key).Result()
-	return val, err
-}
-
 // hget - Redis HGET
 func (r *redisManager) hget(key string, field string) (string, error) {
 	val, err := r.Client.HGet(CTX, key, field).Result()
-	return val, err
-}
-
-// hgetall - Redis HGETALL
-func (r *redisManager) hgetall(key string) (map[string]string, error) {
-	val, err := r.Client.HGetAll(CTX, key).Result()
 	return val, err
 }
 
@@ -107,6 +95,15 @@ func (r *redisManager) hdel(key string, field string) error {
 func (r *redisManager) pfadd(key string, elements ...interface{}) error {
 	err := r.Client.PFAdd(CTX, key, elements...).Err()
 	return err
+}
+
+// pfcount - Redis PFCOUNT, 0 on error
+func (r *redisManager) pfcount(key string) int64 {
+	val, err := r.Client.PFCount(CTX, key).Result()
+	if err != nil {
+		return 0
+	}
+	return val
 }
 
 func hllKey(name string) string {
@@ -239,155 +236,18 @@ func (r *redisManager) GetPrincipalReps() []string {
 
 // UpdateStatsAddress - Update stats for an address that has requested natricon
 func (r *redisManager) UpdateStatsAddress(address string) {
-	key := fmt.Sprintf("%s:stats_unique_addresses", keyPrefix)
-	count := 1
-	existing, err := r.hget(key, address)
-	if err == nil {
-		existingInt, err := strconv.Atoi(existing)
-		if err != nil {
-			count = existingInt + 1
-		}
-	}
-	err = r.hset(key, address, strconv.Itoa(count))
-	if err != nil {
-		glog.Errorf("Error updating StatesAddresses %s", err)
-	}
 	if err := r.pfadd(hllKey("addresses"), address); err != nil {
 		glog.Errorf("Error updating addresses HLL %s", err)
 	}
-	key = fmt.Sprintf("%s:stats_total", keyPrefix)
-	val, err := r.get(key)
-	if err != nil {
-		glog.Errorf("Error updating StatesAddresses %s", err)
-		return
+	if err := r.Client.Incr(CTX, fmt.Sprintf("%s:stats_total", keyPrefix)).Err(); err != nil {
+		glog.Errorf("Error updating stats total %s", err)
 	}
-	valInt, err := strconv.Atoi(val)
-	if err != nil {
-		glog.Errorf("Error updating StatesAddresses %s", err)
-	}
-	valInt += 1
-	r.set(key, strconv.Itoa(valInt))
-}
-
-// UpdateStatsDate - Update stats for current date
-func (r *redisManager) UpdateStatsDate(address string) {
-	dateStr := time.Now().Format("02-01-2006")
-	key := fmt.Sprintf("%s:stats_daily", keyPrefix)
-	existing, err := r.hget(key, fmt.Sprintf("%s_%s", dateStr, address))
-	count := 1
-	if err == nil {
-		existingInt, err := strconv.Atoi(existing)
-		if err != nil {
-			count = existingInt + 1
-		}
-	}
-	err = r.hset(key, fmt.Sprintf("%s_%s", dateStr, address), strconv.Itoa(count))
-	if err != nil {
-		glog.Errorf("Error updating StatsDate %s", err)
-	}
-	// Total
-	total, err := r.hget(key, fmt.Sprintf("%s_%s", dateStr, "total"))
-	totalInt, err := strconv.Atoi(total)
-	if err != nil {
-		r.hset(key, fmt.Sprintf("%s_%s", dateStr, "total"), "1")
-	} else {
-		totalInt += 1
-		r.hset(key, fmt.Sprintf("%s_%s", dateStr, "total"), strconv.Itoa(totalInt))
-	}
-}
-
-// TodayStats - Today Stats
-func (r *redisManager) TodayStats() map[string]int64 {
-	dateStr := time.Now().Format("02-01-2006")
-	ret := map[string]int64{}
-	key := fmt.Sprintf("%s:stats_daily", keyPrefix)
-	allVals, err := r.hgetall(key)
-	if err != nil {
-		return ret
-	}
-	uniqueTracker := map[string]int64{}
-	for key, val := range allVals {
-		dt := strings.Split(key, "_")[0]
-		if dt != dateStr {
-			continue
-		}
-		// Increase total
-		if strings.Split(key, "_")[1] == "total" {
-			asInt, err := strconv.Atoi(val)
-			if err != nil {
-				ret["total"] = 1
-			} else {
-				ret["total"] = int64(asInt)
-			}
-		} else {
-			// Check and increase unique
-			if _, ok := uniqueTracker[key]; !ok {
-				uniqueTracker[key] = 1
-				if _, ok := ret["unique"]; !ok {
-					ret["unique"] = 1
-				} else {
-					ret["unique"] += 1
-				}
-			}
-		}
-	}
-	return ret
-}
-
-// DailyStats - Daily Stats
-func (r *redisManager) DailyStats() map[string]map[string]int64 {
-	ret := map[string]map[string]int64{}
-	key := fmt.Sprintf("%s:stats_daily", keyPrefix)
-	allVals, err := r.hgetall(key)
-	if err != nil {
-		return ret
-	}
-	uniqueTracker := map[string]int64{}
-	for key, val := range allVals {
-		dt := strings.Split(key, "_")[0]
-		if _, ok := ret[dt]; !ok {
-			ret[dt] = map[string]int64{}
-		}
-		// Increase total
-		if strings.Split(key, "_")[1] == "total" {
-			asInt, err := strconv.Atoi(val)
-			if err != nil {
-				ret[dt]["total"] = 1
-			} else {
-				ret[dt]["total"] = int64(asInt)
-			}
-		} else {
-			// Check and increase unique
-			if _, ok := uniqueTracker[key]; !ok {
-				uniqueTracker[key] = 1
-				if _, ok := ret[dt]["unique"]; !ok {
-					ret[dt]["unique"] = 1
-				} else {
-					ret[dt]["unique"] += 1
-				}
-			}
-		}
-	}
-	return ret
 }
 
 // UpdateStatsClient - Update stats for specific client
 func (r *redisManager) UpdateStatsClient(ip string) {
 	// Hash IP for privacy concerns
 	hashed := utils.PKSha256(ip, "")
-	key := fmt.Sprintf("%s:stats_clients", keyPrefix)
-	existing, err := r.hget(key, hashed)
-	count := 1
-	if err == nil {
-		existingInt, err := strconv.Atoi(existing)
-		if err != nil {
-			count = existingInt + 1
-		}
-	}
-	err = r.hset(key, hashed, strconv.Itoa(count))
-	if err != nil {
-		glog.Errorf("Error updating StatsClient %s", err)
-	}
 	if err := r.pfadd(hllKey("clients"), hashed); err != nil {
 		glog.Errorf("Error updating clients HLL %s", err)
 	}
@@ -395,22 +255,12 @@ func (r *redisManager) UpdateStatsClient(ip string) {
 
 // ClientsServed - return # of clients served
 func (r *redisManager) ClientsServed() int64 {
-	key := fmt.Sprintf("%s:stats_clients", keyPrefix)
-	len, err := r.hlen(key)
-	if err != nil {
-		return 0
-	}
-	return len
+	return r.pfcount(hllKey("clients"))
 }
 
 // StatsUniqueAddresses - Return # of unique natricons served
 func (r *redisManager) StatsUniqueAddresses() int64 {
-	key := fmt.Sprintf("%s:stats_unique_addresses", keyPrefix)
-	len, err := r.hlen(key)
-	if err != nil {
-		return 0
-	}
-	return len
+	return r.pfcount(hllKey("addresses"))
 }
 
 // StatsTotal - Return total # of unique natricons served
@@ -429,52 +279,14 @@ func (r *redisManager) StatsTotal() int {
 
 // UpdateStatsByService - Update stats for a service
 func (r *redisManager) UpdateStatsByService(svc string, address string) {
-	// See if valid service
-	valid := false
-	for _, rSvc := range spc.SvcList {
-		if string(rSvc) == svc {
-			valid = true
-		}
+	if !slices.Contains(spc.SvcList, spc.StatsService(svc)) {
+		return
 	}
-	if valid {
-		key := fmt.Sprintf("%s:stats:%s", keyPrefix, svc)
-		count := 1
-		existing, err := r.hget(key, address)
-		if err == nil {
-			existingInt, err := strconv.Atoi(existing)
-			if err != nil {
-				count = existingInt + 1
-			}
-		}
-		err = r.hset(key, address, strconv.Itoa(count))
-		if err != nil {
-			glog.Errorf("Error updating StatsByService %s %s", svc, err)
-		}
-		if err := r.pfadd(svcHllKey(svc), address); err != nil {
-			glog.Errorf("Error updating StatsByService HLL %s %s", svc, err)
-		}
-		totalCount, err := r.hget(key, "total")
-		totalCountInt, err := strconv.Atoi(totalCount)
-		if err != nil {
-			totalCountInt = 0
-			allAddresses, err := r.hgetall(key)
-			if err == nil {
-				for _, el := range allAddresses {
-					indyInt, err := strconv.Atoi(el)
-					if err != nil {
-						totalCountInt += indyInt
-					}
-				}
-				r.hset(key, "total", strconv.Itoa(totalCountInt))
-				r.set(svcTotalKey(svc), strconv.Itoa(totalCountInt))
-			} else {
-				glog.Errorf("Error retrieving StatsBySvc %s %s", key, err)
-			}
-		} else {
-			newTotal := strconv.Itoa(totalCountInt + 1)
-			r.hset(key, "total", newTotal)
-			r.set(svcTotalKey(svc), newTotal)
-		}
+	if err := r.pfadd(svcHllKey(svc), address); err != nil {
+		glog.Errorf("Error updating StatsByService HLL %s %s", svc, err)
+	}
+	if err := r.Client.Incr(CTX, svcTotalKey(svc)).Err(); err != nil {
+		glog.Errorf("Error updating StatsByService total %s %s", svc, err)
 	}
 }
 
@@ -482,105 +294,16 @@ func (r *redisManager) UpdateStatsByService(svc string, address string) {
 func (r *redisManager) ServiceStats() map[spc.StatsService]map[string]int64 {
 	ret := map[spc.StatsService]map[string]int64{}
 	for _, svc := range spc.SvcList {
-		key := fmt.Sprintf("%s:stats:%s", keyPrefix, svc)
-		len, err := r.hlen(key)
-		ret[svc] = map[string]int64{}
+		total, err := r.Client.Get(CTX, svcTotalKey(string(svc))).Int64()
 		if err != nil {
-			ret[svc]["unique"] = 0
+			total = 0
 		}
-		ret[svc]["unique"] = len
-		totalCount, err := r.hget(key, "total")
-		totalCountInt, err := strconv.Atoi(totalCount)
-		if err != nil {
-			totalCountInt = 0
+		ret[svc] = map[string]int64{
+			"unique": r.pfcount(svcHllKey(string(svc))),
+			"total":  total,
 		}
-		ret[svc]["total"] = int64(totalCountInt)
 	}
 	return ret
-}
-
-type HLLBackfillResult struct {
-	Source  string
-	Target  string
-	HashLen int64
-	Count   int64
-}
-
-type hllBackfill struct {
-	source    string
-	target    string
-	skipField string
-}
-
-// BackfillStatsHLL - Copy the stats hashes into their HyperLogLog keys and mirror the service totals, safe to rerun
-func (r *redisManager) BackfillStatsHLL() ([]HLLBackfillResult, error) {
-	backfills := []hllBackfill{
-		{source: fmt.Sprintf("%s:stats_unique_addresses", keyPrefix), target: hllKey("addresses")},
-		{source: fmt.Sprintf("%s:stats_clients", keyPrefix), target: hllKey("clients")},
-	}
-	for _, svc := range spc.SvcList {
-		backfills = append(backfills, hllBackfill{
-			source:    fmt.Sprintf("%s:stats:%s", keyPrefix, svc),
-			target:    svcHllKey(string(svc)),
-			skipField: "total",
-		})
-	}
-
-	results := []HLLBackfillResult{}
-	for _, b := range backfills {
-		if err := r.copyHashFieldsToHLL(b); err != nil {
-			return results, fmt.Errorf("backfilling %s: %w", b.source, err)
-		}
-		hashLen, err := r.hlen(b.source)
-		if err != nil {
-			return results, err
-		}
-		count, err := r.Client.PFCount(CTX, b.target).Result()
-		if err != nil {
-			return results, err
-		}
-		results = append(results, HLLBackfillResult{Source: b.source, Target: b.target, HashLen: hashLen, Count: count})
-	}
-
-	for _, svc := range spc.SvcList {
-		total, err := r.hget(fmt.Sprintf("%s:stats:%s", keyPrefix, svc), "total")
-		if err == redis.Nil {
-			continue
-		}
-		if err != nil {
-			return results, err
-		}
-		if err := r.set(svcTotalKey(string(svc)), total); err != nil {
-			return results, err
-		}
-	}
-	return results, nil
-}
-
-func (r *redisManager) copyHashFieldsToHLL(b hllBackfill) error {
-	var cursor uint64
-	for {
-		pairs, next, err := r.Client.HScan(CTX, b.source, cursor, "", 1000).Result()
-		if err != nil {
-			return err
-		}
-		fields := make([]interface{}, 0, len(pairs)/2)
-		for i := 0; i < len(pairs); i += 2 {
-			if b.skipField != "" && pairs[i] == b.skipField {
-				continue
-			}
-			fields = append(fields, pairs[i])
-		}
-		if len(fields) > 0 {
-			if err := r.pfadd(b.target, fields...); err != nil {
-				return err
-			}
-		}
-		if next == 0 {
-			return nil
-		}
-		cursor = next
-	}
 }
 
 // Re-randomization - nonces for address re-randomization
