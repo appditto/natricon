@@ -103,6 +103,24 @@ func (r *redisManager) hdel(key string, field string) error {
 	return err
 }
 
+// pfadd - Redis PFADD
+func (r *redisManager) pfadd(key string, elements ...interface{}) error {
+	err := r.Client.PFAdd(CTX, key, elements...).Err()
+	return err
+}
+
+func hllKey(name string) string {
+	return fmt.Sprintf("%s:hll:%s", keyPrefix, name)
+}
+
+func svcHllKey(svc string) string {
+	return hllKey(fmt.Sprintf("svc:%s", svc))
+}
+
+func svcTotalKey(svc string) string {
+	return fmt.Sprintf("%s:stats_total:%s", keyPrefix, svc)
+}
+
 // UpdateDonorStatus - Update donor status with given duration in days
 func (r *redisManager) UpdateDonorStatus(hash string, acct string, durationDays uint) {
 	pubkey := utils.AddressToPub(acct)
@@ -233,6 +251,9 @@ func (r *redisManager) UpdateStatsAddress(address string) {
 	err = r.hset(key, address, strconv.Itoa(count))
 	if err != nil {
 		glog.Errorf("Error updating StatesAddresses %s", err)
+	}
+	if err := r.pfadd(hllKey("addresses"), address); err != nil {
+		glog.Errorf("Error updating addresses HLL %s", err)
 	}
 	key = fmt.Sprintf("%s:stats_total", keyPrefix)
 	val, err := r.get(key)
@@ -367,6 +388,9 @@ func (r *redisManager) UpdateStatsClient(ip string) {
 	if err != nil {
 		glog.Errorf("Error updating StatsClient %s", err)
 	}
+	if err := r.pfadd(hllKey("clients"), hashed); err != nil {
+		glog.Errorf("Error updating clients HLL %s", err)
+	}
 }
 
 // ClientsServed - return # of clients served
@@ -426,6 +450,9 @@ func (r *redisManager) UpdateStatsByService(svc string, address string) {
 		if err != nil {
 			glog.Errorf("Error updating StatsByService %s %s", svc, err)
 		}
+		if err := r.pfadd(svcHllKey(svc), address); err != nil {
+			glog.Errorf("Error updating StatsByService HLL %s %s", svc, err)
+		}
 		totalCount, err := r.hget(key, "total")
 		totalCountInt, err := strconv.Atoi(totalCount)
 		if err != nil {
@@ -439,11 +466,14 @@ func (r *redisManager) UpdateStatsByService(svc string, address string) {
 					}
 				}
 				r.hset(key, "total", strconv.Itoa(totalCountInt))
+				r.set(svcTotalKey(svc), strconv.Itoa(totalCountInt))
 			} else {
 				glog.Errorf("Error retrieving StatsBySvc %s %s", key, err)
 			}
 		} else {
-			r.hset(key, "total", strconv.Itoa(totalCountInt+1))
+			newTotal := strconv.Itoa(totalCountInt + 1)
+			r.hset(key, "total", newTotal)
+			r.set(svcTotalKey(svc), newTotal)
 		}
 	}
 }
@@ -467,6 +497,90 @@ func (r *redisManager) ServiceStats() map[spc.StatsService]map[string]int64 {
 		ret[svc]["total"] = int64(totalCountInt)
 	}
 	return ret
+}
+
+type HLLBackfillResult struct {
+	Source  string
+	Target  string
+	HashLen int64
+	Count   int64
+}
+
+type hllBackfill struct {
+	source    string
+	target    string
+	skipField string
+}
+
+// BackfillStatsHLL - Copy the stats hashes into their HyperLogLog keys and mirror the service totals, safe to rerun
+func (r *redisManager) BackfillStatsHLL() ([]HLLBackfillResult, error) {
+	backfills := []hllBackfill{
+		{source: fmt.Sprintf("%s:stats_unique_addresses", keyPrefix), target: hllKey("addresses")},
+		{source: fmt.Sprintf("%s:stats_clients", keyPrefix), target: hllKey("clients")},
+	}
+	for _, svc := range spc.SvcList {
+		backfills = append(backfills, hllBackfill{
+			source:    fmt.Sprintf("%s:stats:%s", keyPrefix, svc),
+			target:    svcHllKey(string(svc)),
+			skipField: "total",
+		})
+	}
+
+	results := []HLLBackfillResult{}
+	for _, b := range backfills {
+		if err := r.copyHashFieldsToHLL(b); err != nil {
+			return results, fmt.Errorf("backfilling %s: %w", b.source, err)
+		}
+		hashLen, err := r.hlen(b.source)
+		if err != nil {
+			return results, err
+		}
+		count, err := r.Client.PFCount(CTX, b.target).Result()
+		if err != nil {
+			return results, err
+		}
+		results = append(results, HLLBackfillResult{Source: b.source, Target: b.target, HashLen: hashLen, Count: count})
+	}
+
+	for _, svc := range spc.SvcList {
+		total, err := r.hget(fmt.Sprintf("%s:stats:%s", keyPrefix, svc), "total")
+		if err == redis.Nil {
+			continue
+		}
+		if err != nil {
+			return results, err
+		}
+		if err := r.set(svcTotalKey(string(svc)), total); err != nil {
+			return results, err
+		}
+	}
+	return results, nil
+}
+
+func (r *redisManager) copyHashFieldsToHLL(b hllBackfill) error {
+	var cursor uint64
+	for {
+		pairs, next, err := r.Client.HScan(CTX, b.source, cursor, "", 1000).Result()
+		if err != nil {
+			return err
+		}
+		fields := make([]interface{}, 0, len(pairs)/2)
+		for i := 0; i < len(pairs); i += 2 {
+			if b.skipField != "" && pairs[i] == b.skipField {
+				continue
+			}
+			fields = append(fields, pairs[i])
+		}
+		if len(fields) > 0 {
+			if err := r.pfadd(b.target, fields...); err != nil {
+				return err
+			}
+		}
+		if next == 0 {
+			return nil
+		}
+		cursor = next
+	}
 }
 
 // Re-randomization - nonces for address re-randomization
